@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://gmpg.org/xfn/11">
+	<meta http-equiv="Content-Type" content="xhtml; charset=utf-8" />
+	<title>hgfront : {% block title %} Generic Page {% endblock %}</title>
+	<link rel="stylesheet" type="text/css" media="screen" href="/media/css/style.css" />
+	{% block head_extra %}{% endblock %}
+</head>
+<body>
+	<div id="header">
+	</div>
+	<div id="navi">
+		
+	</div>
+	{% load cache %}
+
+	{% block content_title %}{% endblock %}
+	{% block main_content %}{% endblock %}
+	
+	{% block footer %}{% endblock %}
+</body>
+</html>
