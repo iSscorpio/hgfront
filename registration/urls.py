@@ -50,4 +50,8 @@ urlpatterns = patterns('',
                            direct_to_template,
                            {'template': 'registration/registration_complete.html'},
                            name='registration_complete'),
+                        url(r'^profile/$',
+                           direct_to_template,
+                           {'template': 'account/profile.html'},
+                           name='user_profile'),
                        )

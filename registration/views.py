@@ -6,7 +6,7 @@ Views which allow users to create and activate accounts.
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 
 from registration.forms import RegistrationForm
@@ -95,3 +95,11 @@ def register(request, success_url='/accounts/register/complete/',
     return render_to_response(template_name,
                               { 'form': form },
                               context_instance=RequestContext(request))
+
+def profile(request, user_id, template_name='account/profile.html'):
+    """Displays a users profile"""
+    user = get_object_or_404(User, pk=user_id)
+    return render_to_response(template_name,
+                              { 'user': user },
+                              context_instance=RequestContext(request))
+    
