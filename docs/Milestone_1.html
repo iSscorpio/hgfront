@@ -1,0 +1,136 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Milestone 1</title>
+		<meta name='Generator' content='Zim 0.18'>
+		<style type='text/css'>
+			body       { background-color: #fff;
+				     color: #000;
+				     font-size: large              }
+			a          { text-decoration: none         }
+			a:hover    { text-decoration: underline    }
+			a:active   { text-decoration: underline    }
+			strike     { color: grey                   }
+			u          { text-decoration: none;
+				     background-color: yellow      }
+			pre        { background-color: lightyellow }
+			.bar       { background-color: #E0E0FF;
+				     margin: 0                     }
+			.nav       { color: grey;
+				     font-size: small              }
+		</style>
+		<script type='text/javascript'>
+		<!--
+// Slideshow script - adapted from old kwiki package
+
+function nextSlide() {
+	window.location=""
+}
+
+function prevSlide() {
+	window.location="Home.html"
+}
+
+
+function handleKey(e) {
+	var key;
+	if (e == null) { // IE
+		key = event.keyCode
+	}
+	else { // Mozilla
+		if (e.altKey || e.ctrlKey) {
+			return true
+		}
+		key = e.which
+	}
+  
+	switch(key) {
+		case 8: prevSlide(); break // Backspace
+		case 13: nextSlide(); break // Enter
+		case 32: nextSlide(); break // Space
+		default: 
+	}
+
+	return false
+}
+
+document.onkeypress = handleKey
+// document.onclick = nextSlide
+// document.ondblclick = prevSlide
+
+// End slideshow script
+		// -->
+		</script>
+	</head>
+	<body>
+
+	<table width="100%" height="100%" border="0" cellpadding="5" cellspacing="0">
+		<tr>
+			<td colspan="3" align="center" valign="middle" class="bar">
+				<h3 class='bar'>Milestone 1</h3>
+			</td>
+		</tr>
+		<tr>
+			<td width="5%">&nbsp;</td>
+			<td width="90%" height="90%" align="center" valign="top">
+
+				<table><tr><td align='left'>
+<!-- Wiki content -->
+
+<p>
+Created Saturday 08/12/2007<br />
+
+</p>
+<ul>
+<li><strike>Create Account mod</strike></li>
+<li><strike>Create User registration screen</strike></li>
+<li><strike>Create User login/logout screens</strike></li>
+<li><strike>Create User landing page</strike></li>
+<ul>
+<li><strike>Show User Details</strike></li>
+<li>Create basic project model</li>
+<li>Show User Project List with create project link</li>
+</ul>
+<li>Create Project creation page, give options to</li>
+<ul>
+<li>Create new repo</li>
+<li>Clone repo via http</li>
+<li>Clone repo via ssh</li>
+</ul>
+<li>Project details page</li>
+<ul>
+<li>Show members</li>
+<li>Show latest tip</li>
+<li>Show Log</li>
+<li>Show Manifest</li>
+<li>Show stats (uptime, commits, user comments)</li>
+<li>Delete Repo</li>
+</ul>
+<li>Add Django's database to Apache auth for push allow</li>
+</ul>
+<p>
+
+</p>
+
+
+<!-- End wiki content -->
+
+				</tr></td></table>
+
+			</td>
+			<td width="5%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="3" align="center" valign="middle">
+					<a href='Home.html' class="nav">&lt;</a>
+					
+				<a href='index.html' class="nav">+</a>
+				
+					<span class="nav">&gt;</span>
+			</td>
+		</tr>
+	</table>
+	
+	</body>
+
+</html>

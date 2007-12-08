@@ -1,0 +1,159 @@
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Home</title>
+		<meta name='Generator' content='Zim 0.18'>
+		<style type='text/css'>
+			body       { background-color: #fff;
+				     color: #000;
+				     font-size: large              }
+			a          { text-decoration: none         }
+			a:hover    { text-decoration: underline    }
+			a:active   { text-decoration: underline    }
+			strike     { color: grey                   }
+			u          { text-decoration: none;
+				     background-color: yellow      }
+			pre        { background-color: lightyellow }
+			.bar       { background-color: #E0E0FF;
+				     margin: 0                     }
+			.nav       { color: grey;
+				     font-size: small              }
+		</style>
+		<script type='text/javascript'>
+		<!--
+// Slideshow script - adapted from old kwiki package
+
+function nextSlide() {
+	window.location="Milestone_1.html"
+}
+
+function prevSlide() {
+	window.location=""
+}
+
+
+function handleKey(e) {
+	var key;
+	if (e == null) { // IE
+		key = event.keyCode
+	}
+	else { // Mozilla
+		if (e.altKey || e.ctrlKey) {
+			return true
+		}
+		key = e.which
+	}
+  
+	switch(key) {
+		case 8: prevSlide(); break // Backspace
+		case 13: nextSlide(); break // Enter
+		case 32: nextSlide(); break // Space
+		default: 
+	}
+
+	return false
+}
+
+document.onkeypress = handleKey
+// document.onclick = nextSlide
+// document.ondblclick = prevSlide
+
+// End slideshow script
+		// -->
+		</script>
+	</head>
+	<body>
+
+	<table width="100%" height="100%" border="0" cellpadding="5" cellspacing="0">
+		<tr>
+			<td colspan="3" align="center" valign="middle" class="bar">
+				<h3 class='bar'>Home</h3>
+			</td>
+		</tr>
+		<tr>
+			<td width="5%">&nbsp;</td>
+			<td width="90%" height="90%" align="center" valign="top">
+
+				<table><tr><td align='left'>
+<!-- Wiki content -->
+
+<p>
+Created Saturday 08/12/2007<br />
+
+</p>
+<p>
+hgfront is a Django-based front end for mercurial.  The front end will be designed exclusively around mercurial and will add several new features:<br />
+
+</p>
+<p>
+The ability for users to sign up<br />
+Authentication against the Django database<br />
+Web-based creation, modification and deletion of repositories<br />
+A new front-end for displaying repository information<br />
+New signals in Django based on mercurial signals (such as pre-and-post repo creation, tip updates, etc).<br />
+A project page with Wiki<br />
+A basic issue tracking system<br />
+Create subdomains for projects (i.e project.hg.yoursite.com)<br />
+
+</p>
+<p>
+hgfront is aimed at being a basic front end tool that can be easily expanded (thing adding user profiles, comments, etc) - these are not needed for hgfront to function, but add extra features.  This should be an open API to make easy the creation of extentions and themes.  It should also be easier to install and integrate than Trac.<br />
+
+</p>
+<p>
+<b>Here are a list of requirements and features from the mercurial site:</b><br />
+
+</p>
+<pre>
+Features for a web interface:
+</pre>
+<pre>
+* ability to register user and passwords for htaccess
+* ability to reset passwords 
+</pre>
+<pre>
+User and admin capabilities:
+</pre>
+<pre>
+* initialize or clone new repositories
+* edit existing repositories
+* change password
+* change email address 
+</pre>
+<pre>
+Repo administration:
+</pre>
+<pre>
+* delete repo
+* verify
+* rollback
+* strip
+* set description
+* set notify addresses
+* set allowed users for push (default owner-only)
+* set default web encoding? (UTF-8)
+* set per-repo message of the day
+</pre>
+
+
+<!-- End wiki content -->
+
+				</tr></td></table>
+
+			</td>
+			<td width="5%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="3" align="center" valign="middle">
+					<span class="nav">&lt;</span>
+					
+				<a href='index.html' class="nav">+</a>
+				
+					<a href='Milestone_1.html' class="nav">&gt;</a>
+			</td>
+		</tr>
+	</table>
+	
+	</body>
+
+</html>
