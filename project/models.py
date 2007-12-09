@@ -13,7 +13,8 @@ class Project(models.Model):
     shortname=models.CharField(max_length=50)
     description=models.TextField()
     private=models.BooleanField(default=False)
-    user=models.ForeignKey(User)
+    user=models.ForeignKey(User, related_name='member')
+    members=models.ManyToManyField(User, related_name='user')
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.longname
@@ -23,7 +24,7 @@ class Project(models.Model):
     num_repos.short_description = "Number of Repositories"
     class Admin:
         fields = (
-                  ('Project Creation', {'fields': ('longname', 'shortname', 'description',)}),
+                  ('Project Creation', {'fields': ('longname', 'shortname', 'description', 'members', )}),
                   ('Date information', {'fields': ('pub_date',)}),
                   ('Publishing Details', {'fields': ('user', 'private',)}),
         )
