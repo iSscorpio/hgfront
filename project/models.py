@@ -3,6 +3,8 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import permission_required
 from mercurial import hg, ui
 from django.conf import settings
+from django.db.models import permalink
+from django.core import urlresolvers
 
 import datetime, sys, os, shutil
 
@@ -22,6 +24,12 @@ class Project(models.Model):
         """Returns the number of repositories in this project"""
         return self.repo_set.count()
     num_repos.short_description = "Number of Repositories"
+    def get_absolute_url(self):
+        """Get the URL of this entry to create a permalink"""
+        return ('project-detail', (), {
+            "slug": self.shortname
+            })
+    get_absolute_url = permalink(get_absolute_url)
     class Admin:
         fields = (
                   ('Project Creation', {'fields': ('longname', 'shortname', 'description', 'group', )}),
