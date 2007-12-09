@@ -33,32 +33,47 @@ class Project(models.Model):
         search_fields = ['longname', 'description']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
-    
+
+REPO_TYPES = (
+    ('1', 'New',),
+    ('2', 'Clone',),
+)
+
 class Repo(models.Model):
     """A repo represents a physical repository on the hg system path"""
-    name=models.CharField(max_length=20)
+    creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Repository")
+    name=models.CharField(max_length=20, null=True, blank=True)
+    url=models.URLField(null=True, blank=True)
     project=models.ForeignKey(Project)
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.name
     def save(self):
         """Call for the creation of a repo first before saving model"""
-        self.create_repo()
+        if self.creation_method=='1':
+            self.create_repo()
+        elif self.creation_method=='2':
+            self.clone_repo()
+        else:
+            raise ValueError("Invalid value: %r" % self.creation_method)
         super(Repo, self).save()
     def delete(self):
         """Delete the repo first before the model"""
-        self.remove_repo()
+       # self.remove_repo()
         super(Repo, self).delete()
     def create_repo(self):
         """Create the mercurial repo"""
         u = ui.ui()
-        return bool(hg.repository(u, settings.MERCURIAL_REPOS + self.name, create=True))
+        return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + self.name), create=True))
+    def clone_repo(self):
+        u = ui.ui()
+        return bool(hg.clone(u, str(self.url), str(settings.MERCURIAL_REPOS + self.name), True))
     def remove_repo(self):
         """Destroy the mercurial repo"""
         return bool(shutil.rmtree(settings.MERCURIAL_REPOS + self.name))
     class Admin:
         fields = (
-                  ('Repository Creation', {'fields': ('name', 'project',)}),
+                  ('Repository Creation', {'fields': ('creation_method', 'name', 'url', 'project',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
         list_display = ('name', 'project', 'pub_date',)

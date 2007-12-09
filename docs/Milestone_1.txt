@@ -1,5 +1,5 @@
 ====== Milestone 1 ======
-**Created Saturday 08/12/2007**
+Updated Sun 09 Dec 2007 18:08:52 GMT 
 
 •~~ Create Account mod~~
 * ~~Create User registration screen~~
@@ -13,7 +13,7 @@
 	* ~~Repo Creation~~
 * Create Project creation page, give options to
 	* ~~Create new repo~~
-	* Clone repo via http
+	* ~~Clone repo via http~~
 	* Clone repo via ssh
 * Project details page
 	* Show members
