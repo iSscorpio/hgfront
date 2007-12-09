@@ -3,40 +3,36 @@
 
 hgfront is a Django-based front end for mercurial.  The front end will be designed exclusively around mercurial and will add several new features:
 
-The ability for users to sign up
-Authentication against the Django database
-Web-based creation, modification and deletion of repositories
-A new front-end for displaying repository information
-New signals in Django based on mercurial signals (such as pre-and-post repo creation, tip updates, etc).
-A project page with Wiki
-A basic issue tracking system
-Create subdomains for projects (i.e project.hg.yoursite.com)
+* The ability for users to sign up
+* Authentication against the Django database
+* Web-based creation, modification and deletion of repositories
+* A new front-end for displaying repository information
+* New signals in Django based on mercurial signals (such as pre-and-post repo creation, tip updates, etc).
+* A project page with Wiki
+* A basic issue tracking system
+* Create subdomains for projects (i.e project.hg.yoursite.com)
 
 hgfront is aimed at being a basic front end tool that can be easily expanded (thing adding user profiles, comments, etc) - these are not needed for hgfront to function, but add extra features.  This should be an open API to make easy the creation of extentions and themes.  It should also be easier to install and integrate than Trac.
 
 Here are a list of requirements and features from the mercurial site:
 
-Features for a web interface:
+* Features for a web interface:
+	* ability to register user and passwords for htaccess
+	* ability to reset passwords 
 
-* ability to register user and passwords for htaccess
-* ability to reset passwords 
+* User and admin capabilities:
+	* initialize or clone new repositories
+	* edit existing repositories
+	* change password
+	* change email address 
 
-User and admin capabilities:
-
-* initialize or clone new repositories
-* edit existing repositories
-* change password
-* change email address 
-
-Repo administration:
-
-* delete repo
-* verify
-* rollback
-* strip
-* set description
-* set notify addresses
-* set allowed users for push (default owner-only)
-* set default web encoding? (UTF-8)
-* set per-repo message of the day
-
+* Repo administration:
+	* delete repo
+	* verify
+	* rollback
+	* strip
+	* set description
+	* set notify addresses
+	* set allowed users for push (default owner-only)
+	* set default web encoding? (UTF-8)
+	* set per-repo message of the day

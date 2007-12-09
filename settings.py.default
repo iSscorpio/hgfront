@@ -76,7 +76,13 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'hgfront.project',
     'hgfront.registration',
 )
+
+ACCOUNT_ACTIVATION_DAYS = 7
+
+MERCURIAL_REPOS = '/path/to/repo/home'

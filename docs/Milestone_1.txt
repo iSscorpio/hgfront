@@ -6,10 +6,10 @@
 * ~~Create User login/logout screens~~
 * ~~Create User landing page~~
 	* ~~Show User Details~~
-	* Create basic project model
+	* ~~Create basic project model~~
 	* Show User Project List with create project link
 * Create Project creation page, give options to
-	* Create new repo
+	* ~~Create new repo~~
 	* Clone repo via http
 	* Clone repo via ssh
 * Project details page
