@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import permission_required
 from mercurial import hg, ui
 from django.conf import settings
@@ -13,8 +13,8 @@ class Project(models.Model):
     shortname=models.CharField(max_length=50)
     description=models.TextField()
     private=models.BooleanField(default=False)
-    user=models.ForeignKey(User, related_name='member')
-    members=models.ManyToManyField(User, related_name='user')
+    user=models.ForeignKey(User)
+    group=models.ManyToManyField(Group)
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.longname
@@ -24,7 +24,7 @@ class Project(models.Model):
     num_repos.short_description = "Number of Repositories"
     class Admin:
         fields = (
-                  ('Project Creation', {'fields': ('longname', 'shortname', 'description', 'members', )}),
+                  ('Project Creation', {'fields': ('longname', 'shortname', 'description', 'group', )}),
                   ('Date information', {'fields': ('pub_date',)}),
                   ('Publishing Details', {'fields': ('user', 'private',)}),
         )
