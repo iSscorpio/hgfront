@@ -8,6 +8,9 @@
 	* ~~Show User Details~~
 	* ~~Create basic project model~~
 	* Show User Project List with create project link
+* Create admin views for
+	* ~~Project Creating~~
+	* ~~Repo Creation~~
 * Create Project creation page, give options to
 	* ~~Create new repo~~
 	* Clone repo via http
