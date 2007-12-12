@@ -9,36 +9,36 @@ from django.core import urlresolvers
 import datetime, sys, os, shutil
 
 class IssueType(models.Model):
-	"""Represents the type of issue such as a bug or feature enhancment"""
-	title=models.CharField(max_length=50)
-	order=models.IntegerField(max_length=3)
-	
-	def __unicode__(self):
-		return self.title
-	
-	class Admin:
-		pass
-	
-	class Meta:
-		verbose_name = 'issue type'
-		verbose_name_plural = 'issue types'
-		ordering = ['order']
+    """Represents the type of issue such as a bug or feature enhancment"""
+    title=models.CharField(max_length=50)
+    order=models.IntegerField(max_length=3)
+    
+    def __unicode__(self):
+        return self.title
+    
+    class Admin:
+        pass
+    
+    class Meta:
+        verbose_name = 'issue type'
+        verbose_name_plural = 'issue types'
+        ordering = ['order']
 
 class IssueSeverity(models.Model):
-	"""Represents how severe a issue is"""
-	title=models.CharField(max_length=50)
-	order=models.IntegerField(max_length=3)
-	
-	def __unicode__(self):
-		return self.title
-	
-	class Admin:
-		pass
-	
-	class Meta:
-		verbose_name = 'issue severity'
-		verbose_name_plural = 'issue severity'
-		ordering = ['order']
+    """Represents how severe a issue is"""
+    title=models.CharField(max_length=50)
+    order=models.IntegerField(max_length=3)
+    
+    def __unicode__(self):
+        return self.title
+    
+    class Admin:
+        pass
+    
+    class Meta:
+        verbose_name = 'issue severity'
+        verbose_name_plural = 'issue severity'
+        ordering = ['order']
 
 class IssueManager(models.Manager):
     """A manager for issues"""
@@ -55,8 +55,8 @@ class Issue(models.Model):
     title = models.CharField(max_length=100)
     body = models.TextField()
     project = models.ForeignKey(Project)
-	issue_type = models.ForeignKey(IssueType)
-	issue_sev = models.ForeignKey(IssueSeverity)
+    issue_type = models.ForeignKey(IssueType)
+    issue_sev = models.ForeignKey(IssueSeverity)
     user_posted = models.ForeignKey(User, related_name='user_posted', verbose_name='posted by')
     pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
@@ -71,12 +71,12 @@ class Issue(models.Model):
     class Admin:
         list_display = ('title','project','pub_date','user_posted','user_assigned_to','completed')
         search_fields = ['title','body','foreign_key__related_user']
-	list_filter = ['pub_date','project','user_posted', 'issue_type', 'issue_sev']
+        list_filter = ['pub_date','project','user_posted', 'issue_type', 'issue_sev']
         date_hierarchy = 'pub_date'
 
     class Meta:
         verbose_name = 'issue'
         verbose_name_plural = 'issues'
         ordering = ['-pub_date']
-	
+    
 
