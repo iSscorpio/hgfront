@@ -1,0 +1,11 @@
+{% ifequal limit 0 %}
+	<strong>Showing All projects</strong>
+{% else %}
+	<strong>Showing {{limit}} projects</strong>
+{% endifequal %}
+<dl>
+	{% for p in projects %}
+	<dt>{{p.longname}}</dt>
+	<dd>{{p.description}}</dd>
+	{% endfor %}
+</dl>
