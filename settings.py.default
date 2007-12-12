@@ -81,6 +81,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'hgfront.project',
+	'hgfront.issue',
     'registration',
 )
 
