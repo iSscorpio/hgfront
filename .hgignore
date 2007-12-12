@@ -1,3 +1,5 @@
 settings.py
 .*\.pyc$
 .*\.swp$
+syntax: glob
+*.orig
