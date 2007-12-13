@@ -39,6 +39,22 @@ class IssueSeverity(models.Model):
         verbose_name = 'issue severity'
         verbose_name_plural = 'issue severity'
         ordering = ['order']
+        
+class IssueStatus(models.Model):
+    """Represents what stage a issue is at"""
+    title=models.CharField(max_length=50)
+    order=models.IntegerField(max_length=3)
+    
+    def __unicode__(self):
+        return self.title
+    
+    class Admin:
+        pass
+    
+    class Meta:
+        verbose_name = 'issue status'
+        verbose_name_plural = 'issue status'
+        ordering = ['order']
 
 class IssueManager(models.Manager):
     """A manager for issues"""
@@ -57,6 +73,7 @@ class Issue(models.Model):
     project = models.ForeignKey(Project)
     issue_type = models.ForeignKey(IssueType)
     issue_sev = models.ForeignKey(IssueSeverity)
+    issue_status = models.ForeignKey(IssueStatus)
     user_posted = models.ForeignKey(User, related_name='user_posted', verbose_name='posted by')
     pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
@@ -69,14 +86,12 @@ class Issue(models.Model):
         return self.finished_date is not None
 
     class Admin:
-        list_display = ('title','project','pub_date','user_posted','user_assigned_to','completed')
+        list_display = ('title','project','pub_date','user_posted','user_assigned_to', 'issue_type', 'issue_sev', 'issue_status', 'completed')
         search_fields = ['title','body','foreign_key__related_user']
-        list_filter = ['pub_date','project','user_posted', 'issue_type', 'issue_sev']
+        list_filter = ['pub_date','project','user_posted', 'issue_type', 'issue_sev', 'issue_status']
         date_hierarchy = 'pub_date'
 
     class Meta:
         verbose_name = 'issue'
         verbose_name_plural = 'issues'
         ordering = ['-pub_date']
-    
-
