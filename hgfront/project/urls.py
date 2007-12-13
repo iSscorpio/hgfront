@@ -23,8 +23,8 @@ urlpatterns = patterns('django.views.generic.list_detail',
 
 # View Patterns
 urlpatterns += patterns('hgfront.project.views',
-    url(r'^(?P<slug>[-\w]+)/edit/$', 'project_edit', project_detail_dict, name="project-edit"),
-    url(r'^(?P<slug>[-\w]+)/delete/$', 'project_delete', project_detail_dict, name="project-delete"),                      
+    url(r'^(?P<slug>[-\w]+)/edit/$', 'project_edit', name="project-edit"),
+    url(r'^(?P<slug>[-\w]+)/delete/$', 'project_delete', name="project-delete"),                      
 )
 # Issues
 urlpatterns += patterns('',
