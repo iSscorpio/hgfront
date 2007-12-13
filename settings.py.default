@@ -1,4 +1,4 @@
-# Django settings for hgfront2 project.
+# Django settings for hgfront project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

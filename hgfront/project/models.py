@@ -20,6 +20,12 @@ class Project(models.Model):
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.longname
+    def save(self):
+        return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + self.shortname))
+        super(Project, self).save()
+    def delete(self):
+        super(Project, self).delete()
+        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + self.shortname))
     def num_repos(self):
         """Returns the number of repositories in this project"""
         return self.repo_set.count()
@@ -67,18 +73,21 @@ class Repo(models.Model):
         super(Repo, self).save()
     def delete(self):
         """Delete the repo first before the model"""
-       # self.remove_repo()
         super(Repo, self).delete()
+        self.remove_repo()
     def create_repo(self):
         """Create the mercurial repo"""
+        p = Project.objects.get(longname=self.project)
         u = ui.ui()
-        return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + self.name), create=True))
+        return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), create=True))
     def clone_repo(self):
+        p = Project.objects.get(longname=self.project)
         u = ui.ui()
-        return bool(hg.clone(u, str(self.url), str(settings.MERCURIAL_REPOS + self.name), True))
+        return bool(hg.clone(u, str(self.url), str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), True))
     def remove_repo(self):
         """Destroy the mercurial repo"""
-        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + self.name))
+        p = Project.objects.get(longname=self.project)
+        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name))
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'name', 'url', 'project',)}),
