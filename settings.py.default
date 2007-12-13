@@ -88,3 +88,5 @@ INSTALLED_APPS = (
 ACCOUNT_ACTIVATION_DAYS = 7
 
 MERCURIAL_REPOS = '/path/to/repo/home'
+
+ISSUE_FROM_EMAIL = 'test@myreposite.com'

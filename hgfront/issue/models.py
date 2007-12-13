@@ -5,6 +5,9 @@ from mercurial import hg, ui
 from django.conf import settings
 from django.db.models import permalink
 from django.core import urlresolvers
+from django.dispatch import dispatcher
+from django.db.models import signals
+from hgfront.issue.signals import *
 
 import datetime, sys, os, shutil
 
@@ -95,3 +98,5 @@ class Issue(models.Model):
         verbose_name = 'issue'
         verbose_name_plural = 'issues'
         ordering = ['-pub_date']
+#Dispatchers
+dispatcher.connect( send_email_to_owner , signal=signals.post_save, sender=Issue )
