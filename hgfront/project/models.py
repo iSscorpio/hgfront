@@ -21,9 +21,11 @@ class Project(models.Model):
     def __unicode__(self):
         return self.longname
     def save(self):
+        """Create the project path on the system and then save the model"""
         return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + self.shortname))
         super(Project, self).save()
     def delete(self):
+        """Delete the model and then remove the path"""
         super(Project, self).delete()
         return bool(shutil.rmtree(settings.MERCURIAL_REPOS + self.shortname))
     def num_repos(self):
@@ -81,6 +83,7 @@ class Repo(models.Model):
         u = ui.ui()
         return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), create=True))
     def clone_repo(self):
+        """Clone a repo via http"""
         p = Project.objects.get(longname=self.project)
         u = ui.ui()
         return bool(hg.clone(u, str(self.url), str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), True))
