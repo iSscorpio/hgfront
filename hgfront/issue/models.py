@@ -26,6 +26,8 @@ class IssueType(models.Model):
         verbose_name = 'issue type'
         verbose_name_plural = 'issue types'
         ordering = ['order']
+#Dispatchers
+dispatcher.connect(init_issues_types, signal=signals.post_syncdb, sender=IssueType)
 
 class IssueSeverity(models.Model):
     """Represents how severe a issue is"""
@@ -42,6 +44,8 @@ class IssueSeverity(models.Model):
         verbose_name = 'issue severity'
         verbose_name_plural = 'issue severity'
         ordering = ['order']
+#Dispatchers
+dispatcher.connect(init_issues_sevs, signal=signals.post_syncdb, sender=IssueSeverity)
         
 class IssueStatus(models.Model):
     """Represents what stage a issue is at"""
@@ -58,6 +62,8 @@ class IssueStatus(models.Model):
         verbose_name = 'issue status'
         verbose_name_plural = 'issue status'
         ordering = ['order']
+#Dispatchers
+dispatcher.connect(init_issues_status, signal=signals.post_syncdb, sender=IssueStatus)
 
 class IssueManager(models.Manager):
     """A manager for issues"""
