@@ -5,6 +5,9 @@ from mercurial import hg, ui
 from django.conf import settings
 from django.db.models import permalink
 from django.core import urlresolvers
+from django.dispatch import dispatcher
+from django.db.models import signals
+from hgfront.project.signals import *
 
 import datetime, sys, os, shutil
 
@@ -20,14 +23,6 @@ class Project(models.Model):
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.longname
-    def save(self):
-        """Create the project path on the system and then save the model"""
-        return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + self.shortname))
-        super(Project, self).save()
-    def delete(self):
-        """Delete the model and then remove the path"""
-        super(Project, self).delete()
-        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + self.shortname))
     def num_repos(self):
         """Returns the number of repositories in this project"""
         return self.repo_set.count()
@@ -49,6 +44,9 @@ class Project(models.Model):
         search_fields = ['longname', 'description']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
+# Dispatchers
+dispatcher.connect( create_project_dir , signal=signals.pre_save, sender=Project )
+dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Project )
 
 REPO_TYPES = (
     ('1', 'New',),
@@ -64,33 +62,6 @@ class Repo(models.Model):
     pub_date=models.DateTimeField('date published')
     def __unicode__(self):
         return self.name
-    def save(self):
-        """Call for the creation of a repo first before saving model"""
-        if self.creation_method=='1':
-            self.create_repo()
-        elif self.creation_method=='2':
-            self.clone_repo()
-        else:
-            raise ValueError("Invalid value: %r" % self.creation_method)
-        super(Repo, self).save()
-    def delete(self):
-        """Delete the repo first before the model"""
-        super(Repo, self).delete()
-        self.remove_repo()
-    def create_repo(self):
-        """Create the mercurial repo"""
-        p = Project.objects.get(longname=self.project)
-        u = ui.ui()
-        return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), create=True))
-    def clone_repo(self):
-        """Clone a repo via http"""
-        p = Project.objects.get(longname=self.project)
-        u = ui.ui()
-        return bool(hg.clone(u, str(self.url), str(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name), True))
-    def remove_repo(self):
-        """Destroy the mercurial repo"""
-        p = Project.objects.get(longname=self.project)
-        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.shortname + '/' + self.name))
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'name', 'url', 'project',)}),
@@ -101,3 +72,6 @@ class Repo(models.Model):
         search_fields = ['longname', 'project']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
+# Dispatchers
+dispatcher.connect( create_repo , signal=signals.pre_save, sender=Repo )
+dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
