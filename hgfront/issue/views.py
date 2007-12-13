@@ -5,8 +5,12 @@ def issue_list(request, slug):
     return HttpResponse("%s issues" % slug)
     #TODO: Implement this
 
-def issue_detail(request, slug, issue_id):
-    """Returns the details of the issue identified by `issue_id`"""
+def issue_detail(request, issue_id, slug=None):
+    """Returns the details of the issue identified by `issue_id`
+    The project slug is default to None because you just need an issue_id
+    to get the details of an issue, so if the view doesn't get the project
+    slug as an argument (for instance if it's called from {% url %}), it's
+    still all cool."""
     return HttpResponse("issue_id %s in %s" % (issue_id, slug))
     #TODO: Implement this
 
