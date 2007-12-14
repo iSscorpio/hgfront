@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block content_title %}<h2>{{project.longname}}</h2>{% endblock %}
+
+{% block main_content %}
+
+	<div class="project-details">
+		<p>
+			<strong>Project Description</strong>:
+			{{project.description}}
+		</p>
+		<p>
+			<strong>Project Owner</strong>:
+			{{project.user}}
+		</p>
+	</div>
+	
+	<div class="repo-list">
+		<p>
+			<strong>Project Repositories</strong>
+		</p>
+		<ul>
+			{% for repo in repos %}
+				<li>{{repo.name}}</li>
+			{% endfor %}
+		</ul>
+	</div>
+
+
+{% endblock %}
