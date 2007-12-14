@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content_title %}<h2>All Projects</h2>{% endblock %}
+
+{% block main_content %}
+	<table>
+	<thead>
+		<tr>
+			<th>Project Name</th>
+			<th>Description</th>
+			<th>Active Since</th>
+			<th>Project Owner</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for project in object_list %}
+			<tr>
+				<td><a href="{{project.get_absolute_url}}">{{project.longname}}</a></td>
+				<td>{{ project.description|truncatewords_html:100}}</td>
+				<td>{{project.pub_date|date:"d M Y"}}</td>
+				<td><a href="{{user.get_absolute_url}}">{{project.user}}</a></td>
+			</tr>
+		{% endfor %}
+	</tbody>
+	</table>
+{% endblock %}
