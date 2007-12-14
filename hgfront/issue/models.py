@@ -15,9 +15,13 @@ class IssueType(models.Model):
     """Represents the type of issue such as a bug or feature enhancment"""
     title=models.CharField(max_length=50)
     order=models.IntegerField(max_length=3)
+    is_active=models.BooleanField()
     
     def __unicode__(self):
         return self.title
+    
+    def delete(self):
+        self.is_active=0
     
     class Admin:
         pass
@@ -27,15 +31,19 @@ class IssueType(models.Model):
         verbose_name_plural = 'issue types'
         ordering = ['order']
 #Dispatchers
-dispatcher.connect(init_issues_types, signal=signals.post_syncdb, sender=IssueType)
+
 
 class IssueSeverity(models.Model):
     """Represents how severe a issue is"""
     title=models.CharField(max_length=50)
     order=models.IntegerField(max_length=3)
+    is_active=models.BooleanField()
     
     def __unicode__(self):
         return self.title
+    
+    def delete(self):
+        self.is_active=0
     
     class Admin:
         pass
@@ -45,15 +53,19 @@ class IssueSeverity(models.Model):
         verbose_name_plural = 'issue severity'
         ordering = ['order']
 #Dispatchers
-dispatcher.connect(init_issues_sevs, signal=signals.post_syncdb, sender=IssueSeverity)
+
         
 class IssueStatus(models.Model):
     """Represents what stage a issue is at"""
     title=models.CharField(max_length=50)
     order=models.IntegerField(max_length=3)
+    is_active=models.BooleanField()
     
     def __unicode__(self):
         return self.title
+    
+    def delete(self):
+        self.is_active=0
     
     class Admin:
         pass
@@ -63,7 +75,7 @@ class IssueStatus(models.Model):
         verbose_name_plural = 'issue status'
         ordering = ['order']
 #Dispatchers
-dispatcher.connect(init_issues_status, signal=signals.post_syncdb, sender=IssueStatus)
+
 
 class IssueManager(models.Manager):
     """A manager for issues"""
