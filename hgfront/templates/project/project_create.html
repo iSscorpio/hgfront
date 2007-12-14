@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content_title %}Create New Project{% endblock %}
+
+{% block main_content %}
+	<form action="/hgfront/projects/create/" method="post">
+		{{form}}
+		<input type="submit" />
+	</form>
+{% endblock %}

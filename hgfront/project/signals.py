@@ -5,8 +5,8 @@ from mercurial import hg, ui
 import datetime, sys, os, shutil
 
 def create_project_dir(sender, instance, signal, *args, **kwargs):
-    if bool(os.chdir(settings.MERCURIAL_REPOS + instance.shortname)):
-        return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.shortname))
+    #if bool(os.chdir(settings.MERCURIAL_REPOS + instance.shortname)):
+    return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.shortname))
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
     return bool(shutil.rmtree(settings.MERCURIAL_REPOS + instance.shortname))
