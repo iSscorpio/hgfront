@@ -10,7 +10,7 @@ project_list_dict = {
 
 # Generic Patterns
 urlpatterns = patterns('',
-    url(r'^/?$', 'django.views.generic.list_detail.object_list', project_list_dict, name="project-list"),
+    url(r'^/?$', 'hgfront.project.views.get_project_list', name="project-list"),
     url(r'^(?P<slug>[-\w]+)/$', 'hgfront.project.views.get_project_details', name="project-detail"),                      
 )
 
