@@ -13,7 +13,7 @@ import datetime, sys, os, shutil
 class Project(models.Model):
     """A project is a way to group users and repositories"""
     longname=models.CharField(max_length=255)
-    shortname=models.CharField(max_length=50)
+    shortname=models.CharField(max_length=50, unique=True)
     description=models.TextField()
     is_private=models.BooleanField(default=False)
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
@@ -43,7 +43,7 @@ class Project(models.Model):
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 # Dispatchers
-dispatcher.connect( create_project_dir , signal=signals.pre_save, sender=Project )
+dispatcher.connect( create_project_dir , signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Project )
 
 REPO_TYPES = (
@@ -61,6 +61,12 @@ class Repo(models.Model):
     anonymous=models.BooleanField(default=True)
     def __unicode__(self):
         return self.name
+    def get_absolute_url(self):
+        """Get the URL of this entry to create a permalink"""
+        return ('repo-detail', (), {
+            "slug": self.name
+            })
+    get_absolute_url = permalink(get_absolute_url)
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'name', 'url', 'project', 'anonymous')}),
@@ -72,7 +78,7 @@ class Repo(models.Model):
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 # Dispatchers
-dispatcher.connect( create_repo , signal=signals.pre_save, sender=Repo )
+dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
 
 class ProjectPermissionSet(models.Model):

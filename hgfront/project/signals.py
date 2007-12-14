@@ -5,7 +5,6 @@ from mercurial import hg, ui
 import datetime, sys, os, shutil
 
 def create_project_dir(sender, instance, signal, *args, **kwargs):
-    #if bool(os.chdir(settings.MERCURIAL_REPOS + instance.shortname)):
     return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.shortname))
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
@@ -18,7 +17,7 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     u = ui.ui()
     if instance.creation_method=='1':
         return bool(hg.repository(u, str(settings.MERCURIAL_REPOS + p.shortname + '/' + instance.name), create=True))
-    elif self.creation_method=='2':
+    elif instance.creation_method=='2':
         return bool(hg.clone(u, str(instance.url), str(settings.MERCURIAL_REPOS + p.shortname + '/' + instance.name), True))
     else:
         raise ValueError("Invalid value: %r" % self.creation_method)

@@ -4,8 +4,11 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
-from hgfront.project.forms import ProjectCreateForm
 
+from mercurial import hg, ui
+from mercurial.hgweb.webcommands import *
+
+from hgfront.project.forms import ProjectCreateForm
 from hgfront.project.models import Project, Repo
 
 def get_project_list(request):
