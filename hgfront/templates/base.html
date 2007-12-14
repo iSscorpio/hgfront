@@ -18,13 +18,24 @@
             {% block main_content %}{% endblock main_content %}
         </div>
         <div id="sidebar">
-            {% if groups %}
-                <span class="group">Groups</span>
-                #list groups here
+            {# if we're on a project, display its members #}
+            {% if project.user_members.all %}
+                <span class="group">Members</span>
+                <ul>
+                    {% for member in project.user_members.all %}
+                        <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
+                    {% endfor %}
+                </ul>
             {% endif %}
-            {% if actions %}
-                <span class="group">Actions</span>
-                yeah
+            
+            {#if we're on a project, display its repos #}
+            {% if project.repo_set.all %}
+                <span class="group">Repositories</span>
+                <ul>
+                    {% for repo in project.repo_set.all %}
+                        <li><a href="{{repo.get_absolute_url}}">{{repo.name}}</a></li>
+                    {% endfor %}
+                </ul>
             {% endif %}
         </div>
         <div class="clear"></div>

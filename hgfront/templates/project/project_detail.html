@@ -16,30 +16,7 @@
 			<strong>Project Owner:</strong><br />
 			<a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a>
 		</dd>
-		<dd>
-			<strong>Project Members:</strong>
-				<ul>
-					{% for member in project.user_members.all %}
-						<li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
-					{% endfor %}
-				</ul>
-		</dd>
 	</dl>
-	
-	<div class="repo-list">
-		<p>
-			<strong>Project Repositories</strong>
-		</p>
-		{% if repos %}
-			<ul>
-				{% for repo in repos %}
-					<li>{{repo.name}}</li>
-				{% endfor %}
-			</ul>
-		{% else %}
-			<strong>There are no repositories attached to this project.</strong>
-		{% endif %}
-	</div>
 	{% else %}
 		<div class="error">
 			<h2>This project is private, and cannot be viewed except for project members</h2>

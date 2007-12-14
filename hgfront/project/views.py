@@ -13,5 +13,4 @@ def get_project_list(request):
 
 def get_project_details(request, slug):
     project = get_object_or_404(Project, shortname__exact=slug)
-    repos = project.repo_set.all()
-    return render_to_response('project/project_detail.html', {'project': project, 'repos': repos})
+    return render_to_response('project/project_detail.html', {'project': project})
