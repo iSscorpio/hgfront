@@ -1,29 +1,44 @@
 {% extends "base.html" %}
 
-{% block content_title %}<h2>{{project.longname}}</h2>{% endblock %}
+{% block content_title %}Project Details{% endblock %}
 
 {% block main_content %}
 	{% ifequal project.is_private 0 %}
-	<div class="project-details">
-		<p>
-			<strong>Project Description</strong>:
+	<dl class="project-details">
+		<dt>
+			{{project.longname}}
+		</dt>
+		<dd>
+			<strong>Project Description:</strong><br />
 			{{project.description}}
-		</p>
-		<p>
-			<strong>Project Owner</strong>:
-			{{project.user}}
-		</p>
-	</div>
+		</dd>
+		<dd>
+			<strong>Project Owner:</strong><br />
+			<a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a>
+		</dd>
+		<dd>
+			<strong>Project Members:</strong>
+				<ul>
+					{% for member in project.user_members.all %}
+						<li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
+					{% endfor %}
+				</ul>
+		</dd>
+	</dl>
 	
 	<div class="repo-list">
 		<p>
 			<strong>Project Repositories</strong>
 		</p>
-		<ul>
-			{% for repo in repos %}
-				<li>{{repo.name}}</li>
-			{% endfor %}
-		</ul>
+		{% if repos %}
+			<ul>
+				{% for repo in repos %}
+					<li>{{repo.name}}</li>
+				{% endfor %}
+			</ul>
+		{% else %}
+			<strong>There are no repositories attached to this project.</strong>
+		{% endif %}
 	</div>
 	{% else %}
 		<div class="error">
