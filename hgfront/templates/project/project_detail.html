@@ -3,7 +3,7 @@
 {% block content_title %}<h2>{{project.longname}}</h2>{% endblock %}
 
 {% block main_content %}
-	{% ifequal project.private 0 %}
+	{% ifequal project.is_private 0 %}
 	<div class="project-details">
 		<p>
 			<strong>Project Description</strong>:
