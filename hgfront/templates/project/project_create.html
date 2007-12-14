@@ -3,8 +3,13 @@
 {% block content_title %}Create New Project{% endblock %}
 
 {% block main_content %}
-	<form action="/hgfront/projects/create/" method="post">
-		{{form}}
-		<input type="submit" />
-	</form>
+	{{fail}}
+	{% if is_auth %}
+		<form action="/hgfront/projects/create/" method="post">
+			{{form}}
+			<input type="submit" />
+		</form>
+	{% else %}
+		<strong>You do not have permission to create a project</strong>
+	{% endif %}
 {% endblock %}

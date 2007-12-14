@@ -27,5 +27,6 @@ def create_project_form(request):
             return HttpResponseRedirect('/hgfront/projects/' + request.POST['shortname'])
     else:
         form = ProjectCreateForm()
-    return render_to_response('project/project_create.html', {'form':form})
+    is_auth = bool(request.user.is_authenticated())
+    return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth})
  

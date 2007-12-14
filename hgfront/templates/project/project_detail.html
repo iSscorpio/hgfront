@@ -6,14 +6,14 @@
 	{% ifequal project.is_private 0 %}
 	<dl class="project-details">
 		<dt>
-			{{project.longname}}
+			<h3>{{project.longname}}</h3>
 		</dt>
 		<dd>
-			<strong>Project Description:</strong><br />
+			<h4>Project Description:</h4>
 			{{project.description}}
 		</dd>
 		<dd>
-			<strong>Project Owner:</strong><br />
+			<h4>Project Owner:</h4>
 			<a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a>
 		</dd>
 	</dl>
