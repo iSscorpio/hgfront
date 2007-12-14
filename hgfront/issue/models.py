@@ -4,6 +4,7 @@ from hgfront.project.models import Project
 from mercurial import hg, ui
 from django.conf import settings
 from django.db.models import permalink
+from django.template.defaultfilters import slugify
 from django.core import urlresolvers
 from django.dispatch import dispatcher
 from django.db.models import signals
@@ -14,11 +15,17 @@ import datetime, sys, os, shutil
 class IssueType(models.Model):
     """Represents the type of issue such as a bug or feature enhancment"""
     title=models.CharField(max_length=50)
+    slug=models.SlugField()
     order=models.IntegerField(max_length=3)
-    is_active=models.BooleanField()
+    is_active=models.BooleanField(default=1)
     
     def __unicode__(self):
         return self.title
+    
+    def save(self):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(IssueType, self).save()
     
     def delete(self):
         self.is_active=0
@@ -36,11 +43,17 @@ class IssueType(models.Model):
 class IssueSeverity(models.Model):
     """Represents how severe a issue is"""
     title=models.CharField(max_length=50)
+    slug=models.SlugField()
     order=models.IntegerField(max_length=3)
-    is_active=models.BooleanField()
+    is_active=models.BooleanField(default=1)
     
     def __unicode__(self):
         return self.title
+    
+    def save(self):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(IssueSeverity, self).save()
     
     def delete(self):
         self.is_active=0
@@ -58,11 +71,17 @@ class IssueSeverity(models.Model):
 class IssueStatus(models.Model):
     """Represents what stage a issue is at"""
     title=models.CharField(max_length=50)
+    slug=models.SlugField()
     order=models.IntegerField(max_length=3)
-    is_active=models.BooleanField()
+    is_active=models.BooleanField(default=1)
     
     def __unicode__(self):
         return self.title
+    
+    def save(self):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super(IssueStatus, self).save()
     
     def delete(self):
         self.is_active=0
