@@ -74,3 +74,21 @@ class Repo(models.Model):
 # Dispatchers
 dispatcher.connect( create_repo , signal=signals.pre_save, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
+
+class ProjectPermissionSet(models.Model):
+    """A set of permissions for a user in a given project"""
+    user = models.ForeignKey(User)
+    project = models.ForeignKey(Project)
+
+    push = models.BooleanField(default=True)
+    pull = models.BooleanField(default=False)
+
+    add_repos = models.BooleanField(default=False)
+    delete_repos = models.BooleanField(default=False)
+    edit_repos = models.BooleanField(default=False)
+    view_repos = models.BooleanField(default=True)
+
+    add_issues = models.BooleanField(default=False)
+    delete_issues = models.BooleanField(default=False)
+    edit_issues = models.BooleanField(default=False)
+    view_issues = models.BooleanField(default=True)
