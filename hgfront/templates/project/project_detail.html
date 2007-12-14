@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Project details for {{project.longname}}{% endblock %}
+
 {% block content_title %}Project Details{% endblock %}
 
 {% block main_content %}
@@ -44,4 +46,7 @@
             {% endfor %}
             </ul>
         {% endif %}
+		{% ifequal permissions.add_repos 1 %} 
+			<a href="/hgfront/projects/{{project.shortname}}/repo/create">Create New Repo</a>
+		{% endifequal %}
 {% endblock %}

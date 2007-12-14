@@ -9,7 +9,7 @@ from mercurial import hg, ui
 from mercurial.hgweb.webcommands import *
 
 from hgfront.project.forms import ProjectCreateForm
-from hgfront.project.models import Project, Repo
+from hgfront.project.models import Project, Repo, ProjectPermissionSet
 
 def get_project_list(request):
     projects = Project.objects.all().filter(is_private=0)
@@ -17,7 +17,9 @@ def get_project_list(request):
 
 def get_project_details(request, slug):
     project = get_object_or_404(Project, shortname__exact=slug)
-    return render_to_response('project/project_detail.html', {'project': project})
+    permissions = ProjectPermissionSet.objects.get(user__id=request.user.id, project__id=project.id)
+    #is_auth = bool(request.user.is_authenticated())
+    return render_to_response('project/project_detail.html', {'project': project, 'permissions': permissions})
 
 def create_project_form(request):
     if request.method == "POST":
