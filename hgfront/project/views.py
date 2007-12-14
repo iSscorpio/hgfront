@@ -21,6 +21,7 @@ def create_project_form(request):
         form = ProjectCreateForm(request.POST)
         if form.is_valid():
             form.save()
+            return HttpResponseRedirect('/hgfront/projects/' + request.POST['shortname'])
     else:
         form = ProjectCreateForm()
     return render_to_response('project/project_create.html', {'form':form})
