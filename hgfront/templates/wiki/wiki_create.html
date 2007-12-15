@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Create Wiki Page{% endblock %}
+
+{% block content_title %}Create Wiki Page{% endblock %}
+
+{% block main_content %}
+	{{fail}}
+	{% if is_auth %}
+		<form action="/hgfront/projects/{{project}}/wiki/edit/{{page_name}}" method="post">
+			{{form}}
+			<input type="submit" />
+		</form>
+	{% else %}
+		<strong>You do not have permission to create a project</strong>
+	{% endif %}
+{% endblock %}

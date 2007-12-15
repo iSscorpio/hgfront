@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content_title %}Wiki pages for {{project.longname}} {% endblock %}
+
+{% block main_content %}
+	<ul>
+	{% for page in pages %}
+		<li><a href="{{page.get_absolute_url}}">{{page.title}}</a></li>
+	{% endfor %}
+	</ul>
+{% endblock %}

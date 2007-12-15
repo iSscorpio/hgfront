@@ -14,4 +14,5 @@ urlpatterns = patterns('',
 urlpatterns += patterns('',
     url(r'^(?P<slug>[-\w]+)/issues/', include('hgfront.issue.urls')),
     url(r'^(?P<slug>[-\w]+)/repos/', include('hgfront.repo.urls')),
+    url(r'^(?P<slug>[-\w]+)/wiki/',include('hgfront.wiki.urls')),
 )
