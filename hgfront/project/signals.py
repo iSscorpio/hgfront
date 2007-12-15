@@ -5,10 +5,14 @@ from mercurial import hg, ui
 import datetime, sys, os, shutil
 
 def create_project_dir(sender, instance, signal, *args, **kwargs):
-    return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.shortname))
+    path = os.path.isdir(settings.MERCURIAL_REPOS + instance.shortname)
+    if path is False:
+        return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.shortname))
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
-    return bool(shutil.rmtree(settings.MERCURIAL_REPOS + instance.shortname))
+    path = os.path.isdir(settings.MERCURIAL_REPOS + instance.shortname)
+    if path is True:
+        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + instance.shortname))
 
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""
@@ -26,4 +30,6 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     """Destroy the mercurial repo"""
     from hgfront.project.models import Project, Repo
     p = Project.objects.get(longname=instance.project)
-    return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.shortname + '/' + instance.name))
+    path = os.path.isdir(settings.MERCURIAL_REPOS + p.shortname + '/' + instance.name)
+    if path is False:
+        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.shortname + '/' + instance.name))

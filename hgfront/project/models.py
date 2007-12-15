@@ -100,7 +100,7 @@ class ProjectPermissionSet(models.Model):
     view_issues = models.BooleanField(default=True)
     
     def __unicode__(self):
-        return "Permissions for %s in %s" % (self.user.username, self.project.shortname)
+        return "Permissions for %s in %s" % (self.user.username, self.project.longname)
 
     class Admin:
         pass
