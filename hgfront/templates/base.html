@@ -18,6 +18,7 @@
             {% block main_content %}{% endblock main_content %}
         </div>
         <div id="sidebar">
+        {% block sidebar %}
             {# if we're on a project, display its members #}
             {% if project.user_members.all %}
             <span class="group">Members</span>
@@ -37,6 +38,7 @@
                 {% endfor %}
                 </ul>
             {% endif %}
+        {% endblock sidebar %}
         </div>
         <div class="clear"></div>
     </div>
