@@ -10,7 +10,14 @@ import datetime, sys, os, shutil
 
 # Create your models here.
 class Project(models.Model):
-    """A project is a way to group users and repositories"""
+    """
+    A project represents a way to group users, repositories and issues on the system.
+    Each project has a project owner who has full control over all aspects of the project.  When
+    a project is created, it is also given a default set of permissions for non-members, which are
+    changeable
+    
+    You can also assign members to a project, and give them each their own permission set.
+    """
     longname=models.CharField(max_length=255)
     shortname=models.CharField(max_length=50, unique=True)
     description=models.TextField()
@@ -21,11 +28,11 @@ class Project(models.Model):
     def __unicode__(self):
         return self.longname
     def num_repos(self):
-        """Returns the number of repositories in this project"""
+        """Returns the number of repositories linked to this project"""
         return self.repo_set.count()
     num_repos.short_description = "Number of Repositories"
     def get_absolute_url(self):
-        """Get the URL of this entry to create a permalink"""
+        """Creates a permalink to the project page"""
         return ('project-detail', (), {
             "slug": self.shortname
             })
@@ -45,23 +52,29 @@ class Project(models.Model):
 dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_project_dir , signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Project )
+
 #TODO: Delete associated default permission sets on project delete
 class ProjectPermissionSet(models.Model):
-    """A set of permissions for a user in a given project"""
+    """
+    Each project has it's own set of permissions.  There are two types, the default permissions
+    which are defined when a project is created.  These can be editing and provide the rules for
+    anonymous access.
+    Each member of a project can also have their own permissions that allow them to do extra tasks.
+    """
     is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
 
-    push = models.BooleanField(default=True)
-    pull = models.BooleanField(default=False)
+    push = models.BooleanField(default=False)
+    pull = models.BooleanField(default=True)
 
     add_repos = models.BooleanField(default=False)
     delete_repos = models.BooleanField(default=False)
     edit_repos = models.BooleanField(default=False)
     view_repos = models.BooleanField(default=True)
 
-    add_issues = models.BooleanField(default=False)
+    add_issues = models.BooleanField(default=True)
     delete_issues = models.BooleanField(default=False)
     edit_issues = models.BooleanField(default=False)
     view_issues = models.BooleanField(default=True)
