@@ -2,12 +2,6 @@ from django.conf.urls.defaults import *
 from django.views.generic.simple import direct_to_template
 from django.contrib.auth import views as auth_views
 
-from hgfront.project.models import Project, Repo
-
-project_list_dict = {
-    'queryset':Project.objects.all(),
-}
-
 # Generic Patterns
 urlpatterns = patterns('',
     url(r'^/?$', 'hgfront.project.views.get_project_list', name="project-list"),
@@ -19,4 +13,5 @@ urlpatterns = patterns('',
 # Issues
 urlpatterns += patterns('',
     url(r'^(?P<slug>[-\w]+)/issues/', include('hgfront.issue.urls')),
+    url(r'^(?P<slug>[-\w]+)/repos/', include('hgfront.repo.urls')),
 )
