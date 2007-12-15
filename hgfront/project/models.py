@@ -86,4 +86,5 @@ class ProjectPermissionSet(models.Model):
             return "Permissions for %s in %s" % (self.user.username, self.project.longname)
 
     class Admin:
-        pass
+        list_display = ('__unicode__', 'is_default','push','pull','add_repos','delete_repos','edit_repos','view_repos','add_issues','delete_issues','edit_issues', 'view_issues')
+        list_filter = ['is_default', 'project']
