@@ -27,26 +27,8 @@
 {% endblock %}
 
 {% block sidebar %}
-	{# if we're on a project, display its members #}
-    {% if project.user_members.all %}
-    <span class="group">Members</span>
-    	<ul>
-        {% for member in project.user_members.all %}
-        	<li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-            
-    {#if we're on a project, display its repos #}
-    {% if project.repo_set.all %}
-   		<span class="group">Repositories</span>
-        	<ul>
-            {% for repo in project.repo_set.all %}
-            	<li><a href="{{repo.get_absolute_url}}">{{repo.name}}</a></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-		{% ifequal permissions.add_repos 1 %} 
-			<a href="/hgfront/projects/{{project.shortname}}/repo/create">Create New Repo</a>
-		{% endifequal %}
+    {{block.super}}
+    {% ifequal permissions.add_repos 1 %} 
+        <a href="/hgfront/projects/{{project.shortname}}/repo/create">Create New Repo</a>
+    {% endifequal %}
 {% endblock %}
