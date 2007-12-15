@@ -17,7 +17,10 @@ def get_project_list(request):
 
 def get_project_details(request, slug):
     project = get_object_or_404(Project, shortname__exact=slug)
-    permissions = ProjectPermissionSet.objects.get(user__id=request.user.id, project__id=project.id)
+    try:
+        permissions = ProjectPermissionSet.objects.get(user__id=request.user.id, project__id=project.id)
+    except ProjectPermissionSet.DoesNotExist:
+        permissions = None #TODO: this has to load the default permissions for a project instead of None
     #is_auth = bool(request.user.is_authenticated())
     return render_to_response('project/project_detail.html', {'project': project, 'permissions': permissions})
 
