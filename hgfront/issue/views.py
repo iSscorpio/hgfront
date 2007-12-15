@@ -5,7 +5,7 @@ def issue_list(request, slug):
     return HttpResponse("%s issues" % slug)
     #TODO: Implement this
 
-def issue_detail(request, issue_id, slug=None):
+def issue_detail(request, issue_id, slug):
     """Returns the details of the issue identified by `issue_id`
     The project slug is default to None because you just need an issue_id
     to get the details of an issue, so if the view doesn't get the project

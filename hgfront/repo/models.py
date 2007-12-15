@@ -27,6 +27,7 @@ class Repo(models.Model):
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
+            "slug": self.project.shortname,
             "repo_name": self.name
             })
     get_absolute_url = permalink(get_absolute_url)
