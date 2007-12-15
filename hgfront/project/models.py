@@ -43,8 +43,10 @@ class Project(models.Model):
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 # Dispatchers
+dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_project_dir , signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Project )
+#TODO: Delete associated default permission sets on project delete
 
 REPO_TYPES = (
     ('1', 'New',),
@@ -83,7 +85,9 @@ dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
 
 class ProjectPermissionSet(models.Model):
     """A set of permissions for a user in a given project"""
-    user = models.ForeignKey(User)
+    is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
+
+    user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
 
     push = models.BooleanField(default=True)
@@ -100,7 +104,10 @@ class ProjectPermissionSet(models.Model):
     view_issues = models.BooleanField(default=True)
     
     def __unicode__(self):
-        return "Permissions for %s in %s" % (self.user.username, self.project.longname)
+        if self.is_default:
+            return "Default permission set for project %s" % self.project.longname
+        else:
+            return "Permissions for %s in %s" % (self.user.username, self.project.longname)
 
     class Admin:
         pass

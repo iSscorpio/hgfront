@@ -17,10 +17,18 @@ def get_project_list(request):
 
 def get_project_details(request, slug):
     project = get_object_or_404(Project, shortname__exact=slug)
+    #search for the specific permissions of a user
     try:
         permissions = ProjectPermissionSet.objects.get(user__id=request.user.id, project__id=project.id)
     except ProjectPermissionSet.DoesNotExist:
-        permissions = None #TODO: this has to load the default permissions for a project instead of None
+        #if we don't find them search for the default permissions of the project
+        permission_list = ProjectPermissionSet.objects.filter(is_default=True, project__id=project.id)
+        #if there were no default permissions for the project (alhtough there should always be one),
+        #set the permissions to None. basically this should never happen but it's here for robustness
+        if len(permission_list) > 0:
+            permissions = permission_list[0]
+        else:
+            permissions = None
     #is_auth = bool(request.user.is_authenticated())
     return render_to_response('project/project_detail.html', {'project': project, 'permissions': permissions})
 
