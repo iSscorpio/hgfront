@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Issues for {{project.longname}}{% endblock %}
+
+{% block content_title %}
+    <h2>{{project.longname}} issues {% ifnotequal listed_by None %}listed by {{listed_by}}: {{group_by_value}}{% endifnotequal %}</h2>
+{% endblock %}
+
+{% block main_content %}
+    {% if permissions.view_issues %}
+        {% if issue_list %}
+        <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Completed</th>
+                <th>Created by</th>
+                <th>Working on it:</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issue_list %}
+                <tr>
+                    <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
+                    <td><a href="{% url issue-list-by-severity slug=project.shortname,group_by_value=issue.issue_sev %}">{{issue.issue_sev}}</a></td>
+                    <td><a href="{% url issue-list-by-type slug=project.shortname,group_by_value=issue.issue_type %}">{{issue.issue_type.title}}</a></td>
+                    <td><a href="{% url issue-list-by-status slug=project.shortname,group_by_value=issue.issue_status %}">{{issue.issue_status.title}}</a></td>
+                    <td>{{issue.completed|yesno:"Yes,No"}}</td>
+                    <td><a href="{{issue.user_post.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
+                    <td><a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+        {% else %}
+            <strong>This project has no isses, hurrah!</strong>
+        {% endif %}
+    {% else %}
+        You don't have the authorotah to view these issues!
+    {% endif %}
+{% endblock %}
+{% block sidebar %}
+    {{block.super}}
+{% endblock sidebar %}
