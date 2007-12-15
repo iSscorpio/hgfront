@@ -17,7 +17,7 @@ REPO_TYPES = (
 class Repo(models.Model):
     """A repo represents a physical repository on the hg system path"""
     creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Repository")
-    name=models.CharField(max_length=20, null=True, blank=True)
+    name=models.CharField(max_length=20, db_index=True)
     url=models.URLField(null=True, blank=True)
     project=models.ForeignKey(Project)
     pub_date=models.DateTimeField('date published')
@@ -27,7 +27,7 @@ class Repo(models.Model):
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
-            "repo_id": self.name
+            "repo_name": self.name
             })
     get_absolute_url = permalink(get_absolute_url)
     class Admin:
