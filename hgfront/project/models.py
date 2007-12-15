@@ -19,7 +19,7 @@ class Project(models.Model):
     You can also assign members to a project, and give them each their own permission set.
     """
     longname=models.CharField(max_length=255)
-    shortname=models.CharField(max_length=50, unique=True, db_index=True)
+    shortname=models.CharField(max_length=50, db_index=True)
     description=models.TextField()
     is_private=models.BooleanField(default=False)
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
