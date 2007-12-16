@@ -5,7 +5,7 @@
 {% block content_title %}Project Details{% endblock %}
 
 {% block main_content %}
-	{% ifequal permissions.can_view_project 1 %}
+	{% if permissions.can_view_project %}
 	<dl class="project-details">
 		<dt>
 			<h3>{{project.longname}}</h3>
@@ -51,7 +51,7 @@
 		<div class="error">
 			<h2>This project is private, and cannot be viewed except for project members</h2>
 		</div>
-	{% endifequal %}
+	{% endif %}
 {% endblock %}
 
 {% block sidebar %}

@@ -17,13 +17,15 @@ REPO_TYPES = (
 class Repo(models.Model):
     """A repo represents a physical repository on the hg system path"""
     creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Repository")
-    name=models.CharField(max_length=20, db_index=True)
+    name=models.CharField(max_length=20)
     url=models.URLField(null=True, blank=True)
     project=models.ForeignKey(Project)
     pub_date=models.DateTimeField('date published')
     anonymous=models.BooleanField(default=True)
+
     def __unicode__(self):
         return self.name
+
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
@@ -31,6 +33,7 @@ class Repo(models.Model):
             "repo_name": self.name
             })
     get_absolute_url = permalink(get_absolute_url)
+
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'name', 'url', 'project', 'anonymous')}),
@@ -41,6 +44,11 @@ class Repo(models.Model):
         search_fields = ['longname', 'project']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
+
+    class Meta:
+        unique_together=('project','name')
+
+
 # Dispatchers
 dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
