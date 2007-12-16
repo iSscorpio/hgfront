@@ -57,6 +57,6 @@
 {% block sidebar %}
     {{block.super}}
     {% ifequal permissions.add_repos 1 %} 
-        <a href="/hgfront/projects/{{project.shortname}}/repo/create">Create New Repo</a>
+        <a href="/hgfront/projects/{{project.shortname}}/repos/create">Create New Repo</a>
     {% endifequal %}
 {% endblock %}
