@@ -58,7 +58,7 @@ class Project(models.Model):
                     permissions = permission_list[0]
                 else:
                     permissions = None
-        permissions.can_view_project = not self.is_private or (self.is_private and self.user_in_project(user))
+        permissions.can_view_project = not self.is_private or self.user_in_project(user) or (self.user_owner.id == user.id)
         return permissions
 
     def get_absolute_url(self):
