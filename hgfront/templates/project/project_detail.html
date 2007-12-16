@@ -5,19 +5,47 @@
 {% block content_title %}Project Details{% endblock %}
 
 {% block main_content %}
-	{% ifequal project.is_private 0 %}
+	{% ifequal permissions.can_view_project 1 %}
 	<dl class="project-details">
 		<dt>
 			<h3>{{project.longname}}</h3>
 		</dt>
 		<dd>
 			<h4>Project Description:</h4>
-			{{project.description}}
+			{{project.description}}<br />
 		</dd>
 		<dd>
 			<h4>Project Owner:</h4>
 			<a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a>
 		</dd>
+        <dd>
+            <h4>Issues:</h4>
+            {% if permissions.view_issues %}
+                {% if project.issue_set.all %}
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Created by</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for issue in project.issue_set.all %}
+                            <tr>
+                                <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
+                                <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <a href="{% url issue-list project.shortname %}">view all issues for this project</a>
+                {% else %}
+                    This project has no issues, yay!
+                {% endif %}
+            {% else %}
+                You can't view the issues, man!
+            {% endif %}
+        </dd>
 	</dl>
 	{% else %}
 		<div class="error">

@@ -21,7 +21,7 @@
         {% block sidebar %}
             {# if we're on a project, display its members #}
             {% if project.user_members.all %}
-            <span class="group">Members</span>
+            <span class="group">Project Members</span>
                 <ul>
                 {% for member in project.user_members.all %}
                     <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
@@ -31,7 +31,7 @@
                     
             {#if we're on a project, display its repos #}
             {% if project.repo_set.all %}
-                <span class="group">Repositories</span>
+                <span class="group">Project Repositories</span>
                 <ul>
                 {% for repo in project.repo_set.all %}
                     <li><a href="{{repo.get_absolute_url}}">{{repo.name}}</a></li>

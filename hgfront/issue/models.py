@@ -119,6 +119,9 @@ class Issue(models.Model):
     user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
     finished_date = models.DateTimeField(blank=True, null=True, verbose_name='finished on')
 
+    @permalink
+    def get_absolute_url(self):
+        return ('issue-detail',(),{'slug':self.project.shortname,'issue_id':self.pk})
     def __unicode__(self):
         return self.title
 

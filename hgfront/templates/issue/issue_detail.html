@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}hgfront: {{issue.title}}{% endblock title %}
+
+{% block content_title %}
+    {{issue.title}}
+{% endblock content_title %}
+
+{% block main_content %}
+    <p>{{issue.body}}</p>
+    Author:{{issue.user_posted.username}}<br />
+    Severity:{{issue.issue_sev.title}}<br />
+    Type:{{issue.issue_type.title}}<br />
+    Status:{{issue.issue_status.title}}<br />
+
+{% endblock main_content %}
