@@ -12,8 +12,8 @@ from hgfront.project.forms import ProjectCreateForm
 from hgfront.project.models import Project, ProjectPermissionSet
 
 def get_project_list(request):
-    projects = Project.objects.all().filter(is_private=0)
-    return object_list(request, queryset=projects)
+    projects = [project for project in Project.objects.all() if project.get_permissions(request.user).can_view_project]
+    return render_to_response('project/project_list.html',{'object_list':projects})
 
 def get_project_details(request, slug):
     project = get_object_or_404(Project, shortname__exact=slug)
