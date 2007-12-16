@@ -8,7 +8,7 @@ def create_default_permission_set(sender, instance, signal, *args, **kwargs):
     Executed on creation of a project, this defines the default permissions
     """
     from hgfront.project.models import Project, ProjectPermissionSet
-    existing = ProjectPermissionSet.objects.filter(project=instance, user=None, is_default=True)
+    existing = ProjectPermissionSet.objects.filter(project__id = instance.id, is_default=True)
     if not existing:
         permission_set = ProjectPermissionSet(is_default=True, project=instance, user=None)
         permission_set.save()
