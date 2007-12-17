@@ -25,9 +25,9 @@
             {% for issue in issue_list %}
                 <tr>
                     <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
-                    <td><a href="{% url issue-list-by-severity slug=project.shortname,group_by_value=issue.issue_sev.slug %}">{{issue.issue_sev}}</a></td>
-                    <td><a href="{% url issue-list-by-type slug=project.shortname,group_by_value=issue.issue_type.slug %}">{{issue.issue_type.title}}</a></td>
-                    <td><a href="{% url issue-list-by-status slug=project.shortname,group_by_value=issue.issue_status.slug %}">{{issue.issue_status.title}}</a></td>
+                    <td><a href="{% url issue-list-by-severity slug=project.name_short,group_by_value=issue.issue_sev.slug %}">{{issue.issue_sev}}</a></td>
+                    <td><a href="{% url issue-list-by-type slug=project.name_short,group_by_value=issue.issue_type.slug %}">{{issue.issue_type.title}}</a></td>
+                    <td><a href="{% url issue-list-by-status slug=project.name_short,group_by_value=issue.issue_status.slug %}">{{issue.issue_status.title}}</a></td>
                     <td>{{issue.completed|yesno:"Yes,No"}}</td>
                     <td><a href="{{issue.user_post.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
                     <td><a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> </td>

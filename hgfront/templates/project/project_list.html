@@ -16,8 +16,8 @@
 	<tbody>
 		{% for project in object_list %}
 				<tr>
-					<td><a href="{{project.get_absolute_url}}">{{project.longname}}</a></td>
-					<td>{{ project.description|truncatewords_html:10}}</td>
+					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
+					<td>{{ project.description_short|truncatewords_html:10}}</td>
 					<td>{{project.pub_date|date:"d M Y"}}</td>
 					<td><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></td>
 				</tr>
