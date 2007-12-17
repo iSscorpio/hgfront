@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Repository{% endblock %}
+
+{% block content_title %}Create New Repository{% endblock %}
+
+{% block main_content %}
+	{{fail}}
+	{% if is_auth %}
+		<form action="/hgfront/projects/{{project}}/repos/create/" method="post">
+			{{form}}
+			<input type="submit" />
+		</form>
+	{% else %}
+		<strong>You do not have permission to create a repository</strong>
+	{% endif %}
+{% endblock %}
