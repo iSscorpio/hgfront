@@ -34,9 +34,10 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
-    path = os.path.isdir(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
-    if path is False:
-        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname))
+    directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
+    exists = os.path.isdir(directory)
+    if exists is True:
+        return bool(shutil.rmtree(directory))
     
 def create_hgrc(repo, project, directory):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
