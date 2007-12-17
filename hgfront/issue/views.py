@@ -43,3 +43,6 @@ def issue_detail(request, issue_id, slug):
             'permissions':project.get_permissions(request.user),
         }
     )
+
+def issue_create(request, slug):
+    return HttpResponse('Create issue')

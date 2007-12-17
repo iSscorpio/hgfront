@@ -55,8 +55,14 @@
 {% endblock %}
 
 {% block sidebar %}
+	<h4>Your Options for {{project.longname}}</h4>
+		<ul>
+			{% ifequal permissions.add_repos 1 %} 
+        		<li><a href="/hgfront/projects/{{project.shortname}}/repos/create/">Create New Repo</a></li>
+    		{% endifequal %}
+			{% ifequal permissions.add_issues 1 %} 
+        		<li><a href="/hgfront/projects/{{project.shortname}}/issues/create/">Create New Issue</a></li>
+    		{% endifequal %}
+		</ul>
     {{block.super}}
-    {% ifequal permissions.add_repos 1 %} 
-        <a href="/hgfront/projects/{{project.shortname}}/repos/create">Create New Repo</a>
-    {% endifequal %}
 {% endblock %}

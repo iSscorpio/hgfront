@@ -20,7 +20,7 @@ class Repo(models.Model):
     name=models.CharField(max_length=20)
     url=models.URLField(null=True, blank=True)
     project=models.ForeignKey(Project)
-    pub_date=models.DateTimeField('date published')
+    pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     anonymous=models.BooleanField(default=True)
 
     def __unicode__(self):

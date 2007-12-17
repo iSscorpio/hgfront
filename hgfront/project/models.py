@@ -42,7 +42,7 @@ class Project(models.Model):
         If the user has a permissions in the project, return those.
         If the user doesn't have permissions in the project, return
         the default project ones. If those aren't found, returns None
-        Also this method adds another property, which is can_vie_project
+        Also this method adds another property, which is can_view_project
         This checks against the project's is_private field to see if the 
         user can view the project at all"""
         if user.id == self.user_owner.id:

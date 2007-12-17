@@ -18,7 +18,9 @@
             {% block main_content %}{% endblock main_content %}
         </div>
         <div id="sidebar">
+		<h3>Your Sidebar</h3>
         {% block sidebar %}
+			{# Generate the users sidebar #}
             {# if we're on a project, display its members #}
             {% if project.user_members.all %}
             <span class="group">Project Members</span>
