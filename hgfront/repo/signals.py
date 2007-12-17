@@ -23,7 +23,11 @@ def create_repo(sender, instance, signal, *args, **kwargs):
             return True
         else:
             raise ValueError("Invalid value: %r" % self.creation_method)
-
+    else:
+        raise ValueError("Invalid: %s already exists for this project" % self.repo_dirname)
+    
+def move_repo():
+    """TODO: Have code that checks if a project has changed in the DB and needs moved"""
     
 def delete_repo(sender, instance, signal, *args, **kwargs):
     """Destroy the mercurial repo"""
