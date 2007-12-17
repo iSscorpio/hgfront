@@ -32,7 +32,7 @@ class Repo(models.Model):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
             "slug": self.project.name_short,
-            "repo_name": self.name
+            "repo_name": self.repo_name
             })
     get_absolute_url = permalink(get_absolute_url)
 
