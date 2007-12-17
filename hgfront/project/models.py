@@ -18,15 +18,17 @@ class Project(models.Model):
     
     You can also assign members to a project, and give them each their own permission set.
     """
-    longname=models.CharField(max_length=255)
-    shortname=models.CharField(max_length=50, db_index=True)
-    description=models.TextField()
-    is_private=models.BooleanField(default=False)
+    name_short=models.CharField(max_length=50, db_index=True)
+    name_long=models.CharField(max_length=255)
+    description_short=models.CharField(max_length=255, blank=True, null=True)
+    description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     user_members=models.ManyToManyField(User, related_name='user_members', verbose_name='project members', null=True, blank=True)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
+    is_private=models.BooleanField(default=False)
+    
     def __unicode__(self):
-        return self.longname
+        return self.name_long
 
     def num_repos(self):
         """Returns the number of repositories linked to this project"""
@@ -64,20 +66,20 @@ class Project(models.Model):
     def get_absolute_url(self):
         """Creates a permalink to the project page"""
         return ('project-detail', (), {
-            "slug": self.shortname
+            "slug": self.name_short
             })
 
     get_absolute_url = permalink(get_absolute_url)
 
     class Admin:
         fields = (
-                  ('Project Creation', {'fields': ('longname', 'shortname', 'description',)}),
+                  ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
                   ('Date information', {'fields': ('pub_date',)}),
                   ('Publishing Details', {'fields': ('user_owner', 'user_members', 'is_private',)}),
         )
-        list_display = ('longname', 'shortname', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
+        list_display = ('name_long', 'name_short', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
         list_filter = ['pub_date', 'is_private']
-        search_fields = ['longname', 'description']
+        search_fields = ['name_long', 'description']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 
@@ -114,9 +116,9 @@ class ProjectPermissionSet(models.Model):
     
     def __unicode__(self):
         if self.is_default:
-            return "Default permission set for project %s" % self.project.longname
+            return "Default permission set for project %s" % self.project.name_long
         else:
-            return "Permissions for %s in %s" % (self.user.username, self.project.longname)
+            return "Permissions for %s in %s" % (self.user.username, self.project.name_long)
 
     class Admin:
         list_display = ('__unicode__', 'is_default','push','pull','add_repos','delete_repos','edit_repos','view_repos','add_issues','delete_issues','edit_issues', 'view_issues')
