@@ -1,14 +1,22 @@
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
 
+from mercurial import hg, ui, hgweb
+
+from django.conf import settings
+
 from hgfront.repo.forms import RepoCreateForm
-from hgfront.repo.models import Project
+from hgfront.repo.models import Repo
+from hgfront.project.models import Project
 
 def repo_list(request, slug):
-   return HttpResponse("repo list") 
+   return HttpResponse("repo list")
 
 def repo_detail(request, slug, repo_name):
-   return HttpResponse("repo detail") 
+    project = get_object_or_404(Project, name_short__exact=slug)
+    permissions = project.get_permissions(request.user)
+    repo = get_object_or_404(Repo, repo_dirname__exact=repo_name)
+    return hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo.repo_dirname ))
 
 def repo_create(request, slug):
     if request.method == "POST":
