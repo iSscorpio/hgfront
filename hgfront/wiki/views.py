@@ -6,8 +6,8 @@ from hgfront.wiki.forms import WikiPageCreateForm
 
 def wiki_index(request, slug):
     """Return simple list of wiki pages"""
-    pages = WikiPage.objects.all().filter(project__shortname=slug).order_by('title')
-    project = Project.objects.get(shortname__exact=slug)
+    pages = WikiPage.objects.all().filter(project__name_short=slug).order_by('title')
+    project = Project.objects.get(name_short__exact=slug)
     return render_to_response('wiki/wiki_home.html', {'pages':pages, 'project':project})
 
 def wiki_page(request, slug, page_name):

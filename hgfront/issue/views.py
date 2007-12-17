@@ -11,7 +11,7 @@ def issue_list(request, slug, listed_by=None, group_by_value=None):
 
        hgfront/projects/hgfront/issues/severity/extreme
     This would mean that `listed_by`='severity' and `group_by_value`='extreme' """
-    project = get_object_or_404(Project, shortname = slug)
+    project = get_object_or_404(Project, name_short = slug)
     if listed_by is None:
         issues = project.issue_set.all()
     else:
@@ -34,7 +34,7 @@ def issue_list(request, slug, listed_by=None, group_by_value=None):
 
 def issue_detail(request, issue_id, slug):
     """Returns the details of the issue identified by `issue_id`"""
-    project = get_object_or_404(Project, shortname = slug)
+    project = get_object_or_404(Project, name_short = slug)
     issue = get_object_or_404(Issue, id = issue_id)
     return render_to_response('issue/issue_detail.html',
         {

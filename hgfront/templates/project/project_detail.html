@@ -38,7 +38,7 @@
                         {% endfor %}
                         </tbody>
                     </table>
-                    <a href="{% url issue-list project.shortname %}">view all issues for this project</a>
+                    <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
                 {% else %}
                     This project has no issues, yay!
                 {% endif %}
