@@ -15,8 +15,9 @@ def repo_list(request, slug):
 def repo_detail(request, slug, repo_name):
     project = get_object_or_404(Project, name_short__exact=slug)
     permissions = project.get_permissions(request.user)
-    repo = get_object_or_404(Repo, repo_dirname__exact=repo_name)
-    return hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo.repo_dirname ))
+    repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
+    repo = hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname ))
+    return HttpResponse(repo)
 
 def repo_create(request, slug):
     if request.method == "POST":

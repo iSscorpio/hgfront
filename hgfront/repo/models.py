@@ -24,6 +24,10 @@ class Repo(models.Model):
     project=models.ForeignKey(Project)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     anonymous_pull=models.BooleanField(default=True)
+    
+    offer_zip=models.BooleanField(default=True)
+    offer_tar=models.BooleanField(default=True)
+    offer_bz2=models.BooleanField(default=True)
 
     def __unicode__(self):
         return self.repo_name
@@ -38,7 +42,8 @@ class Repo(models.Model):
 
     class Admin:
         fields = (
-                  ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'project', 'anonymous_pull')}),
+                  ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'repo_description', 'project', 'anonymous_pull')}),
+                  ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
         list_display = ('repo_name', 'project', 'pub_date',)

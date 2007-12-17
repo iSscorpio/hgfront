@@ -10,22 +10,19 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
     u = ui.ui()
-    
     directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     
-    if instance.creation_method=='1':
-        repo = hg.repository(u, directory , create=True)
-        if repo:
-            hgrc = open(directory + '/.hg/hgrc', 'w')
-            hgrc.write("[web]\n")
-            hgrc.write("style = gitweb\n")
-            hgrc.close()
+    if not bool(os.path.isdir(directory)):
+        if instance.creation_method=='1':
+            hg.repository(u, directory , create=True)
+            create_hgrc(instance, p, directory)
+            return True
+        elif instance.creation_method=='2':
+            hg.clone(u, str(instance.url), directory, True)
+            create_hgrc(instance, p, directory)
+            return True
         else:
-            return False
-    elif instance.creation_method=='2':
-        return bool(hg.clone(u, str(instance.url), directory, True))
-    else:
-        raise ValueError("Invalid value: %r" % self.creation_method)
+            raise ValueError("Invalid value: %r" % self.creation_method)
 
     
 def delete_repo(sender, instance, signal, *args, **kwargs):
@@ -36,3 +33,20 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     path = os.path.isdir(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     if path is False:
         return bool(shutil.rmtree(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname))
+    
+def create_hgrc(repo, project, directory):
+    """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
+    hgrc = open(directory + '/.hg/hgrc', 'w')
+    hgrc.write("[web]\n")
+    hgrc.write("style = gitweb\n")
+    hgrc.write("description = %s\n" % repo.repo_description)
+    hgrc.write("contact = %s\n" % project.user_owner)
+    a = "allow_archive = "
+    if repo.offer_zip:
+        a += "zip "
+    if repo.offer_tar:
+        a += "gz "
+    if repo.offer_bz2:
+        a += "bz2"
+    hgrc.write(a)
+    hgrc.close()

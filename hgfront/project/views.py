@@ -6,8 +6,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from django.views.generic.list_detail import object_list
 
-from mercurial import hg, ui
-from mercurial.hgweb.webcommands import *
+from mercurial import hg, ui, hgweb
 
 from hgfront.project.forms import ProjectCreateForm
 from hgfront.project.models import Project, ProjectPermissionSet
