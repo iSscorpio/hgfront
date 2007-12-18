@@ -44,7 +44,7 @@ class Project(models.Model):
         If the user has a permissions in the project, return those.
         If the user doesn't have permissions in the project, return
         the default project ones. If those aren't found, returns None
-        Also this method adds another property, which is can_view_project
+        Also this method adds another property, which is view_project
         This checks against the project's is_private field to see if the 
         user can view the project at all"""
         if user.id == self.user_owner.id:
@@ -60,7 +60,7 @@ class Project(models.Model):
                     permissions = permission_list[0]
                 else:
                     permissions = None
-        permissions.can_view_project = not self.is_private or self.user_in_project(user) or (self.user_owner.id == user.id)
+        permissions.view_project = not self.is_private or self.user_in_project(user) or (self.user_owner.id == user.id)
         return permissions
 
     def get_absolute_url(self):
@@ -100,9 +100,6 @@ class ProjectPermissionSet(models.Model):
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
-
-    push = models.BooleanField(default=False)
-    pull = models.BooleanField(default=True)
 
     add_repos = models.BooleanField(default=False)
     delete_repos = models.BooleanField(default=False)

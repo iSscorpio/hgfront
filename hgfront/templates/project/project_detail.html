@@ -5,7 +5,7 @@
 {% block content_title %}Project Details{% endblock %}
 
 {% block main_content %}
-	{% if permissions.can_view_project %}
+	{% if permissions.view_project %}
 	<dl class="project-details">
 		<dt>
 			<h3>{{project.longname}}</h3>

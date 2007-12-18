@@ -7,8 +7,7 @@
 {% endblock %}
 
 {% block main_content %}
-    {% if permissions.view_issues %}
-        {% if issue_list %}
+    {% if issue_list %}
         <table>
         <thead>
             <tr>
@@ -35,11 +34,8 @@
             {% endfor %}
         </tbody>
         </table>
-        {% else %}
-            <strong>This project has no isses, hurrah!</strong>
-        {% endif %}
     {% else %}
-        You don't have the authorotah to view these issues!
+        <strong>This project has no isses, hurrah!</strong>
     {% endif %}
 {% endblock %}
 {% block sidebar %}
