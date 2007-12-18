@@ -6,9 +6,9 @@ from django.shortcuts import get_object_or_404, render_to_response
 # Project Libraries
 from hgfront.issue.models import *
 from hgfront.project.models import Project
-from hgfront.project.decorators import check_project_permission
+from hgfront.project.decorators import check_project_permissions
 
-@check_project_permission('view_issues')
+@check_project_permissions('view_issues','view_project')
 def issue_list(request, slug, listed_by=None, group_by_value=None):
     """Returns a list of isses that belong to the project identified by `slug`
     If `listed_by` and `group_by_value` are specified, it will display a filtered
@@ -37,7 +37,7 @@ def issue_list(request, slug, listed_by=None, group_by_value=None):
     )
     #TODO: Implement pagination (ugh)
 
-@check_project_permission('view_issues')
+@check_project_permissions('view_issues','view_project')
 def issue_detail(request, slug, issue_id):
     """Returns the details of the issue identified by `issue_id`"""
     project = get_object_or_404(Project, name_short = slug)
@@ -50,6 +50,6 @@ def issue_detail(request, slug, issue_id):
         }
     )
 
-@check_project_permission('add_issues')
+@check_project_permissions('add_issues','view_project')
 def issue_create(request, slug):
     return HttpResponse('Create issue')
