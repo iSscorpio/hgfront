@@ -43,6 +43,10 @@ class Repo(models.Model):
             "repo_name": self.repo_name
             })
     get_absolute_url = permalink(get_absolute_url)
+    
+    def was_cloned(self):
+        return bool(self.creation_method == '2')
+    was_cloned.short_description = "Cloned Repository?"
 
     class Admin:
         fields = (
@@ -51,14 +55,14 @@ class Repo(models.Model):
                   ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
-        list_display = ('repo_name', 'project', 'pub_date',)
+        list_display = ('repo_name', 'project', 'was_cloned', 'pub_date',)
         list_filter = ['pub_date', 'project',]
         search_fields = ['name_long', 'project']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 
     class Meta:
-        unique_together=('project','repo_name')
+        unique_together=('project','repo_dirname')
 
 
 # Dispatchers
