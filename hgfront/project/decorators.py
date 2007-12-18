@@ -19,15 +19,15 @@ def check_project_permissions(*args):
     required_permissions = args
     def the_decorator(func):
         from hgfront.project.models import Project
-        from django.contrib.auth.models import User
         from django.shortcuts import get_object_or_404
         from django.http import HttpResponseForbidden
+        from django.template.loader import Context, render_to_string
         def inner(*args, **kwargs):
             request = args[0]
             project_permissions = get_object_or_404(Project, name_short=kwargs['slug']).get_permissions(request.user)
             for permission in required_permissions:
                 if not getattr(project_permissions, permission):
-                    return HttpResponseForbidden('Forbidden')
+                    return HttpResponseForbidden(render_to_string('403.html'))
             return func(*args, **kwargs)
         return inner
     return the_decorator
