@@ -4,6 +4,7 @@ from mercurial import hg, ui, hgweb
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
+from django.core.urlresolvers import reverse
 # Project Libraries
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
@@ -24,8 +25,9 @@ def repo_create(request, slug):
         form = RepoCreateForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/hgfront/projects/' + slug + '/repos/' + request.POST['name'])
+            return HttpResponseRedirect(reverse('repo-detail', kwargs={'slug':slug,'repo_name':request.POST['name']}))
     else:
         form = RepoCreateForm()
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
-    return render_to_response('repos/repo_create.html', {'form':form, 'project':slug, 'is_auth': is_auth})
+    project = get_object_or_404(Project, name_short__exact=slug)
+    return render_to_response('repos/repo_create.html', {'form':form, 'project':project, 'is_auth': is_auth})

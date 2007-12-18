@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "project/project_detail.html" %}
 
 {% block content_title %}Wiki pages for {{project.longname}} {% endblock %}
+{% block breadcrumbs %}{{block.super}} > <a href="{% url wiki-index project.name_short %}">Wiki</a> {% endblock %}
 
 {% block main_content %}
 	<ul>

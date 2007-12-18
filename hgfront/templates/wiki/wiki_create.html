@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% extends "wiki/wiki_home.html" %}
 
 {% block title %}Create Wiki Page{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url wiki-edit slug=project.name_short,page_name=page_name %}">New page: {{page_name}}</a>{% endblock %}
 
 {% block content_title %}Create Wiki Page{% endblock %}
 
 {% block main_content %}
 	{{fail}}
 	{% if is_auth %}
-		<form action="/hgfront/projects/{{project}}/wiki/edit/{{page_name}}" method="post">
+		<form action="{% url wiki-edit slug=project.name_short,page_name=page_name %}" method="post">
 			{{form}}
 			<input type="submit" />
 		</form>
