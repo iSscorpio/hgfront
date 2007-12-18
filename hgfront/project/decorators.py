@@ -17,7 +17,7 @@ def check_project_permission(permission):
     as a keyword argument, not just a normal argument. That means that the view definition must
     define the argument as `slug` and the urlconf must name it as ?P<slug>
     """
-    def can_view_project(func):
+    def the_decorator(func):
         from hgfront.project.models import Project
         from django.contrib.auth.models import User
         from django.shortcuts import get_object_or_404
@@ -30,5 +30,5 @@ def check_project_permission(permission):
             else:
                 return HttpResponseForbidden('Forbidden')
         return inner
-    return can_view_project
+    return the_decorator
     #TODO: Make the forbidden screen nicer
