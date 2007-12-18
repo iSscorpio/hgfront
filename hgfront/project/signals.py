@@ -1,7 +1,9 @@
-from django.template import Context, loader
-from django.conf import settings
-
+# General Libraries
 import datetime, sys, os, shutil
+# Django Libraries
+from django.conf import settings
+from django.template import Context, loader
+# Project Libraries
 
 def create_default_permission_set(sender, instance, signal, *args, **kwargs):
     """

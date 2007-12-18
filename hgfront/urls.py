@@ -1,5 +1,8 @@
-from django.conf.urls.defaults import *
+# General Libraries
+# DJango Libraries
 from django.conf import settings
+from django.conf.urls.defaults import *
+# Project Libraries
 
 urlpatterns = patterns('',
 	url(r'^projects/',include('hgfront.project.urls')),

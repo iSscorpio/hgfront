@@ -1,8 +1,11 @@
-from django.http import HttpResponse
+# General Libraries
+# Django Libraries
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, render_to_response
+# Project Libraries
 from hgfront.issue.models import *
 from hgfront.project.models import Project
-from django.shortcuts import get_object_or_404, render_to_response
 
 def issue_list(request, slug, listed_by=None, group_by_value=None):
     """Returns a list of isses that belong to the project identified by `slug`

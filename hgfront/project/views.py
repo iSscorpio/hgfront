@@ -1,13 +1,12 @@
-from django.conf import settings
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render_to_response
-from django.core.urlresolvers import reverse
-from django.template import RequestContext
-from django.views.generic.list_detail import object_list
-
+# General Libraries
 from mercurial import hg, ui, hgweb
-
+# Django Libraries
+from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render_to_response
+from django.template import RequestContext
+# Project Libraries
 from hgfront.project.forms import ProjectCreateForm
 from hgfront.project.models import Project, ProjectPermissionSet
 

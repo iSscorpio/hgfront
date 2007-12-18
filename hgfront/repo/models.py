@@ -1,13 +1,14 @@
-from django.db import models
-from django.contrib.auth.models import User
+# General Libraries
+import datetime, sys, os, shutil
+# Django Libraries
 from django.conf import settings
-from django.db.models import permalink
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import permalink, signals
 from django.dispatch import dispatcher
-from django.db.models import signals
+# Project Libraries
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
-
-import datetime, sys, os, shutil
 
 REPO_TYPES = (
     ('1', 'New',),

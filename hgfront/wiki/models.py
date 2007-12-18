@@ -1,11 +1,13 @@
-from django.db import models
-from hgfront.project.models import Project
-from django.db.models import permalink
-
+# General Libraries
 import datetime
+# Django Libraries
+from django.db import models
+from django.db.models import permalink
+# Project Libraries
+from hgfront.project.models import Project
 
-# Create your models here.
 class WikiPage(models.Model):
+    """This represents a Wiki Page related to a project"""
     title=models.CharField(max_length=150)
     slug=models.SlugField()
     body=models.TextField(verbose_name='contents')

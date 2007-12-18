@@ -1,13 +1,13 @@
+#General Libraries
+from mercurial import hg, ui, hgweb
+# Django Libraries
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
-
-from mercurial import hg, ui, hgweb
-
-from django.conf import settings
-
+# Project Libraries
+from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
 from hgfront.repo.models import Repo
-from hgfront.project.models import Project
 
 def repo_list(request, slug):
    return HttpResponse("repo list")

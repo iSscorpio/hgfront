@@ -1,14 +1,14 @@
-from django.db import models
-from django.contrib.auth.models import User
+# General Libraries
+import datetime, sys, os, shutil
+# Django Libraries
 from django.conf import settings
-from django.db.models import permalink
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models import permalink, signals
 from django.dispatch import dispatcher
-from django.db.models import signals
+# Project Libraries
 from hgfront.project.signals import *
 
-import datetime, sys, os, shutil
-
-# Create your models here.
 class Project(models.Model):
     """
     A project represents a way to group users, repositories and issues on the system.
@@ -114,6 +114,11 @@ class ProjectPermissionSet(models.Model):
     edit_issues = models.BooleanField(default=False)
     view_issues = models.BooleanField(default=True)
     
+    add_wiki = models.BooleanField(default=True)
+    delete_wiki = models.BooleanField(default=False)
+    edit_wiki = models.BooleanField(default=False)
+    view_wiki = models.BooleanField(default=True)
+    
     def __unicode__(self):
         if self.is_default:
             return "Default permission set for project %s" % self.project.name_long
@@ -121,5 +126,5 @@ class ProjectPermissionSet(models.Model):
             return "Permissions for %s in %s" % (self.user.username, self.project.name_long)
 
     class Admin:
-        list_display = ('__unicode__', 'is_default','push','pull','add_repos','delete_repos','edit_repos','view_repos','add_issues','delete_issues','edit_issues', 'view_issues')
+        list_display = ('__unicode__', 'is_default',)
         list_filter = ['is_default', 'project']

@@ -1,9 +1,12 @@
 """
 Creates default values for the Issue tracker
 """
+# General Libraries
+# Django Libraries
 from django.conf import settings
-from django.dispatch import dispatcher
 from django.db.models import get_models, signals
+from django.dispatch import dispatcher
+# Project Libraries
 
 def init_issues_types(app, created_models, verbosity, **kwargs):
     """This injects the database with default values for issues"""

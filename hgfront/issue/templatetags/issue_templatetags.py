@@ -1,6 +1,9 @@
+# General Libraries
+# Django Libraries
 from django import template
-from hgfront.project.models import Project
+# Project Libraries
 from hgfront.issue.models import *
+from hgfront.project.models import Project
 
 register = template.Library()
 

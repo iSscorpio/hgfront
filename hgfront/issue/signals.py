@@ -1,6 +1,9 @@
+# General Libraries
+# Django Libraries
 from django.conf import settings
-from django.core.mail import EmailMessage
 from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
+# Project Libraries
 
 def send_email_to_owner(sender, instance, signal, *args, **kwargs):
     """When a issue is added or changed, email the owner"""

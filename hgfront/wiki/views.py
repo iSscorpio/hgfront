@@ -1,7 +1,10 @@
+# General Libraries
+# Django Libraries
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
-from hgfront.wiki.models import WikiPage
+# Project Libraries
 from hgfront.project.models import Project
+from hgfront.wiki.models import WikiPage
 from hgfront.wiki.forms import WikiPageCreateForm
 
 def wiki_index(request, slug):
@@ -19,6 +22,7 @@ def wiki_page(request, slug, page_name):
         return HttpResponseRedirect("/hgfront/projects/" + slug + "/wiki/edit/%s/" % page_name)
     
 def wiki_edit(request, slug, page_name):
+    """Create or edit and Wiki page"""
     if request.method == "POST":
         form = WikiPageCreateForm(request.POST)
         if form.is_valid():

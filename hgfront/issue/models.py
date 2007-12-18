@@ -1,16 +1,16 @@
-from django.db import models
-from django.contrib.auth.models import User
-from hgfront.project.models import Project
-from mercurial import hg, ui
-from django.conf import settings
-from django.db.models import permalink
-from django.template.defaultfilters import slugify
-from django.core import urlresolvers
-from django.dispatch import dispatcher
-from django.db.models import signals
-from hgfront.issue.signals import *
-
+# General Libraries
 import datetime, sys, os, shutil
+# Django Libraries
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core import urlresolvers
+from django.db import models
+from django.db.models import permalink, signals
+from django.dispatch import dispatcher
+from django.template.defaultfilters import slugify
+# Project Libraries
+from hgfront.issue.signals import *
+from hgfront.project.models import Project
 
 class IssueType(models.Model):
     """Represents the type of issue such as a bug or feature enhancment"""

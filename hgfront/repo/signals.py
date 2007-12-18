@@ -1,8 +1,10 @@
+# General Libraries
+import datetime, sys, os, shutil
+from mercurial import hg, ui
+# Django Libraries
 from django.template import Context, loader
 from django.conf import settings
-from mercurial import hg, ui
-
-import datetime, sys, os, shutil
+# Project Libraries
 
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""
