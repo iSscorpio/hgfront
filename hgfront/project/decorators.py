@@ -12,6 +12,8 @@ def check_project_permissions(*args):
         @check_permission('view_project','view_issues')
         def ...
 
+    If the user doesn't have all the permissions listed in *args, a 403 error is returned and
+    403.html is loaded as the template.
     Note that the use of this decorator mandates that the view receives the slug of the project
     as a keyword argument, not just a normal argument. That means that the urlconf must call it as
     ?P<slug>

@@ -1,14 +1,15 @@
-{% extends "base.html" %}
+{% extends "project/project_list.html" %}
 
 {% block title %}Project details for {{project.longname}}{% endblock %}
 
 {% block content_title %}Project Details{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{{project.get_absolute_url}}">{{project.name_short}}</a>{% endblock %}
 
 {% block main_content %}
 	{% if permissions.view_project %}
 	<dl class="project-details">
 		<dt>
-			<h3>{{project.longname}}</h3>
+			<h3>{{project.name_long}}</h3>
 		</dt>
 		<dd>
 			<h4>Project Description:</h4>
