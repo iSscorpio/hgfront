@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Issues for {{project.longname}}{% endblock %}
+{% block title %}Issues for {{project.name_long}}{% endblock %}
 
 {% block content_title %}
-    <h2>{{project.longname}} issues {% ifnotequal listed_by None %}listed by {{listed_by}}: {{group_by_value}}{% endifnotequal %}</h2>
+    <h2>{{project.name_long}} issues {% ifnotequal listed_by None %}listed by {{listed_by}}: {{group_by_value}}{% endifnotequal %}</h2>
 {% endblock %}
 
 {% block main_content %}
