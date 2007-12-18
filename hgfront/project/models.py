@@ -48,7 +48,7 @@ class Project(models.Model):
         This checks against the project's is_private field to see if the 
         user can view the project at all"""
         if user.id == self.user_owner.id:
-            permissions = ProjectPermissionSet(is_default=False, user=user, project=self, push=True, pull=True, \
+            permissions = ProjectPermissionSet(is_default=False, user=user, project=self,\
             add_repos = True, delete_repos = True, edit_repos = True, view_repos = True, add_issues = True, \
             delete_issues = True, edit_issues = True, view_issues = True)
         else:
