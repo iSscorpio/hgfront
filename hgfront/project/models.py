@@ -25,7 +25,6 @@ class Project(models.Model):
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     user_members=models.ManyToManyField(User, related_name='user_members', verbose_name='project members', null=True, blank=True)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    is_private=models.BooleanField(default=False)
     
     def __unicode__(self):
         return self.name_long
@@ -41,26 +40,34 @@ class Project(models.Model):
     def get_permissions(self, user):
         """ Returns an ProjectPermissionSet of the user `user`.
         If the user is the owner, he gets all permissions.
-        If the user has a permissions in the project, return those.
+        If the user has a permission set in the project, return those.
         If the user doesn't have permissions in the project, return
-        the default project ones. If those aren't found, returns None
-        Also this method adds another property, which is view_project
-        This checks against the project's is_private field to see if the 
-        user can view the project at all"""
+        the default project ones. If those aren't found, returns a
+        permission set with all the permissions set to False.
+        """
+        #if the user is the owner of the project, give him all permissions
         if user.id == self.user_owner.id:
             permissions = ProjectPermissionSet(is_default=False, user=user, project=self,\
-            add_repos = True, delete_repos = True, edit_repos = True, view_repos = True, add_issues = True, \
-            delete_issues = True, edit_issues = True, view_issues = True)
+            view_project = True, add_repos = True, delete_repos = True, edit_repos = True, view_repos = True,\
+            add_issues = True, delete_issues = True, edit_issues = True, view_issues = True)
         else:
             try:
-                permissions = ProjectPermissionSet.objects.get(user__id=user.id, project__id=self.id)
-            except ProjectPermissionSet.DoesNotExist, MultipleObjectsReturned:
+                #Try to find a permission set for the user
+                permission_list = ProjectPermissionSet.objects.filter(user__id=user.id, project__id=self.id)
+                if len(permission_list) > 0:
+                    permissions = permission_list[0]
+                else:
+                    raise ProjectPermissionSet.DoesNotExist
+            except ProjectPermissionSet.DoesNotExist:
+                #If there's no specific permission set for the user, try to find a default permission set
                 permission_list = ProjectPermissionSet.objects.filter(is_default=True, project__id=self.id)
                 if len(permission_list) > 0:
                     permissions = permission_list[0]
                 else:
-                    permissions = None
-        permissions.view_project = not self.is_private or self.user_in_project(user) or (self.user_owner.id == user.id)
+                    #If even a default one isn't found (although this shouldn't happen), return a restricted permission set
+                    permissions = ProjectPermissionSet(is_default=False, user=user, project=self, \
+                    view_project = False, add_repos = False, delete_repos = False, edit_repos = False, view_repos = False, \
+                    add_issues = False, delete_issues = Flase, edit_issues = False, view_issues = False)
         return permissions
 
     def get_absolute_url(self):
@@ -71,14 +78,17 @@ class Project(models.Model):
 
     get_absolute_url = permalink(get_absolute_url)
 
+    def is_private(self):
+        return not self.projectpermissionset_set.all()[0].view_project
+
     class Admin:
         fields = (
                   ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
                   ('Date information', {'fields': ('pub_date',)}),
-                  ('Publishing Details', {'fields': ('user_owner', 'user_members', 'is_private',)}),
+                  ('Publishing Details', {'fields': ('user_owner', 'user_members',)}),
         )
         list_display = ('name_long', 'name_short', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
-        list_filter = ['pub_date', 'is_private']
+        list_filter = ['pub_date',]
         search_fields = ['name_long', 'description']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
@@ -100,6 +110,8 @@ class ProjectPermissionSet(models.Model):
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
+
+    view_project = models.BooleanField(default=True)
 
     add_repos = models.BooleanField(default=False)
     delete_repos = models.BooleanField(default=False)

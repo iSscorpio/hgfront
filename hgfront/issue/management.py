@@ -13,7 +13,7 @@ def init_issues_types(app, created_models, verbosity, **kwargs):
     from hgfront.issue.models import IssueType
     if IssueType in created_models:
         IssueType.objects.get_or_create(title='Bug', defaults={'title':'Bug','order': '0', 'is_active': '1'})
-        IssueType.objects.get_or_create(title='Enhancment', defaults={'title':'Enhancment','order': '1', 'is_active': '1'})
+        IssueType.objects.get_or_create(title='Enhancement', defaults={'title':'Enhancment','order': '1', 'is_active': '1'})
         IssueType.objects.get_or_create(title='Feature Request', defaults={'title':'Feature Request','order': '2', 'is_active': '1'})
         IssueType.objects.get_or_create(title='Typo', defaults={'title':'Typo','order': '3', 'is_active': '1'})
         

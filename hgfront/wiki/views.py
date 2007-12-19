@@ -9,11 +9,11 @@ from hgfront.wiki.models import WikiPage
 from hgfront.wiki.forms import WikiPageCreateForm
 from hgfront.project.decorators import check_project_permissions
 
-@check_project_permissions('view_wiki','view_project')
+@check_project_permissions('view_wiki')
 def wiki_index(request, slug):
     return HttpResponse('wiki index')
 
-@check_project_permissions('view_wiki','view_project')
+@check_project_permissions('view_wiki')
 def wiki_page(request, slug, page_name):
     """Return a Wiki page"""
     try:
@@ -30,7 +30,7 @@ def wiki_page(request, slug, page_name):
         # FIXME: This does not redirect properly
         return HttpResponseRedirect(reverse('wiki-edit', kwargs={'slug':slug, 'page_name':page_name}))
 
-@check_project_permissions('edit_wiki','view_project')
+@check_project_permissions('edit_wiki')
 def wiki_edit(request, slug, page_name):
     """Create or edit and Wiki page"""
     project = Project.objects.get(name_short=slug)
