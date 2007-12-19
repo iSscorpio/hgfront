@@ -118,12 +118,12 @@ class ProjectPermissionSet(models.Model):
     edit_repos = models.BooleanField(default=False)
     view_repos = models.BooleanField(default=True)
 
-    add_issues = models.BooleanField(default=True)
+    add_issues = models.BooleanField(default=False)
     delete_issues = models.BooleanField(default=False)
     edit_issues = models.BooleanField(default=False)
     view_issues = models.BooleanField(default=True)
     
-    add_wiki = models.BooleanField(default=True)
+    add_wiki = models.BooleanField(default=False)
     delete_wiki = models.BooleanField(default=False)
     edit_wiki = models.BooleanField(default=False)
     view_wiki = models.BooleanField(default=True)
