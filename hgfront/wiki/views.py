@@ -10,6 +10,10 @@ from hgfront.wiki.forms import WikiPageCreateForm
 from hgfront.project.decorators import check_project_permissions
 
 @check_project_permissions('view_wiki','view_project')
+def wiki_index(request, slug):
+    return HttpResponse('wiki index')
+
+@check_project_permissions('view_wiki','view_project')
 def wiki_page(request, slug, page_name):
     """Return a Wiki page"""
     try:
