@@ -7,13 +7,16 @@ from django.core.urlresolvers import reverse
 from hgfront.project.models import Project
 from hgfront.wiki.models import WikiPage
 from hgfront.wiki.forms import WikiPageCreateForm
+from hgfront.project.decorators import check_project_permissions
 
+@check_project_permissions('view_wiki','view_project')
 def wiki_index(request, slug):
     """Return simple list of wiki pages"""
     pages = WikiPage.objects.all().filter(project__name_short=slug).order_by('title')
     project = Project.objects.get(name_short__exact=slug)
     return render_to_response('wiki/wiki_home.html', {'pages':pages, 'project':project})
 
+@check_project_permissions('view_wiki','view_project')
 def wiki_page(request, slug, page_name):
     """Return a Wiki page"""
     try:
@@ -23,6 +26,7 @@ def wiki_page(request, slug, page_name):
     except WikiPage.DoesNotExist:
         return HttpResponseRedirect(reverse('wiki-edit', kwargs={'slug':project.name_short,'page_name':page_name}))
     
+@check_project_permissions('edit_wiki','view_project')
 def wiki_edit(request, slug, page_name):
     """Create or edit and Wiki page"""
     project = Project.objects.get(name_short=slug)
@@ -33,6 +37,5 @@ def wiki_edit(request, slug, page_name):
             return HttpResponseRedirect(reverse('wiki-page', kwargs={'slug':project.name_short,'page_name':page_name}))
     else:
         form = WikiPageCreateForm()
-    is_auth = bool(request.user.is_authenticated())
-    return render_to_response('wiki/wiki_create.html', {'form':form, 'is_auth': is_auth, 'project':project, 'page_name':page_name})
+    return render_to_response('wiki/wiki_create.html', {'form':form, 'project':project, 'page_name':page_name})
  
