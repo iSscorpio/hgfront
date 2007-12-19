@@ -7,9 +7,9 @@ from django.shortcuts import render_to_response
 from hgfront.project.models import Project
 from hgfront.wiki.models import WikiPage
 from hgfront.wiki.forms import WikiPageCreateForm
-from hgfront.project.decorators import check_project_permission
+from hgfront.project.decorators import check_project_permissions
 
-@check_project_permission('view_wiki')
+@check_project_permissions('view_wiki','view_project')
 def wiki_page(request, slug, page_name):
     """Return a Wiki page"""
     try:
@@ -26,14 +26,15 @@ def wiki_page(request, slug, page_name):
         # FIXME: This does not redirect properly
         return HttpResponseRedirect(reverse('wiki-edit', kwargs={'slug':slug, 'page_name':page_name}))
 
-@check_project_permission('edit_wiki')    
+@check_project_permissions('edit_wiki','view_project')
 def wiki_edit(request, slug, page_name):
     """Create or edit and Wiki page"""
+    project = Project.objects.get(name_short=slug)
     if request.method == "POST":
         form = WikiPageCreateForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect("/hgfront/projects/" + slug + "/wiki/%s/" % page_name)
+            return HttpResponseRedirect(reverse('wiki-page', kwargs={'slug':project.name_short,'page_name':page_name}))
     else:
         form = WikiPageCreateForm()
     return render_to_response('wiki/wiki_create.html',
@@ -44,4 +45,3 @@ def wiki_edit(request, slug, page_name):
                      'permissions': project.get_permissions(request.user),
                  }
     )
- 

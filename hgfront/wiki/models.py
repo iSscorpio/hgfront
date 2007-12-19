@@ -26,6 +26,7 @@ class WikiPage(models.Model):
     def get_absolute_url(self):
         """Creates a permalink to the wiki page"""
         return ('wiki-page', (), {
+            "slug": self.project.name_short,
             "page_name": self.slug
             })
     get_absolute_url = permalink(get_absolute_url)

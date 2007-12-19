@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends "project/project_detail.html" %}
 
 {% block title %}Issues for {{project.name_long}}{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url issue-list project.name_short %}">Issues</a>{% endblock %}
 
 {% block content_title %}
     <h2>{{project.name_long}} issues {% ifnotequal listed_by None %}listed by {{listed_by}}: {{group_by_value}}{% endifnotequal %}</h2>

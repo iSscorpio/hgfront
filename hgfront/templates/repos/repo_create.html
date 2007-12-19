@@ -1,13 +1,14 @@
-{% extends "base.html" %}
+{% extends "project/project_detail.html" %}
 
 {% block title %}Create New Repository{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url repo-create project.name_short %}">New Repo</a>{% endblock %}
 
 {% block content_title %}Create New Repository{% endblock %}
 
 {% block main_content %}
 	{{fail}}
 	{% if is_auth %}
-		<form action="/hgfront/projects/{{project}}/repos/create/" method="post">
+		<form action="{% url repo-create project.name_short %}" method="post">
 			{{form}}
 			<input type="submit" />
 		</form>
