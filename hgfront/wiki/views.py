@@ -9,9 +9,12 @@ from hgfront.wiki.forms import WikiPageCreateForm
 
 def wiki_index(request, slug):
     """Return simple list of wiki pages"""
-    pages = WikiPage.objects.all().filter(project__name_short=slug).order_by('title')
-    project = Project.objects.get(name_short__exact=slug)
-    return render_to_response('wiki/wiki_home.html', {'pages':pages, 'project':project})
+    try:
+        page = WikiPage.objects.get(slug="Main_Page")
+        project = Project.objects.get(name_short__exact=slug)
+        return render_to_response('wiki/wiki_home.html', {'page':page, 'project':project})
+    except WikiPage.DoesNotExist:
+        return HttpResponseRedirect("/hgfront/projects/" + slug + "/wiki/edit/%s/" % "Main_Page/")
 
 def wiki_page(request, slug, page_name):
     """Return a Wiki page"""

@@ -7,7 +7,7 @@
 {% block main_content %}
 	{{fail}}
 	{% if is_auth %}
-		<form action="/hgfront/projects/{{project}}/wiki/edit/{{page_name}}" method="post">
+		<form action="/hgfront/projects/{{project}}/wiki/edit/{{page_name}}/" method="post">
 			{{form}}
 			<input type="submit" />
 		</form>
