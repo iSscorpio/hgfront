@@ -47,8 +47,7 @@ def issue_list(request, slug):
     if request.GET.has_key('status'):
         issues = issues.filter(issue_status__slug = request.GET['status'])
     if request.GET.has_key('completed'):
-        completed = True if request.GET['completed']=='yes' else False
-        issues = [issue for issue in issues if issue.completed() == completed]
+        issues = issues.filter(finished_date__isnull = False if request.GET['completed']=='yes' else True)
 
     #initialize the pagination
     paginator = ObjectPaginator(issues, issues_per_page)
@@ -56,9 +55,9 @@ def issue_list(request, slug):
         issues = paginator.get_page(page)
     except InvalidPage:
         issues = []
-    pages = []
 
     #generate the list of pages for the template
+    pages = []
     if len(paginator.page_range) > 1:
         for page_number in paginator.page_range:
             new_query_dict = request.GET.copy()

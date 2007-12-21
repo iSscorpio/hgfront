@@ -99,10 +99,10 @@ class IssueStatus(models.Model):
 class IssueManager(models.Manager):
     """A manager for issues"""
     def get_open_issues(self):
-        return self.filter(date_finished__isnull=True)
+        return self.filter(finished_date__isnull=True)
 
     def get_closed_issues(self):
-        return self.filter(date_finished__isnull=False)
+        return self.filter(finished_date__isnull=False)
 
 class Issue(models.Model):
     """A class that represents an issue/bug"""
