@@ -22,10 +22,10 @@
         {% block sidebar %}
 			{# Generate the users sidebar #}
             {# if we're on a project, display its members #}
-            {% if project.user_members.all %}
+            {% if project.members %}
             <span class="group">Project Members</span>
                 <ul>
-                {% for member in project.user_members.all %}
+                {% for member in project.members %}
                     <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
                 {% endfor %}
                 </ul>

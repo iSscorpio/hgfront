@@ -14,16 +14,14 @@ class Project(models.Model):
     A project represents a way to group users, repositories and issues on the system.
     Each project has a project owner who has full control over all aspects of the project.  When
     a project is created, it is also given a default set of permissions for non-members, which are
-    changeable
-    
-    You can also assign members to a project, and give them each their own permission set.
+    changeable.
+    Members are assigned to projects by giving them permissions on the project.
     """
     name_short=models.CharField(max_length=50, db_index=True)
     name_long=models.CharField(max_length=255)
     description_short=models.CharField(max_length=255, blank=True, null=True)
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
-    user_members=models.ManyToManyField(User, related_name='user_members', verbose_name='project members', null=True, blank=True)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     
     def __unicode__(self):
@@ -35,7 +33,7 @@ class Project(models.Model):
     num_repos.short_description = "Number of Repositories"
 
     def user_in_project(self, user):
-        return len(self.user_members.filter(id = user.id)) > 0
+        return len(self.members.filter(id = user.id)) > 0
 
     def get_permissions(self, user):
         """ Returns an ProjectPermissionSet of the user `user`.
@@ -53,11 +51,7 @@ class Project(models.Model):
         else:
             try:
                 #Try to find a permission set for the user
-                permission_list = ProjectPermissionSet.objects.filter(user__id=user.id, project__id=self.id)
-                if len(permission_list) > 0:
-                    permissions = permission_list[0]
-                else:
-                    raise ProjectPermissionSet.DoesNotExist
+                permissions = ProjectPermissionSet.objects.get(user__id=user.id, project__id=self.id)
             except ProjectPermissionSet.DoesNotExist:
                 #If there's no specific permission set for the user, try to find a default permission set
                 permission_list = ProjectPermissionSet.objects.filter(is_default=True, project__id=self.id)
@@ -70,13 +64,27 @@ class Project(models.Model):
                     add_issues = False, delete_issues = Flase, edit_issues = False, view_issues = False)
         return permissions
 
+    @permalink
     def get_absolute_url(self):
         """Creates a permalink to the project page"""
-        return ('project-detail', (), {
-            "slug": self.name_short
-            })
+        return ('project-detail', (), { "slug": self.name_short })
 
-    get_absolute_url = permalink(get_absolute_url)
+    def _get_members(self):
+        """
+        Gets the QuerySet of the project's users. It gets them via the
+        project's permission sets. Basically one permission set means one
+        user to the project. To access this just use:
+
+        project.members
+
+        Because it returns a QuerySet, you can treat it like you would any
+        QuerySet. For example:
+
+        project.members.filter(id=1)
+
+        """
+        return User.objects.filter(projectpermissionset__project__id = self.id)
+    members = property(_get_members)
 
     def is_private(self):
         return not self.projectpermissionset_set.all()[0].view_project
@@ -85,7 +93,7 @@ class Project(models.Model):
         fields = (
                   ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
                   ('Date information', {'fields': ('pub_date',)}),
-                  ('Publishing Details', {'fields': ('user_owner', 'user_members',)}),
+                  ('Publishing Details', {'fields': ('user_owner',)}),
         )
         list_display = ('name_long', 'name_short', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
         list_filter = ['pub_date',]
@@ -101,10 +109,10 @@ dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Proj
 
 class ProjectPermissionSet(models.Model):
     """
-    Each project has it's own set of permissions.  There are two types, the default permissions
+    Each project has its own set of permissions.  There are two types, the default permissions
     which are defined when a project is created.  These can be editing and provide the rules for
     anonymous access.
-    Each member of a project can also have their own permissions that allow them to do extra tasks.
+    Each member is connected to the project via the permission set that it has for that project.
     """
     is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
 
@@ -137,3 +145,6 @@ class ProjectPermissionSet(models.Model):
     class Admin:
         list_display = ('__unicode__', 'is_default',)
         list_filter = ['is_default', 'project']
+    
+    class Meta:
+        unique_together = ('user','project')
