@@ -3,39 +3,78 @@
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render_to_response
+from django.core.paginator import ObjectPaginator, InvalidPage
+from django.core.urlresolvers import reverse
 # Project Libraries
 from hgfront.issue.models import *
 from hgfront.project.models import Project
 from hgfront.project.decorators import check_project_permissions
 
 @check_project_permissions('view_issues')
-def issue_list(request, slug, listed_by=None, group_by_value=None):
+def issue_list(request, slug):
     """Returns a list of isses that belong to the project identified by `slug`
-    If `listed_by` and `group_by_value` are specified, it will display a filtered
-    list. Example:
+    Also, this accepts querystring variables:
 
-       hgfront/projects/hgfront/issues/severity/extreme
-    This would mean that `listed_by`='severity' and `group_by_value`='extreme' """
+    `page` - which page we want to view
+
+    `severity` - by which severity we want the issues filtered
+
+    `type` - by which type we want the issues filtered
+
+    `status` - by which status we want the issues filtered
+
+    `completed` - do we want to see completed or uncompleted issues. A value
+    of `yes` means we want it to show the completed ones, anything else matches
+    uncompleted issues
+    """
+    issues_per_page = 20 #TODO: move this to settings.py later on
+
+    #read the page variable in the querystring to determine which page we are at
+    page = request.GET['page'] if request.GET.has_key('page') else 1
+    try:
+        page = int(page)-1
+    except ValueError:
+        page = 0
+
     project = get_object_or_404(Project, name_short = slug)
-    if listed_by is None:
-        issues = project.issue_set.all()
-    else:
-        if listed_by == 'severity':
-            issues = project.issue_set.filter(issue_sev__slug = group_by_value)
-        if listed_by == 'type':
-            issues = project.issue_set.filter(issue_type__slug = group_by_value)
-        if listed_by == 'status':
-            issues = project.issue_set.filter(issue_status__slug = group_by_value)
+    issues = project.issue_set.all()
+
+    #check if we're filtering the issues by anything and if we are, filter the selection
+    if request.GET.has_key('severity'):
+        issues = issues.filter(issue_sev__slug = request.GET['severity'])
+    if request.GET.has_key('type'):
+        issues = issues.filter(issue_type__slug = request.GET['type'])
+    if request.GET.has_key('status'):
+        issues = issues.filter(issue_status__slug = request.GET['status'])
+    if request.GET.has_key('completed'):
+        completed = True if request.GET['completed']=='yes' else False
+        issues = [issue for issue in issues if issue.completed() == completed]
+
+    #initialize the pagination
+    paginator = ObjectPaginator(issues, issues_per_page)
+    try:
+        issues = paginator.get_page(page)
+    except InvalidPage:
+        issues = []
+    pages = []
+
+    #generate the list of pages for the template
+    if len(paginator.page_range) > 1:
+        for page_number in paginator.page_range:
+            new_query_dict = request.GET.copy()
+            new_query_dict['page'] = page_number
+            pages.append((page_number, new_query_dict.urlencode()))
+    
     return render_to_response('issue/issue_list.html',
         {
             'project':project,
             'issue_list':issues,
             'permissions':project.get_permissions(request.user),
-            'listed_by':listed_by,
-            'group_by_value':group_by_value,
+            'pages':pages,
+            'current_page':page+1
         }
     )
-    #TODO: Implement pagination (ugh)
+    #TODO: Implement advanced filtering in the sidebar (kind of like the filtering the django admin has)
 
 @check_project_permissions('view_issues')
 def issue_detail(request, slug, issue_id):

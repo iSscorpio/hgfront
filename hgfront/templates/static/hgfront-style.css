@@ -20,9 +20,18 @@ body {
     padding:25px;
 }
 #breadcrumbs {
-    background-color:#ddffdd;
+    background-color:#dddddd;
     line-height:30px;
     padding:0 10px;
+    color:#777;
+}
+#breadcrumbs a {
+    text-decoration:underline;
+    color:black;
+}
+#breadcrumbs a:hover {
+    text-decoration:none;
+    color:red;
 }
 #wrapper {
     width:900px;
@@ -45,4 +54,21 @@ body {
     font-weight:bold;
     font-size:16px;
     font-family:georgia, serif;
+}
+table {
+    font-size:11px;
+    background-color:#eee;
+}
+table th {
+    background-color:#ffd;
+}
+table tr:hover {
+    background-color:white;
+}
+table td {
+    border:1px solid white;
+    padding:5px;
+    margin:0;
+    text-align:center;
+    line-height:15px;
 }
