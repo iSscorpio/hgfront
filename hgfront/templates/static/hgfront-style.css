@@ -58,6 +58,7 @@ body {
 table {
     font-size:11px;
     background-color:#eee;
+    line-height:15px;
 }
 table th {
     background-color:#ffd;
@@ -70,5 +71,4 @@ table td {
     padding:5px;
     margin:0;
     text-align:center;
-    line-height:15px;
 }

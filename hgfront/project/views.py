@@ -20,7 +20,9 @@ def get_project_list(request):
 def get_project_details(request, slug):
     project = get_object_or_404(Project, name_short=slug)
     permissions = project.get_permissions(request.user)
-    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions})
+    issues_shown = 10 #TODO: Move this either to settings.py or make it user configurabl
+    issue_short_list = project.issue_set.all()[:issues_shown]
+    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list})
 
 def create_project_form(request):
     if request.method == "POST":

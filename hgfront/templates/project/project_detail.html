@@ -31,7 +31,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for issue in project.issue_set.all %}
+                        {% for issue in issues %}
                             <tr>
                                 <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
                                 <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>

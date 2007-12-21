@@ -29,7 +29,7 @@
                     <td><a href="{% url issue-list slug=project.name_short %}?type={{issue.issue_type.slug}}">{{issue.issue_type.title}}</a></td>
                     <td><a href="{% url issue-list slug=project.name_short %}?status={{issue.issue_status.slug}}">{{issue.issue_status.title}}</a></td>
                     <td><a href="{% url issue-list slug=project.name_short %}?completed={{issue.completed|yesno:"yes,no"}}">{{issue.completed|yesno:"Yes,No"}}</a></td>
-                    <td><a href="{{issue.user_post.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
+                    <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
                     <td><a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> </td>
                 </tr>
             {% endfor %}
