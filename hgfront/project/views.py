@@ -33,5 +33,5 @@ def create_project_form(request):
     else:
         form = ProjectCreateForm()
     is_auth = bool(request.user.is_authenticated())
-    return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth})
+    return render_to_response('project/project_create.html', {'form':form.as_table(), 'is_auth': is_auth})
  

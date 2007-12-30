@@ -34,4 +34,4 @@ def repo_create(request, slug):
         form = RepoCreateForm()
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
     project = get_object_or_404(Project, name_short__exact=slug)
-    return render_to_response('repos/repo_create.html', {'form':form, 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})
+    return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})

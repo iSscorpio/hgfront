@@ -47,11 +47,13 @@ def wiki_edit(request, slug, page_name):
             return HttpResponseRedirect(reverse('wiki-page', kwargs={'slug':project.name_short,'page_name':page_name}))
     else:
         form = WikiPageCreateForm()
+        title = page_name.replace('_', ' ')
     return render_to_response('wiki/wiki_create.html',
                 {
                      'form':form,
                      'project':slug,
                      'page_name':page_name,
+                     'title': title,
                      'permissions': project.get_permissions(request.user),
                  }
     )

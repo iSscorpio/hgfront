@@ -9,7 +9,7 @@
 	{{fail}}
 	{% if is_auth %}
 		<form action="{% url repo-create project.name_short %}" method="post">
-			{{form}}
+			<table>{{form}}</table>
 			<input type="submit" />
 		</form>
 	{% else %}
