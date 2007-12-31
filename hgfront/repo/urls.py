@@ -1,4 +1,5 @@
 # General Libraries
+from mercurial import hg, ui, hgweb
 # Django Libraries
 from django.conf.urls.defaults import *
 # Project Libraries

@@ -24,9 +24,9 @@ def create_repo(sender, instance, signal, *args, **kwargs):
             create_hgrc(instance, p, directory)
             return True
         else:
-            raise ValueError("Invalid value")
+            raise ValueError("Invalid Creation Method")
     else:
-        raise ValueError("Invalid: %s already exists for this project" % self.repo_dirname)
+        raise ValueError("Invalid: %s already exists for this project" % instance.repo_dirname)
     
 def move_repo():
     """TODO: Have code that checks if a project has changed in the DB and needs moved"""

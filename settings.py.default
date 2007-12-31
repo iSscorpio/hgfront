@@ -92,3 +92,5 @@ MERCURIAL_REPOS = '/path/to/repo/home'
 ISSUE_FROM_EMAIL = 'test@myreposite.com'
 
 HGFRONT_STATIC_PATH = '/path/to/my/hgfront/templates/static'
+
+APPEND_SLASH=False
