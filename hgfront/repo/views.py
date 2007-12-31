@@ -26,13 +26,10 @@ def repo_list(request, slug):
 @check_project_permissions('view_repos')
 def repo_detail(request, slug, repo_name):
     from mercurial.hgweb.request import wsgiapplication
-    from mercurial.hgweb.hgwebdir_mod import hgwebdir
+    from mercurial.hgweb.hgweb_mod import hgweb
     def make_web_app():
-        project = get_object_or_404(Project, name_short__exact=slug)
-        repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
-        return hgwebdir(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname + '/.hg/hgrc' ))
-    headers = wsgiapplication(make_web_app)
-    return HttpResponse(headers)
+        return hgweb(str(settings.MERCURIAL_REPOS + slug + '/' + repo_name ))
+    return HttpResponse(wsgiapplication(make_web_app))
 
 @check_project_permissions('add_repos')
 def repo_create(request, slug):

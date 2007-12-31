@@ -33,5 +33,3 @@ def check_project_permissions(*args):
             return func(*args, **kwargs)
         return inner
     return the_decorator
-
-
