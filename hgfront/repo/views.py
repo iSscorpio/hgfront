@@ -15,16 +15,32 @@ from hgfront.project.decorators import check_project_permissions
 def repo_list(request, slug):
    return HttpResponse("repo list")
 
+#@check_project_permissions('view_repos')
+#def repo_detail(request, slug, repo_name):
+#    project = get_object_or_404(Project, name_short__exact=slug)
+#    permissions = project.get_permissions(request.user)
+#    repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
+#    repo = hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname ))
+#    return HttpResponse(repo)
+
 @check_project_permissions('view_repos')
 def repo_detail(request, slug, repo_name):
-    project = get_object_or_404(Project, name_short__exact=slug)
-    permissions = project.get_permissions(request.user)
-    repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
-    repo = hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname ))
-    return HttpResponse(repo)
+    from mercurial.hgweb.request import wsgiapplication
+    from mercurial.hgweb.hgwebdir_mod import hgwebdir
+    def make_web_app():
+        project = get_object_or_404(Project, name_short__exact=slug)
+        repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
+        return hgwebdir(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname + '/.hg/hgrc' ))
+    headers = wsgiapplication(make_web_app)
+    return HttpResponse(headers)
 
 @check_project_permissions('add_repos')
 def repo_create(request, slug):
+    """
+        This function displays a form based on the model of the repo to authorised users
+        who can create repos.  If the repo does not already exist in the project then it
+        is created and the user is redirected there
+    """
     if request.method == "POST":
         form = RepoCreateForm(request.POST)
         if form.is_valid():
