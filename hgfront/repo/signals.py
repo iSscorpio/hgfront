@@ -15,11 +15,12 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
-        if instance.creation_method=='1':
+        print instance.creation_method
+        if instance.creation_method==1:
             hg.repository(u, directory , create=True)
             create_hgrc(instance, p, directory)
             return True
-        elif instance.creation_method=='2':
+        elif instance.creation_method==2:
             hg.clone(u, str(instance.url), directory, True)
             create_hgrc(instance, p, directory)
             return True
