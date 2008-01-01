@@ -9,6 +9,11 @@ from django.dispatch import dispatcher
 # Project Libraries
 from hgfront.project.signals import *
 
+HGWEB_STYLE = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
+
 class Project(models.Model):
     """
     A project represents a way to group users, repositories and issues on the system.
@@ -23,6 +28,7 @@ class Project(models.Model):
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
+    hgweb_style=models.CharField(max_length=50, choices=HGWEB_STYLE, verbose_name="hgweb Style")
     
     def __unicode__(self):
         return self.name_long
@@ -93,7 +99,7 @@ class Project(models.Model):
         fields = (
                   ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
                   ('Date information', {'fields': ('pub_date',)}),
-                  ('Publishing Details', {'fields': ('user_owner',)}),
+                  ('Publishing Details', {'fields': ('hgweb_style', 'user_owner',)}),
         )
         list_display = ('name_long', 'name_short', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
         list_filter = ['pub_date',]
