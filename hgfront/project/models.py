@@ -104,8 +104,9 @@ class Project(models.Model):
 
 # Dispatchers
 dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
-dispatcher.connect( create_project_dir , signal=signals.post_save, sender=Project )
-dispatcher.connect( delete_project_dir , signal=signals.post_delete, sender=Project )
+dispatcher.connect( create_project_dir, signal=signals.post_save, sender=Project )
+dispatcher.connect( create_hgwebconfig, signal=signals.post_save, sender=Project )
+dispatcher.connect( delete_project_dir, signal=signals.post_delete, sender=Project )
 
 class ProjectPermissionSet(models.Model):
     """
