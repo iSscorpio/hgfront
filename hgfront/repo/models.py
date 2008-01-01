@@ -11,8 +11,8 @@ from hgfront.repo.signals import *
 from hgfront.project.models import Project
 
 REPO_TYPES = (
-    ('1', 'New',),
-    ('2', 'Clone',),
+    (1, 'New',),
+    (2, 'Clone',),
 )
 
 class Repo(models.Model):
@@ -22,6 +22,7 @@ class Repo(models.Model):
     repo_dirname=models.CharField(max_length=20)
     repo_description=models.CharField(max_length=255, null=True, blank=True)
     repo_url=models.URLField(null=True, blank=True)
+    repo_contact=models.ForeignKey(User, related_name="repo_contact")
     project=models.ForeignKey(Project)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     anonymous_pull=models.BooleanField(default=True)
@@ -52,7 +53,7 @@ class Repo(models.Model):
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'repo_description', 'project', )}),
-                  ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members')}),
+                  ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members', 'repo_contact')}),
                   ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
@@ -68,4 +69,5 @@ class Repo(models.Model):
 
 # Dispatchers
 dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
+dispatcher.connect( create_hgrc , signal=signals.post_save, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
