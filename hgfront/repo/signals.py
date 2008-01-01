@@ -21,7 +21,7 @@ def create_repo(sender, instance, signal, *args, **kwargs):
             create_hgrc(instance, p, directory)
             return True
         elif instance.creation_method==2:
-            hg.clone(u, str(instance.url), directory, True)
+            hg.clone(u, str(instance.repo_url), directory, True)
             create_hgrc(instance, p, directory)
             return True
         else:
@@ -44,6 +44,8 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
 def create_hgrc(repo, project, directory):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
     hgrc = open(directory + '/.hg/hgrc', 'w')
+    hgrc.write("[paths]\n")
+    hgrc.write("default = " + repo.repo_url + "\n\n")
     hgrc.write("[web]\n")
     hgrc.write("style = gitweb\n")
     hgrc.write("description = %s\n" % repo.repo_description)
