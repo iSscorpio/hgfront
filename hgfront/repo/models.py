@@ -45,6 +45,7 @@ class Repo(models.Model):
     get_absolute_url = permalink(get_absolute_url)
     
     def was_cloned(self):
+        """Checks to see if this was a cloned repositories"""
         return bool(self.creation_method == '2')
     was_cloned.short_description = "Cloned Repository?"
 

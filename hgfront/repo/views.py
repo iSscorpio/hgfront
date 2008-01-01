@@ -13,15 +13,13 @@ from hgfront.project.decorators import check_project_permissions
 
 @check_project_permissions('view_repos')
 def repo_list(request, slug):
-   return HttpResponse("repo list")
-
-#@check_project_permissions('view_repos')
-#def repo_detail(request, slug, repo_name):
-#    project = get_object_or_404(Project, name_short__exact=slug)
-#    permissions = project.get_permissions(request.user)
-#    repo_db = get_object_or_404(Repo, repo_dirname__exact=repo_name)
-#    repo = hgweb.hgweb(str(settings.MERCURIAL_REPOS + project.name_short + '/' + repo_db.repo_dirname ))
-#    return HttpResponse(repo)
+    """
+    List all repoistories linked to a project
+    """
+    project = get_object_or_404(Project, name_short__exact=slug)
+    repos = Repo.objects.filter(project=project.id)
+    is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).view_repos]
+    return render_to_response('repos/repo_list.html', {'project':project, 'repos': repos, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})
 
 @check_project_permissions('view_repos')
 def repo_detail(request, slug, repo_name):

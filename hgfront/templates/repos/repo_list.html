@@ -1,0 +1,18 @@
+{% extends "project/project_detail.html" %}
+
+{% block title %}Repositories for {{project.name_long}}{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; Repositories for {{project.name_long}}{% endblock %}
+
+{% block content_title %}Repositories for {{project.name_long}}{% endblock %}
+
+{% block main_content %}
+{% if is_auth %}
+	<ul>
+		{% for repo in repos %}
+			<li><a href="{{repo.get_absolute_url}}">{{repo.repo_name}}</a></li>
+		{% endfor %}
+	</ul>
+{% else %}
+	<strong>You do not have permission to view this projects repositories.</strong>
+{% endif %}
+{% endblock %}
