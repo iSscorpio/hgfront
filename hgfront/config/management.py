@@ -38,6 +38,6 @@ def init_installed_extentions(app, created_models, verbosity, **kwargs):
         InstalledExtentions.objects.get_or_create(long_name='TransplantExtension', defaults={'short_name':'transplant','long_name': 'TransplantExtension'})
         InstalledExtentions.objects.get_or_create(long_name='Win32Extension', defaults={'short_name':'win32text','long_name': 'Win32Extension'})        
         
-        # Dispatchers       
+# Dispatchers       
 dispatcher.connect(init_installed_styles, signal=signals.post_syncdb)
 dispatcher.connect(init_installed_extentions, signal=signals.post_syncdb)

@@ -13,6 +13,7 @@ class InstalledStyles(models.Model):
     """This stores a list of installed hgweb styles"""
     short_name=models.CharField(max_length=50, db_index=True)
     long_name=models.CharField(max_length=100)
+    is_active=models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.long_name
@@ -29,6 +30,7 @@ class InstalledExtentions(models.Model):
     """This stores a list of installed hg extentions"""
     short_name=models.CharField(max_length=50, db_index=True)
     long_name=models.CharField(max_length=100)
+    is_active=models.BooleanField(default=True)
     
     def __unicode__(self):
         return self.long_name

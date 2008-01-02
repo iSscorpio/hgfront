@@ -44,15 +44,17 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     from django.contrib.auth.models import User
+    from hgfront.config.models import InstalledStyles
     p = Project.objects.get(name_long=instance.project)
     c = User.objects.get(username__exact=instance.repo_contact)
+    s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
     directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     
     hgrc = open(directory + '/.hg/hgrc', 'w')
     hgrc.write("[paths]\n")
-    hgrc.write("default = " + instance.repo_url + "\n\n")
+    hgrc.write("default = %s\n\n" % instance.repo_url)
     hgrc.write("[web]\n")
-    hgrc.write("style = " + instance.hgweb_style + "\n")
+    hgrc.write("style = %s\n" % s.short_name)
     hgrc.write("description = %s\n" % instance.repo_description)
     hgrc.write("contact = %s <%s>\n" % (c.username, c.email))
     a = "allow_archive = "

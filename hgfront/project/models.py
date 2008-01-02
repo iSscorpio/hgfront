@@ -7,12 +7,8 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
+from hgfront.config.models import InstalledStyles
 from hgfront.project.signals import *
-
-HGWEB_STYLE = (
-    ('default', 'Default'),
-    ('gitweb', 'Gitweb'),
-)
 
 class Project(models.Model):
     """
@@ -28,7 +24,7 @@ class Project(models.Model):
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    hgweb_style=models.CharField(max_length=50, choices=HGWEB_STYLE, verbose_name="hgweb Style")
+    hgweb_style=models.ForeignKey(InstalledStyles)
     
     def __unicode__(self):
         return self.name_long

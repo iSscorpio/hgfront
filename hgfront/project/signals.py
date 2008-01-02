@@ -33,12 +33,14 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
     Creates a hgweb.config file for use with hgwebdir
     """
+    from hgfront.config.models import InstalledStyles
+    s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
     if bool(os.path.isdir(settings.MERCURIAL_REPOS + instance.name_short)):
         config = open(settings.MERCURIAL_REPOS + instance.name_short + '/hgweb.config', 'w')
         config.write('[collections]\n')
         config.write(str(settings.MERCURIAL_REPOS + instance.name_short) + ' = ' + str(settings.MERCURIAL_REPOS + instance.name_short) + '\n\n')
         config.write('[web]\n')
-        config.write('style = ' + instance.hgweb_style)
+        config.write('style = ' + s.short_name)
         config.close()
         shutil.copy('/home/digitalspaghetti/workspace/hgfront-dev/hgfront/templates/project/hgwebdir.txt', settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi')
         os.chmod(settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi', 0755)
