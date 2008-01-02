@@ -52,7 +52,7 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     hgrc.write("[paths]\n")
     hgrc.write("default = " + instance.repo_url + "\n\n")
     hgrc.write("[web]\n")
-    hgrc.write("style = gitweb\n")
+    hgrc.write("style = " + instance.hgweb_style + "\n")
     hgrc.write("description = %s\n" % instance.repo_description)
     hgrc.write("contact = %s <%s>\n" % (c.username, c.email))
     a = "allow_archive = "

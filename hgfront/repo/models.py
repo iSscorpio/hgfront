@@ -15,6 +15,11 @@ REPO_TYPES = (
     (2, 'Clone',),
 )
 
+HGWEB_STYLE = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
+
 class Repo(models.Model):
     """A repo represents a physical repository on the hg system path"""
     creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Is this new or cloned?")
@@ -29,6 +34,7 @@ class Repo(models.Model):
     anonymous_push=models.BooleanField(default=False)
     pull_members=models.ManyToManyField(User, related_name="pull_members")
     push_members=models.ManyToManyField(User, related_name="push_members")
+    hgweb_style=models.CharField(max_length=50, choices=HGWEB_STYLE, verbose_name="hgweb Style")
     
     offer_zip=models.BooleanField(default=True)
     offer_tar=models.BooleanField(default=True)
@@ -54,7 +60,7 @@ class Repo(models.Model):
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'repo_description', 'project', )}),
                   ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members', 'repo_contact')}),
-                  ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2',)}),
+                  ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2', 'hgweb_style')}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
         list_display = ('repo_name', 'project', 'was_cloned', 'pub_date',)
