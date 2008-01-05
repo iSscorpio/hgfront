@@ -16,10 +16,10 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     
     if not bool(os.path.isdir(directory)):
         print instance.creation_method
-        if instance.creation_method=='1':
+        if instance.creation_method==1:
             hg.repository(u, directory , create=True)
             return True
-        elif instance.creation_method=='2':
+        elif instance.creation_method==2:
             hg.clone(u, str(instance.repo_url), directory, True)
             return True
         else:
@@ -51,21 +51,22 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     
     hgrc = open(directory + '/.hg/hgrc', 'w')
-    hgrc.write("[paths]\n")
-    hgrc.write("default = %s\n\n" % instance.repo_url)
-    hgrc.write("[web]\n")
-    hgrc.write("style = %s\n" % s.short_name)
-    hgrc.write("description = %s\n" % instance.repo_description)
-    hgrc.write("contact = %s <%s>\n" % (c.username, c.email))
-    a = "allow_archive = "
+    hgrc.write('[paths]\n')
+    hgrc.write('default = %s\n\n' % instance.repo_url)
+    hgrc.write('[web]\n')
+    hgrc.write('style = %s\n' % s.short_name)
+    hgrc.write('description = %s\n' % instance.repo_description)
+    hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
+    a = 'allow_archive = '
     if instance.offer_zip:
-        a += "zip "
+        a += 'zip '
     if instance.offer_tar:
-        a += "gz "
+        a += 'gz '
     if instance.offer_bz2:
-        a += "bz2"
-    hgrc.write(a + "\n\n")
+        a += 'bz2'
+    hgrc.write(a + '\n\n')
     hgrc.write('[extentions]')
+    # TODO: This doesn't seem to be working :/
     for e in instance.active_extentions.all():
-        hgrc.write('hgext.' + e + "\n")
+        hgrc.write('hgext.%s = \n' % e)
     hgrc.close()
