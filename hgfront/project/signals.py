@@ -27,7 +27,7 @@ def delete_project_dir(sender, instance, signal, *args, **kwargs):
     Checks to see if path still exists for project and if it does, deletes it.
     """
     if bool(os.path.isdir(os.path.join(settings.MERCURIAL_REPOS, instance.name_short))):
-        return bool(shutil.rmtree(os.path.join(settings.MERCURIAL_REPOS, instance.name_short))
+        return bool(shutil.rmtree(os.path.join(settings.MERCURIAL_REPOS, instance.name_short)))
 
 def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """

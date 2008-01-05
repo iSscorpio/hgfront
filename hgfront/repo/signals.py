@@ -12,7 +12,7 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
     u = ui.ui()
-    directory = os.path.join(setting.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
+    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
         print instance.creation_method
