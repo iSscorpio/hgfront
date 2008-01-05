@@ -30,6 +30,7 @@ class InstalledExtentions(models.Model):
     """This stores a list of installed hg extentions"""
     short_name=models.CharField(max_length=50, db_index=True)
     long_name=models.CharField(max_length=100)
+    additional_options=models.CharField(max_length=255)
     is_active=models.BooleanField(default=True)
     
     def __unicode__(self):

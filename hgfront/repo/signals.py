@@ -44,7 +44,7 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     from django.contrib.auth.models import User
-    from hgfront.config.models import InstalledStyles
+    from hgfront.config.models import InstalledStyles, InstalledExtentions
     p = Project.objects.get(name_long=instance.project)
     c = User.objects.get(username__exact=instance.repo_contact)
     s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
@@ -64,5 +64,8 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
         a += "gz "
     if instance.offer_bz2:
         a += "bz2"
-    hgrc.write(a)
+    hgrc.write(a + "\n\n")
+    hgrc.write('[extentions]')
+    for e in instance.active_extentions.all():
+        hgrc.write('hgext.' + e + "\n")
     hgrc.close()

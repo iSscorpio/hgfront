@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-from hgfront.config.models import InstalledStyles
+from hgfront.config.models import InstalledStyles, InstalledExtentions
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
 
@@ -35,6 +35,8 @@ class Repo(models.Model):
     offer_zip=models.BooleanField(default=True)
     offer_tar=models.BooleanField(default=True)
     offer_bz2=models.BooleanField(default=True)
+    
+    active_extentions=models.ManyToManyField(InstalledExtentions)
 
     def __unicode__(self):
         return self.repo_name
@@ -57,6 +59,7 @@ class Repo(models.Model):
                   ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'repo_description', 'project', )}),
                   ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members', 'repo_contact')}),
                   ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2', 'hgweb_style')}),
+                  ('Active Extentions', {'fields': ('active_extentions',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
         list_display = ('repo_name', 'project', 'was_cloned', 'pub_date',)
