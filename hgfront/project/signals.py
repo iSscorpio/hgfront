@@ -19,15 +19,15 @@ def create_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path already exists, and if not this is a new project so creates path.
     """
-    if not bool(os.path.isdir(settings.MERCURIAL_REPOS + instance.name_short)):
-        return bool(shutil.os.mkdir(settings.MERCURIAL_REPOS + instance.name_short))
+    if not bool(os.path.isdir(os.path.join(settings.MERCURIAL_REPOS, instance.name_short))):
+        return bool(shutil.os.mkdir(os.path.join(settings.MERCURIAL_REPOS ,instance.name_short)))
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path still exists for project and if it does, deletes it.
     """
-    if bool(os.path.isdir(settings.MERCURIAL_REPOS + instance.name_short)):
-        return bool(shutil.rmtree(settings.MERCURIAL_REPOS + instance.name_short))
+    if bool(os.path.isdir(os.path.join(settings.MERCURIAL_REPOS, instance.name_short))):
+        return bool(shutil.rmtree(os.path.join(settings.MERCURIAL_REPOS, instance.name_short)))
 
 def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
@@ -35,14 +35,14 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
     from hgfront.config.models import InstalledStyles
     s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
-    directory = settings.MERCURIAL_REPOS + instance.name_short
+    directory = os.path.join(settings.MERCURIAL_REPOS, instance.name_short)
     if bool(os.path.isdir(directory)):
-        config = open(directory + '/hgweb.config', 'w')
+        config = open(os.path.join(directory, 'hgweb.config'), 'w')
         config.write('[collections]\n')
         config.write('%s = %s\n\n' % (directory, directory))
         config.write('[web]\n')
         config.write('style = %s' % s.short_name)
         config.close()
-        shutil.copy('/home/digitalspaghetti/workspace/hgfront-dev/hgfront/templates/project/hgwebdir.txt', settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi')
-        os.chmod(settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi', 0755)
+        shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(settings.MERCURIAL_REPOS, instance.name_short, 'hgwebdir.cgi'))
+        os.chmod(os.path.join(settings.MERCURIAL_REPOS, instance.name_short, 'hgwebdir.cgi'), 0755)
         return True
