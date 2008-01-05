@@ -15,11 +15,13 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
-        print instance.creation_method
-        if instance.creation_method==1:
+        #TODO: This is a temporary hack. For some reason instance.creation_method is of type `unicode` while it should be
+        # a normal int. I don't know why it's getting it in unicode though.
+        creation_method = int(instance.creation_method)
+        if creation_method==1:
             hg.repository(u, directory , create=True)
             return True
-        elif instance.creation_method==2:
+        elif creation_method==2:
             hg.clone(u, str(instance.repo_url), directory, True)
             return True
         else:
@@ -35,7 +37,7 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
-    directory = os.path.join(setting.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
+    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
     if bool(os.path.isdir(directory)):
         return bool(shutil.rmtree(directory))
     
@@ -48,7 +50,7 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     p = Project.objects.get(name_long=instance.project)
     c = User.objects.get(username__exact=instance.repo_contact)
     s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
-    directory = os.path.join(setting.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
+    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
     
     hgrc = open(os.path.join(directory, '.hg/hgrc'), 'w')
     hgrc.write('[paths]\n')
