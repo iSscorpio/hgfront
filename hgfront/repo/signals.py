@@ -15,11 +15,11 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     directory = str(settings.MERCURIAL_REPOS + p.name_short + '/' + instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
-        print instance.creation_method
-        if instance.creation_method==1:
+        method = int(instance.creation_method)
+        if method==1:
             hg.repository(u, directory , create=True)
             return True
-        elif instance.creation_method==2:
+        elif method==2:
             hg.clone(u, str(instance.repo_url), directory, True)
             return True
         else:
@@ -44,7 +44,7 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     from django.contrib.auth.models import User
-    from hgfront.config.models import InstalledStyles, InstalledExtentions
+    from hgfront.config.models import InstalledStyles, InstalledExtensions
     p = Project.objects.get(name_long=instance.project)
     c = User.objects.get(username__exact=instance.repo_contact)
     s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
@@ -65,8 +65,10 @@ def create_hgrc(sender, instance, signal, *args, **kwargs):
     if instance.offer_bz2:
         a += 'bz2'
     hgrc.write(a + '\n\n')
-    hgrc.write('[extentions]')
+    hgrc.write('[extensions]')
     # TODO: This doesn't seem to be working :/
-    for e in instance.active_extentions.all():
-        hgrc.write('hgext.%s = \n' % e)
+    #print instance.active_extensions.all()._get_sql_clause()
+    for e in instance.active_extensions.all():
+        #print e.short_name
+        hgrc.write('hgext.%s = \n' % e.short_name)
     hgrc.close()

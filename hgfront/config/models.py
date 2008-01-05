@@ -26,7 +26,7 @@ class InstalledStyles(models.Model):
         verbose_name_plural = 'installed styles'
         ordering = ['short_name']
     
-class InstalledExtentions(models.Model):
+class InstalledExtensions(models.Model):
     """This stores a list of installed hg extentions"""
     short_name=models.CharField(max_length=50, db_index=True)
     long_name=models.CharField(max_length=100)
