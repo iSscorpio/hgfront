@@ -43,6 +43,6 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
         config.write('[web]\n')
         config.write('style = %s' % s.short_name)
         config.close()
-        shutil.copy('/home/digitalspaghetti/workspace/hgfront-dev/hgfront/templates/project/hgwebdir.txt', settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi')
+        shutil.copy(settings.HGFRONT_TEMPLATES_PATH + 'project/hgwebdir.txt', settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi')
         os.chmod(settings.MERCURIAL_REPOS + instance.name_short + '/hgwebdir.cgi', 0755)
         return True
