@@ -8,6 +8,7 @@ from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
 from hgfront.config.models import InstalledStyles, InstalledExtensions
+from hgfront.repo import signals as hgsignals
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
 
@@ -40,7 +41,11 @@ class Repo(models.Model):
 
     def __unicode__(self):
         return self.repo_name
-
+    
+    def save(self):
+        super(Repo, self).save()
+        dispatcher.send(signal=post_repo_creation)
+        
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
@@ -74,5 +79,5 @@ class Repo(models.Model):
 
 # Dispatchers
 dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
-dispatcher.connect( create_hgrc , signal=signals.post_save, sender=Repo )
+dispatcher.connect( create_hgrc , signal=hgsignals.post_repo_creation, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
