@@ -90,4 +90,15 @@ def issue_detail(request, slug, issue_id):
 
 @check_project_permissions('add_issues')
 def issue_create(request, slug):
-    return HttpResponse('Create issue')
+    """
+    This view displays a form based on a new issue
+    """
+    if request.method == "POST":
+        form = IssueCreateForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('issue-create', kwargs={'slug':slug,'repo_name':request.POST['repo_dirname']}))
+        else:
+            project = get_object_or_404(Project, name_short=slug)
+            form = IssueCreateForm(project=project)
+            return render_to_response('issue/issue_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user)})
