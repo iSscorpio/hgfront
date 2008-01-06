@@ -1,5 +1,6 @@
 #General Libraries
 from mercurial import hg, ui, hgweb
+import datetime
 # Django Libraries
 from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
@@ -36,13 +37,14 @@ def repo_create(request, slug):
         who can create repos.  If the repo does not already exist in the project then it
         is created and the user is redirected there
     """
+    project = get_object_or_404(Project, name_short__exact=slug)
     if request.method == "POST":
-        form = RepoCreateForm(request.POST)
+        repo = Repo(project=project, pub_date=datetime.datetime.now())
+        form = RepoCreateForm(request.POST, instance=repo)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse('repo-detail', kwargs={'slug':slug,'repo_name':request.POST['repo_dirname']}))
     else:
         form = RepoCreateForm()
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
-    project = get_object_or_404(Project, name_short__exact=slug)
     return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})

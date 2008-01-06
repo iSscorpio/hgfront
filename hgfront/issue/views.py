@@ -1,12 +1,14 @@
 # General Libraries
+import datetime
 # Django Libraries
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.paginator import ObjectPaginator, InvalidPage
 from django.core.urlresolvers import reverse
 # Project Libraries
 from hgfront.issue.models import *
+from hgfront.issue.forms import IssueCreateForm
 from hgfront.project.models import Project
 from hgfront.project.decorators import check_project_permissions
 
@@ -90,4 +92,22 @@ def issue_detail(request, slug, issue_id):
 
 @check_project_permissions('add_issues')
 def issue_create(request, slug):
-    return HttpResponse('Create issue')
+    """
+    This view displays a form based on a new issue
+    """
+    project = get_object_or_404(Project, name_short=slug)
+    if request.method == "POST":
+        issue = Issue(project=project, user_posted = request.user, pub_date=datetime.datetime.now())
+        form = IssueCreateForm(request.POST, instance=issue)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('issue-list', kwargs={'slug':slug,}))
+    else:
+        form = IssueCreateForm()
+    return render_to_response('issue/issue_create.html', 
+        {
+            'form':form, 
+            'project':project, 
+            'permissions':project.get_permissions(request.user)
+        }
+    )

@@ -10,7 +10,7 @@
 	{% if is_auth %}
 		<form action="{% url repo-create project.name_short %}" method="post">
 			<table>{{form}}</table>
-			<input type="submit" />
+			<input type="submit">
 		</form>
 	{% else %}
 		<strong>You do not have permission to create a repository</strong>
