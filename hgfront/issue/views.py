@@ -104,10 +104,10 @@ def issue_create(request, slug):
             return HttpResponseRedirect(reverse('issue-list', kwargs={'slug':slug,}))
     else:
         form = IssueCreateForm()
-        return render_to_response('issue/issue_create.html', 
-            {
-                'form':form, 
-                'project':project, 
-                'permissions':project.get_permissions(request.user)
-            }
-        )
+    return render_to_response('issue/issue_create.html', 
+        {
+            'form':form, 
+            'project':project, 
+            'permissions':project.get_permissions(request.user)
+        }
+    )
