@@ -10,3 +10,4 @@ class RepoCreateForm(ModelForm):
     """
     class Meta:
         model = Repo
+        exclude = ('project','pub_date')
