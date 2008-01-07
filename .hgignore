@@ -3,4 +3,5 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+*.py~
 *.orig
