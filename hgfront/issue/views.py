@@ -41,15 +41,19 @@ def issue_list(request, slug):
     project = get_object_or_404(Project, name_short = slug)
     issues = project.issue_set.all()
 
-    #check if we're filtering the issues by anything and if we are, filter the selection
-    if request.GET.has_key('severity'):
-        issues = issues.filter(issue_sev__slug = request.GET['severity'])
-    if request.GET.has_key('type'):
-        issues = issues.filter(issue_type__slug = request.GET['type'])
-    if request.GET.has_key('status'):
-        issues = issues.filter(issue_status__slug = request.GET['status'])
+    #check if we're filtering the issues by completed and if we are, filter the selection
     if request.GET.has_key('completed'):
         issues = issues.filter(finished_date__isnull = False if request.GET['completed']=='yes' else True)
+
+    #modify the querydict so it doesn't have completed and page in it
+    GET_copy = request.GET.copy()
+    if GET_copy.has_key('completed'):
+        del GET_copy['completed']
+    if GET_copy.has_key('page'):
+        del GET_copy['page']
+
+    #filter the issues by what's left
+    issues = issues.filter(**dict([(str(key),str(value)) for key,value in GET_copy.items()]))
 
     #initialize the pagination
     paginator = ObjectPaginator(issues, issues_per_page)
