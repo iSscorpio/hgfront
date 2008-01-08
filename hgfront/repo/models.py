@@ -44,6 +44,7 @@ class Repo(models.Model):
     
     def save(self):
         super(Repo, self).save()
+        self.create_hgrc()
         dispatcher.send(signal=post_repo_creation)
         
     def get_absolute_url(self):
@@ -79,5 +80,4 @@ class Repo(models.Model):
 
 # Dispatchers
 dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
-dispatcher.connect( create_hgrc , signal=hgsignals.post_repo_creation, sender=Repo )
 dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )

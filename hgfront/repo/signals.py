@@ -43,37 +43,3 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
     if bool(os.path.isdir(directory)):
         return bool(shutil.rmtree(directory))
-    
-def create_hgrc(sender, instance, signal, *args, **kwargs):
-    """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
-    from hgfront.project.models import Project
-    from hgfront.repo.models import Repo
-    from django.contrib.auth.models import User
-    from hgfront.config.models import InstalledStyles, InstalledExtensions
-    p = Project.objects.get(name_long=instance.project)
-    c = User.objects.get(username__exact=instance.repo_contact)
-    s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
-    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
-    
-    hgrc = open(os.path.join(directory, '.hg/hgrc'), 'w')
-    hgrc.write('[paths]\n')
-    hgrc.write('default = %s\n\n' % instance.repo_url)
-    hgrc.write('[web]\n')
-    hgrc.write('style = %s\n' % s.short_name)
-    hgrc.write('description = %s\n' % instance.repo_description)
-    hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
-    a = 'allow_archive = '
-    if instance.offer_zip:
-        a += 'zip '
-    if instance.offer_tar:
-        a += 'gz '
-    if instance.offer_bz2:
-        a += 'bz2'
-    hgrc.write(a + '\n\n')
-    hgrc.write('[extensions]')
-    # TODO: This doesn't seem to be working :/
-    #print instance.active_extensions.all()._get_sql_clause()
-    for e in instance.active_extensions.all():
-        #print e.short_name
-        hgrc.write('hgext.%s = \n' % e.short_name)
-    hgrc.close()

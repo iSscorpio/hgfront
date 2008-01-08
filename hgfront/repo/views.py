@@ -1,12 +1,14 @@
 #General Libraries
 from mercurial import hg, ui, hgweb
-import datetime
+import datetime, os
 # Django Libraries
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.urlresolvers import reverse
 # Project Libraries
+from hgfront.config.models import InstalledStyles, InstalledExtensions
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
 from hgfront.repo.models import Repo
@@ -48,3 +50,43 @@ def repo_create(request, slug):
         form = RepoCreateForm()
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
     return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})
+
+def create_hgrc(project_name, repo_name):
+    """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
+    repo = Repo.objects.get(repo_dirname__exact=repo_name)
+    c = User.objects.get(username__exact=repo.repo_contact)
+    s = InstalledStyles.objects.get(short_name = repo.hgweb_style)
+    directory = os.path.join(settings.MERCURIAL_REPOS, project_name, repo.repo_dirname)
+       
+    hgrc = open(os.path.join(directory, '.hg/hgrc'), 'w')
+    hgrc.write('[paths]\n')
+    hgrc.write('default = %s\n\n' % repo.repo_url)
+    hgrc.write('[web]\n')
+    hgrc.write('style = %s\n' % s.short_name)
+    hgrc.write('description = %s\n' % repo.repo_description)
+    hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
+    a = 'allow_archive = '
+    if repo.offer_zip:
+        a += 'zip '
+    if repo.offer_tar:
+        a += 'gz '
+    if repo.offer_bz2:
+        a += 'bz2'
+    hgrc.write(a + '\n\n')
+    hgrc.write('[extensions]\n')
+    # TODO: This doesn't seem to be working :/
+    #print self.active_extensions.all()._get_sql_clause()
+    for e in repo.active_extensions.all():
+        #print e.short_name
+        hgrc.write('hgext.%s = \n' % e.short_name)
+    hgrc.close()
+    return True
+
+
+@check_project_permissions('add_repos')
+def repo_manage(request, slug, repo_name):
+    if bool(create_hgrc(slug, repo_name)):
+        HttpResponse('Created')
+    else:
+        HttpResponse('Failed')
+    
