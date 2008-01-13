@@ -28,6 +28,16 @@ class Project(models.Model):
     
     def __unicode__(self):
         return self.name_long
+        
+    def save(self):
+        dispatcher.send(signal=pre_project_save)
+        super(Project, self).save()
+        dispatcher.send(signal=post_project_save)
+        
+    def delete(self):
+        dispatcher.send(signal=pre_project_delete)
+        super(Project, self).delete()
+        dispatcher.send(signal=post_project_delete)
 
     def num_repos(self):
         """Returns the number of repositories linked to this project"""

@@ -5,6 +5,12 @@ from django.conf import settings
 from django.template import Context, loader
 # Project Libraries
 
+# Project signals
+pre_project_save = object()
+pre_project_delete = object()
+post_project_save = object()
+post_project_delete = object()
+
 def create_default_permission_set(sender, instance, signal, *args, **kwargs):
     """
     Executed on creation of a project, this defines the default permissions

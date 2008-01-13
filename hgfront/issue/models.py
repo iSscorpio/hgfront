@@ -124,7 +124,17 @@ class Issue(models.Model):
         return ('issue-detail',(),{'slug':self.project.name_short,'issue_id':self.pk})
     def __unicode__(self):
         return self.title
-
+        
+    def save(self):
+        dispatcher.send(signal=pre_issue_save)
+        super(Issue, self).save()
+        dispatcher.send(signal=post_issue_save)
+        
+    def delete(self):
+        dispatcher.send(signal=pre_issue_delete)
+        super(Issue, self).delete()
+        dispatcher.send(signal=post_issue_delete)
+        
     def completed(self):
         return self.finished_date is not None
 

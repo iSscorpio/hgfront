@@ -6,8 +6,11 @@ from django.template import Context, loader
 from django.conf import settings
 # Project Libraries
 
-# Our new post_repo_creation signal
-post_repo_creation = object()
+# Repo signals
+pre_repo_save = object()
+pre_repo_delete = object()
+post_repo_save = object()
+post_repo_delete = object()
 
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""
