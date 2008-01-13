@@ -44,7 +44,6 @@ class Repo(models.Model):
     
     def save(self):
         super(Repo, self).save()
-        self.create_hgrc()
         dispatcher.send(signal=post_repo_creation)
         
     def get_absolute_url(self):

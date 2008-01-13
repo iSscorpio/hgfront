@@ -57,6 +57,14 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.auth',
+#   ['hgfront.config.%s' % x for x in ('sitename', 'siteurl', 'siteurladmin',)],
+    'hgfront.config.contexts.sitename',
+    'hgfront.config.contexts.siteurl',
+    'hgfront.config.contexts.siteadminurl',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

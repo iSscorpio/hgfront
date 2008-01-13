@@ -3,6 +3,7 @@
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 # Project Libraries
 from hgfront.project.models import Project
 from hgfront.wiki.models import WikiPage
@@ -17,7 +18,7 @@ def wiki_index(request, slug):
         {
             'project':project,
             'permissions':permissions,
-        }
+        }, context_instance=RequestContext(request)
     )
 
 @check_project_permissions('view_wiki')
@@ -31,7 +32,7 @@ def wiki_page(request, slug, page_name):
                      'page':page,
                      'project':project,
                      'permissions': project.get_permissions(request.user),
-                }
+                }, context_instance=RequestContext(request)
         )
     except WikiPage.DoesNotExist:
         return HttpResponseRedirect(reverse('wiki-edit', kwargs={'slug':slug, 'page_name':page_name}))
@@ -55,5 +56,5 @@ def wiki_edit(request, slug, page_name):
                      'page_name':page_name,
                      'title': title,
                      'permissions': project.get_permissions(request.user),
-                 }
+                 }, context_instance=RequestContext(request)
     )
