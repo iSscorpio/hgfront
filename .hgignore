@@ -3,5 +3,6 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+*.html~
 *.py~
 *.orig
