@@ -6,12 +6,6 @@ from django.template import Context, loader
 from django.conf import settings
 # Project Libraries
 
-# Repo signals
-pre_repo_save = object()
-pre_repo_delete = object()
-post_repo_save = object()
-post_repo_delete = object()
-
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""
     from hgfront.project.models import Project

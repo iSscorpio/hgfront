@@ -41,16 +41,6 @@ class Repo(models.Model):
 
     def __unicode__(self):
         return self.repo_name
-    
-    def save(self):
-        dispatcher.send(signal=pre_repo_save)
-        super(Repo, self).save()
-        dispatcher.send(signal=post_repo_save)
-        
-    def delete(self):
-        dispatcher.send(signal=pre_repo_delete)
-        super(Repo, self).delete()
-        dispatcher.send(signal=post_repo_delete)
         
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
