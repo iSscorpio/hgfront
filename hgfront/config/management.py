@@ -37,7 +37,13 @@ def init_installed_extentions(app, created_models, verbosity, **kwargs):
         InstalledExtensions.objects.get_or_create(long_name='RecordExtension', defaults={'short_name':'record','long_name': 'RecordExtension'})      
         InstalledExtensions.objects.get_or_create(long_name='TransplantExtension', defaults={'short_name':'transplant','long_name': 'TransplantExtension'})
         InstalledExtensions.objects.get_or_create(long_name='Win32Extension', defaults={'short_name':'win32text','long_name': 'Win32Extension'})        
-        
+
+def init_default_options(app, created_models, verbosity, **kwargs):
+    """Default Options"""
+    from hgfront.config.models import SiteOptions
+    if SiteOptions in created_models:
+        SiteOptions.objects.get_or_create(option_key='sitename', defaults={'option_key':'sitename', 'option_keydesc':'Site Name','option_value':'hgfront Dev Application', 'option_description':'The site name', 'option_active':'1'})        
 # Dispatchers       
 dispatcher.connect(init_installed_styles, signal=signals.post_syncdb)
 dispatcher.connect(init_installed_extentions, signal=signals.post_syncdb)
+dispatcher.connect(init_default_options, signal=signals.post_syncdb)
