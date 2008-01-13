@@ -4,9 +4,10 @@ import datetime, os
 # Django Libraries
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
-from django.core.urlresolvers import reverse
+from django.template import RequestContext
 # Project Libraries
 from hgfront.config.models import InstalledStyles, InstalledExtensions
 from hgfront.project.models import Project
@@ -22,7 +23,7 @@ def repo_list(request, slug):
     project = get_object_or_404(Project, name_short__exact=slug)
     repos = Repo.objects.filter(project=project.id)
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).view_repos]
-    return render_to_response('repos/repo_list.html', {'project':project, 'repos': repos, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})
+    return render_to_response('repos/repo_list.html', {'project':project, 'repos': repos, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth}, context_instance=RequestContext(request))
 
 @check_project_permissions('view_repos')
 def repo_detail(request, slug, repo_name):
@@ -49,7 +50,7 @@ def repo_create(request, slug):
     else:
         form = RepoCreateForm()
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
-    return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth})
+    return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth}, context_instance=RequestContext(request))
 
 def create_hgrc(project_name, repo_name):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
@@ -74,10 +75,7 @@ def create_hgrc(project_name, repo_name):
         a += 'bz2'
     hgrc.write(a + '\n\n')
     hgrc.write('[extensions]\n')
-    # TODO: This doesn't seem to be working :/
-    #print self.active_extensions.all()._get_sql_clause()
     for e in repo.active_extensions.all():
-        #print e.short_name
         hgrc.write('hgext.%s = \n' % e.short_name)
     hgrc.close()
     return True

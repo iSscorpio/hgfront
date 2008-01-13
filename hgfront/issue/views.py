@@ -6,6 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.core.paginator import ObjectPaginator, InvalidPage
 from django.core.urlresolvers import reverse
+from django.template import RequestContext
 # Project Libraries
 from hgfront.issue.models import *
 from hgfront.issue.forms import IssueCreateForm
@@ -77,7 +78,7 @@ def issue_list(request, slug):
             'permissions':project.get_permissions(request.user),
             'pages':pages,
             'current_page':page+1
-        }
+        }, context_instance=RequestContext(request)
     )
     #TODO: Implement advanced filtering in the sidebar (kind of like the filtering the django admin has)
 
@@ -91,7 +92,7 @@ def issue_detail(request, slug, issue_id):
             'project':project,
             'issue':issue,
             'permissions':project.get_permissions(request.user),
-        }
+        }, context_instance=RequestContext(request)
     )
 
 @check_project_permissions('add_issues')
@@ -113,5 +114,5 @@ def issue_create(request, slug):
             'form':form, 
             'project':project, 
             'permissions':project.get_permissions(request.user)
-        }
+        }, context_instance=RequestContext(request)
     )

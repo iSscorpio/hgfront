@@ -22,7 +22,7 @@ def get_project_details(request, slug):
     permissions = project.get_permissions(request.user)
     issues_shown = 10 #TODO: Move this either to settings.py or make it user configurabl
     issue_short_list = project.issue_set.all()[:issues_shown]
-    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list})
+    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
 
 def create_project_form(request):
     if request.method == "POST":
@@ -33,5 +33,5 @@ def create_project_form(request):
     else:
         form = ProjectCreateForm()
     is_auth = bool(request.user.is_authenticated())
-    return render_to_response('project/project_create.html', {'form':form.as_table(), 'is_auth': is_auth})
+    return render_to_response('project/project_create.html', {'form':form.as_table(), 'is_auth': is_auth}, context_instance=RequestContext(request))
  

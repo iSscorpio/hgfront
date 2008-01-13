@@ -18,7 +18,7 @@ class Project(models.Model):
     changeable.
     Members are assigned to projects by giving them permissions on the project.
     """
-    name_short=models.CharField(max_length=50, db_index=True)
+    name_short=models.CharField(max_length=50, db_index=True, unique=True)
     name_long=models.CharField(max_length=255)
     description_short=models.CharField(max_length=255, blank=True, null=True)
     description_long=models.TextField()
