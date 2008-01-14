@@ -22,7 +22,7 @@ def create_repo(sender, instance, signal, *args, **kwargs):
             hg.repository(u, directory , create=True)
             return True
         elif creation_method==2:
-            hg.clone(u, str(instance.repo_url), directory, True)
+            hg.clone(u, str(instance.repo_url), str(directory), True)
             return True
         else:
             raise ValueError("Invalid Creation Method")

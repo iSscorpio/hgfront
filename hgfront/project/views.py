@@ -15,7 +15,7 @@ from hgfront.project.decorators import check_project_permissions
 
 def get_project_list(request):
     projects = [project for project in Project.objects.all() if project.get_permissions(request.user).view_project]
-    return render_to_response('project/project_list.html',{'object_list':projects}, context_instance=RequestContext(request))
+    return render_to_response('project/project_list.html', {'object_list':projects}, context_instance=RequestContext(request))
 
 @check_project_permissions('view_project')
 def get_project_details(request, slug):
@@ -26,14 +26,14 @@ def get_project_details(request, slug):
     return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
 
 def create_project_form(request):
-"""
+    """
     This form shows in this order:
         1. Show the initial form with just name_short
         2. Check if the project already exists, if not show the second form
         3. Check to see if the name_long is in the request.POST keys (this needs a better check)
         4. Once the data is entered, save the form to the model
         5. Redirect to the project view
-"""
+    """
     if request.method == "POST":
         if 'name_long' not in request.POST:
             form = NewProjectForm(request.POST)
