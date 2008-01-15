@@ -20,10 +20,6 @@ class SiteOptions(models.Model):
     def __unicode__(self):
         return self.option_keydesc
 
-    def get_option(self, key):
-        """This returns a specific option by key"""
-        return SiteOptions.objects.get(option_key__extact = key)
-
     class Admin:
         pass
         

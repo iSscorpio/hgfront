@@ -2,7 +2,7 @@
    "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title>{% block title %}{{sitename}} :{% endblock %}</title>
+<title>{% block title %}{{hgf_site_name}} :{% endblock %}</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <style type="text/css">
 @import url('/hgfront/static/hgfront-style.css');
@@ -10,7 +10,7 @@
 </head>
 <body>
     {% load cache %}
-    <div id="header">{{sitename}}</div>
+    <div id="header">{{hgf_site_name}}</div>
     <div id="breadcrumbs">{% block breadcrumbs %}breadcrumbs &gt; go &gt; here{% endblock breadcrumbs %}</div>
     <div id="wrapper">
         <div id="content">

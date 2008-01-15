@@ -8,11 +8,13 @@ from django.conf import settings
 
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""
+    from hgfront.config.models import SiteOptions
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
     u = ui.ui()
-    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
+    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    directory = os.path.join(d.option_value, p.name_short, instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
         #TODO: This is a temporary hack. For some reason instance.creation_method is of type `unicode` while it should be
@@ -34,9 +36,12 @@ def move_repo():
     
 def delete_repo(sender, instance, signal, *args, **kwargs):
     """Destroy the mercurial repo"""
+    from hgfront.config.models import SiteOptions
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
-    directory = os.path.join(settings.MERCURIAL_REPOS, p.name_short, instance.repo_dirname)
+    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    
+    directory = os.path.join(d.option_value, p.name_short, instance.repo_dirname)
     if bool(os.path.isdir(directory)):
         return bool(shutil.rmtree(directory))

@@ -42,9 +42,12 @@ def init_default_options(app, created_models, verbosity, **kwargs):
     """Default Options"""
     from hgfront.config.models import SiteOptions
     if SiteOptions in created_models:
-        SiteOptions.objects.get_or_create(option_key='sitename', defaults={'option_key':'sitename', 'option_keydesc':'Site Name','option_value':'hgfront Dev Application', 'option_description':'The site name', 'option_active':'1'})
-        SiteOptions.objects.get_or_create(option_key='siteurl', defaults={'option_key':'siteurl', 'option_keydesc':'Site URL','option_value':'http://127.0.0.1:8000/hgfront/', 'option_description':'The URL of the site', 'option_active':'1'})        
-        SiteOptions.objects.get_or_create(option_key='siteadminurl', defaults={'option_key':'siteadminurl', 'option_keydesc':'Site Admin URL','option_value':'http://127.0.0.1:8000/admin/', 'option_description':'The URL of the sites admin', 'option_active':'1'})        
+        SiteOptions.objects.get_or_create(option_key='hgf_site_name', defaults={'option_key':'hgf_site_name', 'option_keydesc':'Site Name','option_value':'hgfront Dev Application', 'option_description':'The site name', 'option_active':'1'})
+        SiteOptions.objects.get_or_create(option_key='hgf_site_url', defaults={'option_key':'hgf_site_url', 'option_keydesc':'Site URL','option_value':'http://127.0.0.1:8000/hgfront/', 'option_description':'The URL of the site', 'option_active':'1'})        
+        SiteOptions.objects.get_or_create(option_key='hgf_site_admin_url', defaults={'option_key':'hgf_site_admin_url', 'option_keydesc':'Site Admin URL','option_value':'http://127.0.0.1:8000/admin/', 'option_description':'The URL of the sites admin', 'option_active':'1'})
+        SiteOptions.objects.get_or_create(option_key='hgf_site_owner', defaults={'option_key':'hgf_site_owner', 'option_keydesc':'Site Owner','option_value':'Default Owner', 'option_description':'The name of the site owner', 'option_active':'1'})
+        SiteOptions.objects.get_or_create(option_key='hgf_site_owner_email', defaults={'option_key':'hgf_site_owner_email', 'option_keydesc':'Site Admin URL','option_value':'http://127.0.0.1:8000/admin/', 'option_description':'The URL of the sites admin', 'option_active':'1'})
+        SiteOptions.objects.get_or_create(option_key='hgf_repo_location', defaults={'option_key':'hgf_repo_location', 'option_keydesc':'Repo Location','option_value':'/path/to/repos/', 'option_description':'The location of your repos', 'option_active':'1'})        
                 
 # Dispatchers       
 dispatcher.connect(init_installed_styles, signal=signals.post_syncdb)

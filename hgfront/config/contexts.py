@@ -1,16 +1,31 @@
 from django.template import Context
 
-def sitename(request):
+def hgf_site_name(request):
     from hgfront.config.models import SiteOptions
-    option = SiteOptions.objects.get(option_key = 'sitename')
-    return {'sitename': option.option_value}
+    option = SiteOptions.objects.get(option_key = 'hgf_site_name')
+    return {'hgf_site_name': option.option_value}
     
-def siteurl(request):
+def hgf_site_url(request):
     from hgfront.config.models import SiteOptions
-    option = SiteOptions.objects.get(option_key = 'siteurl')
-    return {'siteurl': option.option_value}
+    option = SiteOptions.objects.get(option_key = 'hgf_site_url')
+    return {'hgf_site_url': option.option_value}
     
-def siteadminurl(request):
+def hgf_site_admin_url(request):
     from hgfront.config.models import SiteOptions
-    option = SiteOptions.objects.get(option_key = 'siteadminurl')
-    return {'siteadminurl': option.option_value}
+    option = SiteOptions.objects.get(option_key = 'hgf_site_admin_url')
+    return {'hgf_site_admin_url': option.option_value}
+    
+def hgf_site_owner(request):
+    from hgfront.config.models import SiteOptions
+    option = SiteOptions.objects.get(option_key = 'hgf_site_owner')
+    return {'hgf_site_owner': option.option_value}
+
+def hgf_site_owner_email(request):
+    from hgfront.config.models import SiteOptions
+    option = SiteOptions.objects.get(option_key = 'hgf_site_owner_email')
+    return {'hgf_site_owner_email': option.option_value}
+    
+def hgf_repo_location(request):
+    from hgfront.config.models import SiteOptions
+    option = SiteOptions.objects.get(option_key = 'hgf_repo_location')
+    return {'hgf_repo_location': option.option_value}
