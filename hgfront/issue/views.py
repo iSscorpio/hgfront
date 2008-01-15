@@ -105,8 +105,9 @@ def issue_create(request, slug):
         issue = Issue(project=project, user_posted = request.user, pub_date=datetime.datetime.now())
         form = IssueCreateForm(request.POST, instance=issue)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('issue-list', kwargs={'slug':slug,}))
+            issue = form.save(commit=False)
+            issue.save()
+            return HttpResponseRedirect(reverse('issue-detail', kwargs={'slug':slug,'issue_id':issue.id}))
     else:
         form = IssueCreateForm()
     return render_to_response('issue/issue_create.html', 
