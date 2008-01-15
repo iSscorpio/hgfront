@@ -1,6 +1,6 @@
 {% extends "project/project_detail.html" %}
 
-{% block title %}Issues for {{project.name_long}}{% endblock %}
+{% block title %}{{project.name_long}} : All Open Issues{% endblock %}
 {% block breadcrumbs %}{{block.super}} &gt; <a href="{% url issue-list project.name_short %}">Issues</a>{% endblock %}
 
 {% block content_title %}

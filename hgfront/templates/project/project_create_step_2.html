@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Create New Project{% endblock %}
+{% block title %}{{block.super}} Create New Project : Step 2{% endblock %}
 
 {% block content_title %}Create New Project{% endblock %}
+{% block breadcrumbs %}<a href="{% url project-list %}">Projects</a>{% endblock %}
 
 {% block main_content %}
 	{{fail}}

@@ -1,6 +1,6 @@
 {% extends "issue/issue_list.html" %}
 
-{% block title %}hgfront: {{issue.title}}{% endblock title %}
+{% block title %}{{project.name_long}} Issue : {{issue.title}}{% endblock title %}
 {% block breadcrumbs %}{{block.super}} &gt; <a href="{% url issue-detail slug=project.name_short, issue_id=issue.id %}">{{issue.title}}</a> {% endblock %}
 
 {% block content_title %}
