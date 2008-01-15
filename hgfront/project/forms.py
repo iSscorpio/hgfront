@@ -4,8 +4,8 @@ import datetime
 from django.contrib.auth.models import User
 import django.newforms as forms
 # Project Libraries
-from hgfront.project.models import Project
 from hgfront.config.models import InstalledStyles
+from hgfront.project.models import Project
 
 class NewProjectForm(forms.Form):
     name_short = forms.CharField(max_length=50)
