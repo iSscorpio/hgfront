@@ -3,7 +3,7 @@
 {% block title %}{{block.super}} All Projects{% endblock %}
 
 {% block content_title %}<h2>All Projects on {{sitename}}</h2>{% endblock %}
-{% block breadcrumbs %}<a href="{% url project-list %}">Projects</a>{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url project-list %}">Projects</a>{% endblock %}
 
 {% block main_content %}
 	{% if object_list %}
@@ -34,7 +34,9 @@
 
 {% block sidebar %}
 <span class="group">Your Options</span>
+    {% if user.is_authenticated %}
     <ul>
         <li><a href="{% url project-create project.name_short %}">Create New Project</a></li>
     </ul>
+    {% endif %}
 {% endblock %}

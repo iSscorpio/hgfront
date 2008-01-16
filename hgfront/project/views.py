@@ -6,11 +6,11 @@ from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
 # Project Libraries
 from hgfront.config.models import InstalledStyles
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
-# Decorators
 from hgfront.project.decorators import check_project_permissions
 
 def get_project_list(request):
@@ -25,6 +25,7 @@ def get_project_details(request, slug):
     issue_short_list = project.issue_set.all()[:issues_shown]
     return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
 
+@login_required
 def create_project_form(request):
     """
     This form shows in this order:
@@ -41,7 +42,7 @@ def create_project_form(request):
                 check = Project.objects.all().filter(name_short__exact = request.POST['name_short'])
                 if check:
                     is_auth = bool(request.user.is_authenticated())
-                    return render_to_response('project/project_create.html', {'form':form.as_table(), 'is_auth': is_auth, 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
+                    return render_to_response('project/project_create.html', {'form':form.as_table(), 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
                 else:
                     form_data = request.POST.copy()
                     form_data['user_owner'] = request.user.username

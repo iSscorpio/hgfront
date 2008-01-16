@@ -104,3 +104,5 @@ HGFRONT_STATIC_PATH = '/path/to/my/hgfront/templates/static'
 HGFRONT_TEMPLATES_PATH = '/home/alisic/hgfront-working/mysite/hgfront/templates/'
 
 APPEND_SLASH=False
+
+LOGIN_URL = '/login/'

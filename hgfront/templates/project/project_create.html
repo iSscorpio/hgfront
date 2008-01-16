@@ -1,18 +1,14 @@
-{% extends "base.html" %}
+{% extends "project/project_list.html" %}
 
 {% block title %}{{block.super}} Create New Project{% endblock %}
 
 {% block content_title %}Create New Project{% endblock %}
-{% block breadcrumbs %}<a href="{% url project-list %}">Projects</a>{% endblock %}
+{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url project-create %}">New project</a>{% endblock %}
 
 {% block main_content %}
 	{{fail}}
-	{% if is_auth %}
-		<form action="/hgfront/projects/create/" method="post">
-			<table>{{form}}</table>
-			<input type="submit" />
-		</form>
-	{% else %}
-		<strong>You do not have permission to create a project</strong>
-	{% endif %}
+    <form action="{% url project-create %}" method="post">
+        <table>{{form}}</table>
+        <input type="submit" />
+    </form>
 {% endblock %}
