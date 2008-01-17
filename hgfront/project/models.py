@@ -22,13 +22,13 @@ class ProjectManager(models.Manager):
         User class but I think extending the User class just for this would
         overcomplicate things
         """
-        return self.filter(projectpermissionset__user = user, projectpermissionset__accepted = True)
+        return super(ProjectManager, self).filter(projectpermissionset__user = user, projectpermissionset__accepted = True)
 
     def pending_projects_for_user(self, user):
         """
         This returns a list of projects that the user `user` has yet to accept
         """
-        return self.filter(projectpermissionset__user = user, projectpermissionset__accepted = False)
+        return super(ProjectManager, self).filter(projectpermissionset__user = user, projectpermissionset__accepted = False)
 
 
 class Project(models.Model):
