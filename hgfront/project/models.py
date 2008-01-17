@@ -10,6 +10,27 @@ from django.dispatch import dispatcher
 from hgfront.config.models import InstalledStyles
 from hgfront.project.signals import *
 
+class ProjectManager(models.Manager):
+    """
+    Manager class for Project.
+    """
+    def projects_for_user(self, user):
+        """
+        This returns a list of projects that the user `user` is in and has
+        accepted. This is the prefered way of getting all the projects that
+        the user is in. Ideally this functionality should be a method of the
+        User class but I think extending the User class just for this would
+        overcomplicate things
+        """
+        return self.filter(projectpermissionset__user = user, projectpermissionset__accepted = True)
+
+    def pending_projects_for_user(self, user):
+        """
+        This returns a list of projects that the user `user` has yet to accept
+        """
+        return self.filter(projectpermissionset__user = user, projectpermissionset__accepted = False)
+
+
 class Project(models.Model):
     """
     A project represents a way to group users, repositories and issues on the system.
@@ -25,6 +46,8 @@ class Project(models.Model):
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     hgweb_style=models.ForeignKey(InstalledStyles)
+
+    objects = ProjectManager()
     
     def __unicode__(self):
         return self.name_long
@@ -66,11 +89,6 @@ class Project(models.Model):
                     add_issues = False, delete_issues = Flase, edit_issues = False, view_issues = False)
         return permissions
 
-    @permalink
-    def get_absolute_url(self):
-        """Creates a permalink to the project page"""
-        return ('project-detail', (), { "slug": self.name_short })
-
     def _get_members(self):
         """
         Gets the QuerySet of the project's users. It gets them via the
@@ -85,11 +103,23 @@ class Project(models.Model):
         project.members.filter(id=1)
 
         """
-        return User.objects.filter(projectpermissionset__project__id = self.id)
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__accepted = True)
     members = property(_get_members)
 
+    def _get_pending_members(self):
+        """
+        Gets the QuerySet of the users that have bee invited to join the project but haven't accepted their invitation yet
+        """
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__accepted = False)
+    pending_members = property(_get_pending_members)
+
     def is_private(self):
-        return not self.projectpermissionset_set.all()[0].view_project
+        return not self.projectpermissionset_set.filter(is_default=True)[0].view_project
+
+    @permalink
+    def get_absolute_url(self):
+        """Creates a permalink to the project page"""
+        return ('project-detail', (), { "slug": self.name_short })
 
     class Admin:
         fields = (
@@ -118,6 +148,7 @@ class ProjectPermissionSet(models.Model):
     Each member is connected to the project via the permission set that it has for that project.
     """
     is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
+    accepted = models.BooleanField(default=False) #this is False by default and should be set to True by the user as accepting the invitation
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
