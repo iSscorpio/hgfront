@@ -19,16 +19,16 @@ def issue_list(request, slug):
     Also, this accepts querystring variables:
 
     `page` - which page we want to view
-
-    `severity` - by which severity we want the issues filtered
-
-    `type` - by which type we want the issues filtered
-
-    `status` - by which status we want the issues filtered
-
+    
     `completed` - do we want to see completed or uncompleted issues. A value
     of `yes` means we want it to show the completed ones, anything else matches
     uncompleted issues
+
+    Apart from these two querystring variables, it also accepts filter variables
+    that act just as if you gave them as keyword arguments for the filter function.
+    So an example querystring for this view might look like
+
+    ?page=1&issue_sev__slug=minor&issue_type__slug=bug&completed=no
     """
     issues_per_page = 20 #TODO: move this to settings.py later on
 
