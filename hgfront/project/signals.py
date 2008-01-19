@@ -12,7 +12,7 @@ def create_default_permission_set(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project, ProjectPermissionSet
     existing = ProjectPermissionSet.objects.filter(project__id = instance.id, is_default=True)
     if not existing:
-        permission_set = ProjectPermissionSet(is_default=True, accepted=True, project=instance, user=None)
+        permission_set = ProjectPermissionSet(is_default=True, project=instance, user=None)
         permission_set.save()
 
 def create_project_dir(sender, instance, signal, *args, **kwargs):
