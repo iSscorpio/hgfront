@@ -1,8 +1,22 @@
 @import 'blueprint/screen.css';
 
+/* Global Styles */
 body {
     background: url('images/bg1.png') repeat-x;
 }
+
+ul {
+    list-style:none;
+}
+
+ul li {
+    line-height: 1.3em;
+    margin-bottom: 1.1em;
+}
+
+a {
+    text-decoration:none;
+} 
 
 div#header {
 
@@ -10,4 +24,28 @@ div#header {
 
 div#header h1 {
     font-size: 3em;
+}
+
+
+
+/* Links */
+
+.link-create-issue {
+    background: url('images/issues/add.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-create-project {
+    background: url('images/projects/add.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-create-repo {
+    background: url('images/repos/add.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-show-repo {
+    background: url('images/repos/repo.png') no-repeat;
+    padding: 5px 0 5px 25px;
 }

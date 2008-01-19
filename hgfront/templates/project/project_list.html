@@ -36,7 +36,7 @@
 <span class="group">Your Options</span>
     {% if user.is_authenticated %}
     <ul>
-        <li><a href="{% url project-create project.name_short %}">Create New Project</a></li>
+        <li><a href="{% url project-create project.name_short %}" class="link-create-project">Create New Project</a></li>
     </ul>
     {% endif %}
 {% endblock %}
