@@ -60,13 +60,7 @@ TEMPLATE_LOADERS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
 #   ['hgfront.config.%s' % x for x in ('sitename', 'siteurl', 'siteurladmin',)],
     'django.core.context_processors.auth',
-    'hgfront.config.contexts.hgf_site_name',
-    'hgfront.config.contexts.hgf_site_url',
-    'hgfront.config.contexts.hgf_site_admin_url',
-    'hgfront.config.contexts.hgf_site_owner',
-    'hgfront.config.contexts.hgf_site_owner_email',
-    'hgfront.config.contexts.hgf_repo_location',
-    'hgfront.config.contexts.hgf_issues_per_page',
+    'hgfront.config.contexts.site_options',
 )
 
 MIDDLEWARE_CLASSES = (
