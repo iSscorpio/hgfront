@@ -1,31 +1,49 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
-   "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+      "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>{% block title %}{{hgf_site_name}} :{% endblock %}</title>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<style type="text/css">
-@import url('/hgfront/static/hgfront-style.css');
-</style>
+    <title>{{hgf_site_name}}</title>
+    <link rel="stylesheet" type="text/css" href="/hgfront/static/style.css" />
 </head>
+
 <body>
-    {% load cache %}
-    <div id="header">{{hgf_site_name}}</div>
-    <div id="breadcrumbs">{% block breadcrumbs %}Home{% endblock breadcrumbs %}</div>
-    {% for message in messages %}
-        <div class="message">{{message}}</div>
-    {% endfor %}
-    <div id="wrapper">
-        <div id="content">
-            <h1>{% block content_title %}Content title{% endblock content_title %}</h1>
+    <div class="container">
+    
+        <div class="column span-24" id="header">
+                <h1>{{hgf_site_name}}</h1>
+        </div>
+        
+        <div class="column span-24" id="navigation">
+            {% block navigation %}Navigation Goes Here{% endblock navigation %}
+        </div>
+        
+        <div class="column span-24" id="breadcrumbs">
+            {% block breadcrumbs %}Home{% endblock breadcrumbs %}
+        </div>
+        
+        {% if messages %}
+            {% for message in messages %}
+                <div class="column span-24" id="message">
+                    {{message}}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="column span-16" id="content">
+            <h2>{% block content_title %}Content title{% endblock content_title %}</h2>
             {% block main_content %}{% endblock main_content %}
         </div>
-        <div id="sidebar">
-		<h3>Your Sidebar</h3>
-        {% block sidebar %}
-        {% endblock sidebar %}
+        
+        <div class="column span-8 last" id="sidebar">
+            <h2>Your Sidebar</h2>
+            {% block sidebar %}{% endblock sidebar %}
+        </div>  
+        
+        <div class="column span-24" id="footer">
+                {% block footer %}{% endblock footer %}
         </div>
-        <div class="clear"></div>
+        
     </div>
 </body>
 </html>

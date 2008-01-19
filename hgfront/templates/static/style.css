@@ -1,0 +1,13 @@
+@import 'blueprint/screen.css';
+
+body {
+    background: url('images/bg1.png') repeat-x;
+}
+
+div#header {
+
+}
+
+div#header h1 {
+    font-size: 3em;
+}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load wikify %}
+{% block title %}{{ object.title|escape }}{% endblock %}
+{% block content %}
+<h1>{{ object.title }}</h1>
+<span class="lastedited"> <!-- change this -->
+Last edited on {{ object.last_modified|date:"F y, J" }}
+</span> 
+<div class="content">
+{{ object.content|wikify }}
+</div>
+{% endblock %}

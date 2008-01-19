@@ -19,8 +19,10 @@ def create_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path already exists, and if not this is a new project so creates path.
     """
-    if not bool(os.path.isdir(os.path.join(settings.MERCURIAL_REPOS, instance.name_short))):
-        return bool(shutil.os.mkdir(os.path.join(settings.MERCURIAL_REPOS ,instance.name_short)))
+    from hgfront.config.models import SiteOptions
+    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    if not bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
+        return bool(shutil.os.mkdir(os.path.join(d.option_value ,instance.name_short)))
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
     """
