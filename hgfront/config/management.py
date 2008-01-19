@@ -47,9 +47,11 @@ def init_default_options(app, created_models, verbosity, **kwargs):
         SiteOptions.objects.get_or_create(option_key='hgf_site_admin_url', defaults={'option_key':'hgf_site_admin_url', 'option_keydesc':'Site Admin URL','option_value':'http://127.0.0.1:8000/admin/', 'option_description':'The URL of the sites admin', 'option_active':'1'})
         SiteOptions.objects.get_or_create(option_key='hgf_site_owner', defaults={'option_key':'hgf_site_owner', 'option_keydesc':'Site Owner','option_value':'Default Owner', 'option_description':'The name of the site owner', 'option_active':'1'})
         SiteOptions.objects.get_or_create(option_key='hgf_site_owner_email', defaults={'option_key':'hgf_site_owner_email', 'option_keydesc':'Site Admin URL','option_value':'http://127.0.0.1:8000/admin/', 'option_description':'The URL of the sites admin', 'option_active':'1'})
-        SiteOptions.objects.get_or_create(option_key='hgf_repo_location', defaults={'option_key':'hgf_repo_location', 'option_keydesc':'Repo Location','option_value':'/path/to/repos/', 'option_description':'The location of your repos', 'option_active':'1'})        
+        SiteOptions.objects.get_or_create(option_key='hgf_repo_location', defaults={'option_key':'hgf_repo_location', 'option_keydesc':'Repo Location','option_value':'/path/to/repos/', 'option_description':'The location of your repos', 'option_active':'1'})
+        SiteOptions.objects.get_or_create(option_key='hgf_issues_per_page', defaults={'option_key':'hgf_issues_per_page', 'option_keydesc':'Issues Per Page','option_value':'20', 'option_description':'The number of issues to show per page', 'option_active':'1'})
                 
 # Dispatchers       
 dispatcher.connect(init_installed_styles, signal=signals.post_syncdb)
 dispatcher.connect(init_installed_extentions, signal=signals.post_syncdb)
 dispatcher.connect(init_default_options, signal=signals.post_syncdb)
+
