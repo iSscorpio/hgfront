@@ -80,9 +80,7 @@ class Project(models.Model):
         """
         #if the user is the owner of the project, give him all permissions
         if user.id == self.user_owner.id:
-            permissions = ProjectPermissionSet(is_default=False, user=user, project=self,\
-            view_project = True, add_repos = True, delete_repos = True, edit_repos = True, view_repos = True,\
-            add_issues = True, delete_issues = True, edit_issues = True, view_issues = True)
+            permissions = ProjectPermissionSet.objects.get_owner_permission_set(user, self)
         else:
             try:
                 #Try to find a permission set for the user
@@ -94,9 +92,7 @@ class Project(models.Model):
                     permissions = permission_list[0]
                 else:
                     #If even a default one isn't found (although this shouldn't happen), return a restricted permission set
-                    permissions = ProjectPermissionSet(is_default=False, user=user, project=self, \
-                    view_project = False, add_repos = False, delete_repos = False, edit_repos = False, view_repos = False, \
-                    add_issues = False, delete_issues = Flase, edit_issues = False, view_issues = False)
+                    permissions = ProjectPermissionSet.objects.get_null_permission_set(user, self)
         return permissions
 
     def _get_members(self):
@@ -162,6 +158,32 @@ dispatcher.connect( create_project_dir, signal=signals.post_save, sender=Project
 dispatcher.connect( create_hgwebconfig, signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir, signal=signals.post_delete, sender=Project )
 
+class ProjectPermissionSetManager(models.Manager):
+    """
+    A manager for project permission sets.
+    """
+    def get_owner_permission_set(self, user, project):
+        """
+        Returns a permission set with full permissions for the user `user` in project `project`
+        """
+        return ProjectPermissionSet(is_default=False, user=user, project=project,\
+        view_project = True, edit_project= True, add_members=True, delete_members = True,\
+        add_repos = True, delete_repos = True, edit_repos = True, view_repos = True,\
+        add_issues = True, delete_issues = True, edit_issues = True, view_issues = True, \
+        add_wiki = True, delete_wiki = True, edit_wiki = True, view_wiki = True)
+    
+    def get_null_permission_set(self, user, project):
+        """
+        Returns a permission set with no permissions for the user `user` in project `project`
+        Only to be used in case a project doesn't have a default permission set, although that
+        normally shouldn't happen
+        """
+        return ProjectPermissionSet(is_default=False, user=user, project=project,\
+        view_project = False, edit_project= False, add_members=False, delete_members = False,\
+        add_repos = False, delete_repos = False, edit_repos = False, view_repos = False,\
+        add_issues = False, delete_issues = False, edit_issues = False, view_issues = False, \
+        add_wiki = False, delete_wiki = False, edit_wiki = False, view_wiki = False)
+
 class ProjectPermissionSet(models.Model):
     """
     Each project has its own set of permissions.  There are two types, the default permissions
@@ -171,13 +193,17 @@ class ProjectPermissionSet(models.Model):
     """
     is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
 
-    user_accepted = models.BooleanField(default=False) #whether the user has accepted to be in the project
-    owner_accepted = models.BooleanField(default=False) #whether the owner has accepted that the user can be in the project
+    user_accepted = models.BooleanField(default=True) #whether the user has accepted to be in the project
+    owner_accepted = models.BooleanField(default=True) #whether the owner has accepted that the user can be in the project
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
 
     view_project = models.BooleanField(default=True)
+    edit_project = models.BooleanField(default=False)
+
+    add_members = models.BooleanField(default=False)
+    delete_members = models.BooleanField(default=False)
 
     add_repos = models.BooleanField(default=False)
     delete_repos = models.BooleanField(default=False)
@@ -193,6 +219,8 @@ class ProjectPermissionSet(models.Model):
     delete_wiki = models.BooleanField(default=False)
     edit_wiki = models.BooleanField(default=False)
     view_wiki = models.BooleanField(default=True)
+
+    objects = ProjectPermissionSetManager()
     
     def __unicode__(self):
         if self.is_default:
