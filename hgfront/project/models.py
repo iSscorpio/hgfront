@@ -22,13 +22,23 @@ class ProjectManager(models.Manager):
         User class but I think extending the User class just for this would
         overcomplicate things
         """
-        return super(ProjectManager, self).filter(projectpermissionset__user = user, projectpermissionset__accepted = True)
+        return self.filter(
+            projectpermissionset__user = user, 
+            projectpermissionset__user_accepted = True,
+            projectpermissionset__owner_accepted = True
+        )
 
-    def pending_projects_for_user(self, user):
+    def project_invitations(self, user):
         """
         This returns a list of projects that the user `user` has yet to accept
         """
-        return super(ProjectManager, self).filter(projectpermissionset__user = user, projectpermissionset__accepted = False)
+        return self.filter(projectpermissionset__user = user, projectpermissionset__user_accepted = False)
+
+    def project_join_requests(self, user):
+        """
+        This returns a list of projects that the user `user` has applied to join but haven't been approved yet.
+        """
+        return self.filter(projectpermissionset__user = user, projectpermissionset__owner_accepted = False)
 
 
 class Project(models.Model):
@@ -103,15 +113,27 @@ class Project(models.Model):
         project.members.filter(id=1)
 
         """
-        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__accepted = True)
+        return User.objects.filter (
+            projectpermissionset__project__id = self.id, 
+            projectpermissionset__user_accepted = True,
+            projectpermissionset__owner_accepted = True
+        )
     members = property(_get_members)
 
-    def _get_pending_members(self):
+    def _get_invited_members(self):
         """
-        Gets the QuerySet of the users that have bee invited to join the project but haven't accepted their invitation yet
+        Gets the QuerySet of the users that have been invited to join the project but haven't accepted their invitation yet
         """
-        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__accepted = False)
-    pending_members = property(_get_pending_members)
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__user_accepted = False)
+    invited_members = property(_get_invited_members)
+
+    def _get_aspiring_members(self):
+        """
+        Gets the QuerySet of the users that have requested to join the project but whose requests haven't been approved
+        by the project owner.
+        """
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__owner_accepted = False)
+    aspiring_members = property(_get_aspiring_members)
 
     def is_private(self):
         return not self.projectpermissionset_set.filter(is_default=True)[0].view_project
@@ -148,7 +170,9 @@ class ProjectPermissionSet(models.Model):
     Each member is connected to the project via the permission set that it has for that project.
     """
     is_default = models.BooleanField(default=False) #this should be true if it's a default permission set for a project, otherwise false
-    accepted = models.BooleanField(default=False) #this is False by default and should be set to True by the user as accepting the invitation
+
+    user_accepted = models.BooleanField(default=False) #whether the user has accepted to be in the project
+    owner_accepted = models.BooleanField(default=False) #whether the owner has accepted that the user can be in the project
 
     user = models.ForeignKey(User, null=True, blank=True) #this should be null if it's a default permission set for a project
     project = models.ForeignKey(Project)
