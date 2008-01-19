@@ -62,6 +62,7 @@ def create_project_form(request):
                 pub_date = request.POST['pub_date'],
                 hgweb_style = style
             ).save()
+            request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
             return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':request.POST['name_short']}))
     else:
         form = NewProjectForm()

@@ -109,6 +109,7 @@ def issue_create(request, slug):
         if form.is_valid():
             issue = form.save(commit=False)
             issue.save()
+            request.user.message_set.create(message="The issue has been added. Let's hope someone solves it soon!")
             return HttpResponseRedirect(reverse('issue-detail', kwargs={'slug':slug,'issue_id':issue.id}))
     else:
         form = IssueCreateForm()

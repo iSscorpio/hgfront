@@ -46,6 +46,7 @@ def repo_create(request, slug):
         form = RepoCreateForm(request.POST, instance=repo)
         if form.is_valid():
             form.save()
+            request.user.message_set.create(message="The repo has been added! Now start putting code in!")
             return HttpResponseRedirect(reverse('repo-detail', kwargs={'slug':slug,'repo_name':request.POST['repo_dirname']}))
     else:
         form = RepoCreateForm()

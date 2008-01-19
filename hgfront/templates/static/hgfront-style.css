@@ -19,6 +19,10 @@ body {
     line-height:30px;
     padding:25px;
 }
+.message {
+    background-color:#ffffdd;
+    padding:10px;
+}
 #breadcrumbs {
     background-color:#dddddd;
     line-height:30px;
