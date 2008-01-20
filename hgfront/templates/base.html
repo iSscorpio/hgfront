@@ -15,7 +15,13 @@
         </div>
         
         <div class="column span-24" id="navigation">
-            {% block navigation %}Navigation Goes Here{% endblock navigation %}
+            <ul class="navigation">
+                {% block navigation %}
+                    <li><a href="/hgfront/projects/">Home</a></li>
+                    <li><a href="/hgfront/projects/">All Projects</a></li>
+                    <li><a href="{% url project-create project.name_short %}" class="link-create-project">Create New Project</a></li>
+                {% endblock navigation %}
+            </ul>
         </div>
         
         <div class="column span-24" id="breadcrumbs">
