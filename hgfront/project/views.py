@@ -15,7 +15,7 @@ from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
 
 def get_project_list(request):
-    projects = [project for project in Project.objects.all() if project.get_permissions(request.user).view_project]
+    projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
     return render_to_response('project/project_list.html', {'object_list':projects}, context_instance=RequestContext(request))
 
 @check_project_permissions('view_project')
