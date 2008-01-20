@@ -5,33 +5,33 @@ body {
     background: url('images/bg1.png') repeat-x;
 }
 
+/* Global Lists */
 ul {
     list-style:none;
 }
-
 ul li {
     line-height: 1.3em;
     margin-bottom: 1.1em;
     border-bottom: 1px dotted #ccc;
 }
 
+/* Global Tables */
 table {
     width: 99%;
 }
-
-
 th {
     border-bottom: 2px dotted #ccc;
 }
-
 td {
     border-bottom: 1px dotted #ccc;
 }
 
+/* Global Links */
 a {
     text-decoration:none;
 } 
 
+/* Main Layout */
 div#header {
 
 }
@@ -59,6 +59,7 @@ ul.navigation li a {
 /* Breadcrumbs */
 div#breadcrumbs {
     clear:both;
+    border-bottom: 3px dotted #ccc;
 }
 
 /* Links */
