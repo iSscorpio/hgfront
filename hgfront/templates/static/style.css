@@ -12,6 +12,20 @@ ul {
 ul li {
     line-height: 1.3em;
     margin-bottom: 1.1em;
+    border-bottom: 1px dotted #ccc;
+}
+
+table {
+    width: 99%;
+}
+
+
+th {
+    border-bottom: 2px dotted #ccc;
+}
+
+td {
+    border-bottom: 1px dotted #ccc;
 }
 
 a {
@@ -27,6 +41,25 @@ div#header h1 {
 }
 
 
+/* Navigation */
+ul.navigation {
+    
+}
+
+ul.navigation li {
+    float:left;
+    border:0;
+    margin-right:10px;
+}
+
+ul.navigation li a {
+    font-size: 1.3em;
+}
+
+/* Breadcrumbs */
+div#breadcrumbs {
+    clear:both;
+}
 
 /* Links */
 

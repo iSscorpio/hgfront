@@ -6,65 +6,70 @@
 {% block breadcrumbs %}{{block.super}} &gt; <a href="{{project.get_absolute_url}}">{{project.name_long}}</a>{% endblock %}
 
 {% block main_content %}
-	{% if permissions.view_project %}
-	<dl class="project-details">
-		<dt>
-			<h3>{{project.name_long}}</h3>
-		</dt>
-		<dd>
-			<h4>Project Description:</h4>
-			{{project.description_long}}<br />
-		</dd>
-		<dd>
-			<h4>Project Owner:</h4>
-			<a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a>
-		</dd>
-        <dd>
-            <h4>Issues:</h4>
-            {% if permissions.view_issues %}
-                {% if project.issue_set.all %}
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Created by</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+    {% if permissions.view_project %}
+        <table>
+            <thead>
+                <caption>Project Details for {{project.name_long}}</caption>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Project Description</td>
+                    <td>{{project.description_long}}</td>
+                </tr>
+                <tr>
+                    <td>Project Owner</td>
+                    <td><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></td>
+                </tr>
+                <tr>
+                    <td>Project Members</td>
+                    <td>
+                        {% if project.members %}
+                            <ul>
+                                {% for member in project.members %}
+                                    <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            This project has no additional members
+                        {% endif %}                    
+                    </td>
+            </tbody>
+        </table>
+	    
+        {% if permissions.view_issues %}
+            {% if project.issue_set.all %}
+                <table>
+                    <thead>
+                        <caption>Recent Issues for {{project.name_long}}</caption>
+                        <tr>
+                            <th>Title</th>
+                            <th>Created by</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for issue in issues %}
                             <tr>
                                 <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
                                 <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
                             </tr>
                         {% endfor %}
-                        </tbody>
-                    </table>
-                    <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
-                {% else %}
-                    This project has no issues, yay!
-                {% endif %}
+                    </tbody>
+                </table>
+                <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
             {% else %}
-                You can't view the issues, man!
+                <h4>This project has no issues, yay!</h4>
             {% endif %}
-        </dd>
-	</dl>
-	{% else %}
-		<div class="error">
-			<h2>This project is private, and cannot be viewed except for project members</h2>
-		</div>
-	{% endif %}
+        {% else %}
+            <h4>You can't view the issues, man!</h4>
+        {% endif %}
+    {% else %}
+        <div class="error">
+            <h2>This project is private, and cannot be viewed except for project members</h2>
+        </div>
+    {% endif %}
 {% endblock %}
 
 {% block sidebar %}
-    {% if project.members %}
-    <span class="group">Project Members</span>
-        <ul>
-        {% for member in project.members %}
-            <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
-        {% endfor %}
-        </ul>
-    {% endif %}
-            
     {% if project.repo_set.all %}
         <span class="group">Project Repositories</span>
         <ul>
