@@ -1,5 +1,6 @@
 # General Libraries
 from mercurial import hg, ui, hgweb
+import datetime
 # Django Libraries
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -41,25 +42,22 @@ def create_project_form(request):
             if form.is_valid():
                 check = Project.objects.all().filter(name_short__exact = request.POST['name_short'])
                 if check:
-                    is_auth = bool(request.user.is_authenticated())
                     return render_to_response('project/project_create.html', {'form':form.as_table(), 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
                 else:
                     form_data = request.POST.copy()
                     form_data['user_owner'] = request.user.username
                     form_data['pub_date'] = datetime.datetime.now()
-                    is_auth = bool(request.user.is_authenticated())
                     form = NewProjectStep2(form_data)
-                    return render_to_response('project/project_create_step_2.html', {'form':form.as_table(), 'is_auth': is_auth, 'name_short':request.POST['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
+                    return render_to_response('project/project_create_step_2.html', {'form':form.as_table(), 'name_short':request.POST['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
         else:
-            user = User.objects.get(username__exact = request.POST['user_owner'])
             style = InstalledStyles.objects.get(short_name__exact = request.POST['hgweb_style'])
             project = Project(
                 name_short = request.POST['name_short'],
                 name_long = request.POST['name_long'],
                 description_short = request.POST['description_short'],
                 description_long = request.POST['description_long'],
-                user_owner = user,
-                pub_date = request.POST['pub_date'],
+                user_owner = request.user,
+                pub_date = datetime.datetime.now(),
                 hgweb_style = style
             ).save()
             request.user.message_set.create(message="The project has been added! Good luck on the project, man!")

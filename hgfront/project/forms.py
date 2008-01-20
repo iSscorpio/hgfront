@@ -15,11 +15,7 @@ class NewProjectStep2(forms.Form):
     name_long=forms.CharField(max_length=255)
     description_short=forms.CharField(max_length=255)
     description_long=forms.CharField(widget=forms.widgets.Textarea())
-    # Need to get the current logged in users name
-    user_owner=forms.CharField()#widget=forms.widgets.HiddenInput())
-    pub_date=forms.DateTimeField()
-    # Need to make this take the values from the db
-    hgweb_style=forms.MultipleChoiceField([('default','Default'),('gitweb', 'Gitweb')])
+    hgweb_style=forms.MultipleChoiceField([(style.short_name, style.long_name) for style in InstalledStyles.objects.filter(is_active=True)])
 
 
 
