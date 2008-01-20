@@ -62,6 +62,26 @@ div#breadcrumbs {
     border-bottom: 3px dotted #ccc;
 }
 
+div#breadcrumbs ul li {
+    float:left;
+    border:0;
+    margin-right:20px;
+    padding-left:20px;
+    background: url('images/breadcrumb.png') no-repeat;
+}
+
+div#breadcrumbs ul li.home {
+    background: url('images/home.png') no-repeat;
+}
+
+div#breadcrumbs ul li.project {
+    background: url('images/projects/project.png') no-repeat;
+}
+
+div#breadcrumbs ul li.project-add {
+    background: url('images/projects/add.png') no-repeat;
+}
+
 /* Links */
 
 .link-create-issue {

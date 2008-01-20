@@ -3,7 +3,7 @@
 {% block title %}{{block.super}} Create New Project{% endblock %}
 
 {% block content_title %}Create New Project{% endblock %}
-{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url project-create %}">New project</a>{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li class="project-add">&raquo; <a href="{% url project-create %}">New project</a></li>{% endblock %}
 
 {% block main_content %}
 	{{fail}}

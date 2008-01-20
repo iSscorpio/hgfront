@@ -1,7 +1,7 @@
 {% extends "project/project_detail.html" %}
 
 {% block title %}{{project.name_long}} : All Repositories{% endblock %}
-{% block breadcrumbs %}{{block.super}} &gt; Repositories for {{project.name_long}}{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li>Repositories for {{project.name_long}}</li>{% endblock %}
 
 {% block content_title %}Repositories for {{project.name_long}}{% endblock %}
 

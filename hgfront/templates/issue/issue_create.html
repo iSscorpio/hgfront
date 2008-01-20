@@ -1,7 +1,7 @@
 {% extends "project/project_detail.html" %}
 
 {% block title %}{{project.name_long}} : Create New Issue{% endblock %}
-{% block breadcrumbs %}{{block.super}} &gt; <a href="{% url issue-create slug=project.name_short %}">New Issue</a>{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li><a href="{% url issue-create slug=project.name_short %}">New Issue</a></li>{% endblock %}
 
 {% block content_title %}Create New Issue{% endblock %}
 

@@ -1,6 +1,7 @@
 # Django settings for hgfront project.
 
 DEBUG = True
+DEBUG_SQL=True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -68,6 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    'hgfront.SQLLogMiddleware.SQLLogMiddleware',
 )
 
 ROOT_URLCONF = 'urls'
