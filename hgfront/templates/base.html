@@ -25,7 +25,11 @@
         </div>
         
         <div class="column span-24" id="breadcrumbs">
-            {% block breadcrumbs %}Home{% endblock breadcrumbs %}
+            <ul>
+                {% block breadcrumbs %}
+                    <li class="home"><a href="/hgfront/projects/">Home</a></li>            
+                {% endblock breadcrumbs %}
+            </ul>
         </div>
         
         {% if messages %}
