@@ -13,7 +13,7 @@ def create_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
     u = ui.ui()
-    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     directory = os.path.join(d.option_value, p.name_short, instance.repo_dirname)
     
     if not bool(os.path.isdir(directory)):
@@ -40,7 +40,7 @@ def delete_repo(sender, instance, signal, *args, **kwargs):
     from hgfront.project.models import Project
     from hgfront.repo.models import Repo
     p = Project.objects.get(name_long=instance.project)
-    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     
     directory = os.path.join(d.option_value, p.name_short, instance.repo_dirname)
     if bool(os.path.isdir(directory)):

@@ -31,7 +31,7 @@ def issue_list(request, slug):
 
     ?page=1&issue_sev__slug=minor&issue_type__slug=bug&completed=no
     """
-    i = SiteOptions.objects.get(option_key__exact = 'hgf_issues_per_page')
+    i = SiteOptions.objects.get(option_key__exact = 'issues_per_page')
     issues_per_page = int(i.option_value)
 
     #read the page variable in the querystring to determine which page we are at

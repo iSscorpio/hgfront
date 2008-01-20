@@ -20,7 +20,7 @@ def create_project_dir(sender, instance, signal, *args, **kwargs):
     Checks to see if path already exists, and if not this is a new project so creates path.
     """
     from hgfront.config.models import SiteOptions
-    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     if not bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
         return bool(shutil.os.mkdir(os.path.join(d.option_value ,instance.name_short)))
 
@@ -29,7 +29,7 @@ def delete_project_dir(sender, instance, signal, *args, **kwargs):
     Checks to see if path still exists for project and if it does, deletes it.
     """
     from hgfront.config.models import SiteOptions
-    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     
     if bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
         return bool(shutil.rmtree(os.path.join(d.option_value, instance.name_short)))
@@ -40,7 +40,7 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
     from hgfront.config.models import InstalledStyles, SiteOptions
     s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
-    d = SiteOptions.objects.get(option_key__exact = 'hgf_repo_location')
+    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     directory = os.path.join(d.option_value, instance.name_short)
     if bool(os.path.isdir(directory)):
         config = open(os.path.join(directory, 'hgweb.config'), 'w')
