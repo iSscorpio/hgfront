@@ -104,12 +104,17 @@ def issue_create(request, slug):
     """
     project = get_object_or_404(Project, name_short=slug)
     if request.method == "POST":
-        issue = Issue(project=project, user_posted = request.user, pub_date=datetime.datetime.now())
-        form = IssueCreateForm(request.POST, instance=issue)
+        form = IssueCreateForm(request.POST)
         if form.is_valid():
             issue = form.save(commit=False)
+            # Let's set the values that we don't get explicitly from the form
+            issue.project = project
+            issue.pub_date = datetime.datetime.now()
+            issue.user_posted = request.user
             issue.save()
-            request.user.message_set.create(message="The issue has been added. Let's hope someone solves it soon!")
+            # Let's send a message of success to the user if the user isn't anonymous
+            if request.user.is_authenticated():
+                request.user.message_set.create(message="The issue has been added. Let's hope someone solves it soon!")
             return HttpResponseRedirect(reverse('issue-detail', kwargs={'slug':slug,'issue_id':issue.id}))
     else:
         form = IssueCreateForm()

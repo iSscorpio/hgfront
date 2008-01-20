@@ -114,7 +114,7 @@ class Issue(models.Model):
     issue_type = models.ForeignKey(IssueType)
     issue_sev = models.ForeignKey(IssueSeverity)
     issue_status = models.ForeignKey(IssueStatus)
-    user_posted = models.ForeignKey(User, related_name='user_posted', verbose_name='posted by')
+    user_posted = models.ForeignKey(User, blank=True, null=True, related_name='user_posted', verbose_name='posted by')
     pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
     finished_date = models.DateTimeField(blank=True, null=True, verbose_name='finished on')

@@ -29,8 +29,20 @@
                     <td><a href="{% url issue-list slug=project.name_short %}?issue_type__slug={{issue.issue_type.slug}}">{{issue.issue_type.title}}</a></td>
                     <td><a href="{% url issue-list slug=project.name_short %}?issue_status__slug={{issue.issue_status.slug}}">{{issue.issue_status.title}}</a></td>
                     <td><a href="{% url issue-list slug=project.name_short %}?completed={{issue.completed|yesno:"yes,no"}}">{{issue.completed|yesno:"Yes,No"}}</a></td>
-                    <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
-                    <td><a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> </td>
+                    <td>
+                        {% if issue.user_posted.username %}
+                            <a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a>
+                        {% else %}
+                            Anonymous
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if issue.user_assigned_to.username %}
+                            <a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> 
+                        {% else %}
+                            No one
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
