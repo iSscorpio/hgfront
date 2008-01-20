@@ -84,10 +84,10 @@ class Project(models.Model):
         else:
             try:
                 #Try to find a permission set for the user
-                permissions = ProjectPermissionSet.objects.get(user__id=user.id, project__id=self.id)
+                permissions = self.projectpermissionset_set.get(user__id=user.id, user_accepted = True, owner_accepted = True)
             except ProjectPermissionSet.DoesNotExist:
                 #If there's no specific permission set for the user, try to find a default permission set
-                permission_list = ProjectPermissionSet.objects.filter(is_default=True, project__id=self.id)
+                permission_list = self.projectpermissionset_set.filter(is_default=True)
                 if len(permission_list) > 0:
                     permissions = permission_list[0]
                 else:
