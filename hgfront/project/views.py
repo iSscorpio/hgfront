@@ -13,7 +13,6 @@ from hgfront.config.models import InstalledStyles
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
-from hgfront.shortcuts import get_object_related_or_404
 
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
@@ -21,7 +20,7 @@ def get_project_list(request):
 
 @check_project_permissions('view_project')
 def get_project_details(request, slug):
-    project = get_object_related_or_404(Project, name_short=slug)
+    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
     issues_shown = 10 #TODO: Move this either to settings.py or make it user configurabl
     issue_short_list = project.issue_set.select_related()[:issues_shown]
