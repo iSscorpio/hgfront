@@ -8,7 +8,17 @@
 {% block main_content %}
 	{{fail}}
     <form action="{% url project-create %}" method="post">
-        <table>{{form}}</table>
+        <ul>
+            <li>
+                {{form.name_short.errors}}
+                <label for="name_short">Project Short Name</label>
+                {{form.name_short}}
+                <div class="field-description">
+                    Please enter the short name of your project.  This is the unique name of your project
+                    and cannot be changed, so please choose carefully.
+                </div>
+            </li>
+        </ul>
         <input type="submit" />
     </form>
 {% endblock %}

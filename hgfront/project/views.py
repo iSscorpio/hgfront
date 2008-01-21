@@ -42,13 +42,13 @@ def create_project_form(request):
             if form.is_valid():
                 check = Project.objects.all().filter(name_short__exact = request.POST['name_short'])
                 if check:
-                    return render_to_response('project/project_create.html', {'form':form.as_table(), 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
+                    return render_to_response('project/project_create.html', {'form':form, 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
                 else:
                     form_data = request.POST.copy()
                     form_data['user_owner'] = request.user.username
                     form_data['pub_date'] = datetime.datetime.now()
                     form = NewProjectStep2(form_data)
-                    return render_to_response('project/project_create_step_2.html', {'form':form.as_table(), 'name_short':request.POST['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
+                    return render_to_response('project/project_create_step_2.html', {'form':form, 'name_short':request.POST['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
         else:
             style = InstalledStyles.objects.get(short_name__exact = request.POST['hgweb_style'])
             project = Project(
@@ -65,5 +65,5 @@ def create_project_form(request):
     else:
         form = NewProjectForm()
         is_auth = bool(request.user.is_authenticated())
-        return render_to_response('project/project_create.html', {'form':form.as_table(), 'is_auth': is_auth}, context_instance=RequestContext(request))
+        return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth}, context_instance=RequestContext(request))
  

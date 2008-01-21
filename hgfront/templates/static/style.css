@@ -84,6 +84,16 @@ div#breadcrumbs ul li.project-add {
 
 /* Links */
 
+a.home {
+    background: url('images/home.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-all-projects {
+    background: url('images/projects/all.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
 .link-create-issue {
     background: url('images/issues/add.png') no-repeat;
     padding: 5px 0 5px 25px;
@@ -91,6 +101,11 @@ div#breadcrumbs ul li.project-add {
 
 .link-create-project {
     background: url('images/projects/add.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-create-user {
+    background: url('images/users/add.png') no-repeat;
     padding: 5px 0 5px 25px;
 }
 
@@ -102,4 +117,18 @@ div#breadcrumbs ul li.project-add {
 .link-show-repo {
     background: url('images/repos/repo.png') no-repeat;
     padding: 5px 0 5px 25px;
+}
+
+/* Forms */
+
+label {
+    vertical-align:center;
+}
+
+.field-description {
+    padding-left:15%;
+    margin-top:2em;
+    font-weight:bold;
+    background: url('images/help.png') no-repeat 40px;
+    border-top: 1px dotted #f00;
 }
