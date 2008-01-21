@@ -111,7 +111,7 @@ class SQLLogMiddleware:
 					}
 
 					#sqllog {
-						font: normal 8px "MS Sans Serif", sans !important;
+						font: normal 11px "MS Sans Serif", sans !important;
 						color: black !important;
 						background: #ffffe1 !important;
 						position: fixed !important;
