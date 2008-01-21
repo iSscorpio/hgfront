@@ -13,6 +13,7 @@ from hgfront.issue.models import *
 from hgfront.issue.forms import IssueCreateForm
 from hgfront.project.models import Project
 from hgfront.project.decorators import check_project_permissions
+from hgfront.shortcuts import get_object_related_or_404
 
 @check_project_permissions('view_issues')
 def issue_list(request, slug):
@@ -41,8 +42,8 @@ def issue_list(request, slug):
     except ValueError:
         page = 0
 
-    project = get_object_or_404(Project, name_short = slug)
-    issues = project.issue_set.all()
+    project = get_object_related_or_404(Project, name_short = slug)
+    issues = project.issue_set.select_related()
 
     #check if we're filtering the issues by completed and if we are, filter the selection
     if request.GET.has_key('completed'):
