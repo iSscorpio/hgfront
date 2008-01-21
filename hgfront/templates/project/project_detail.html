@@ -22,15 +22,17 @@
                 <tr>
                     <td>Project Members</td>
                     <td>
-                        {% if project.members %}
+                    {% with project.members as members %}
+                        {% if members %}
                             <ul>
-                                {% for member in project.members %}
+                                {% for member in members %}
                                     <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
                                 {% endfor %}
                             </ul>
                         {% else %}
                             This project has no additional members
                         {% endif %}                    
+                    {% endwith %}
                     </td>
             </tbody>
         </table>

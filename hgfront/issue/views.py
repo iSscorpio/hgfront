@@ -88,8 +88,8 @@ def issue_list(request, slug):
 @check_project_permissions('view_issues')
 def issue_detail(request, slug, issue_id):
     """Returns the details of the issue identified by `issue_id`"""
-    project = get_object_or_404(Project, name_short = slug)
-    issue = get_object_or_404(Issue, id = issue_id)
+    project = get_object_related_or_404(Project, name_short = slug)
+    issue = get_object_related_or_404(Issue, id = issue_id)
     return render_to_response('issue/issue_detail.html',
         {
             'project':project,
@@ -103,7 +103,7 @@ def issue_create(request, slug):
     """
     This view displays a form based on a new issue
     """
-    project = get_object_or_404(Project, name_short=slug)
+    project = get_object_related_or_404(Project, name_short=slug)
     if request.method == "POST":
         form = IssueCreateForm(request.POST)
         if form.is_valid():

@@ -50,8 +50,7 @@ def repo_create(request, slug):
             return HttpResponseRedirect(reverse('repo-detail', kwargs={'slug':slug,'repo_name':request.POST['repo_dirname']}))
     else:
         form = RepoCreateForm()
-    is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).add_repos]
-    return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth}, context_instance=RequestContext(request))
+    return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user),}, context_instance=RequestContext(request))
 
 def create_hgrc(project_name, repo_name):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
