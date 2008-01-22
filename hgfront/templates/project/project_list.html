@@ -33,6 +33,12 @@
 {% endblock %}
 
 {% block sidebar %}
+<span class="group">Statistics</span>
+<dl>
+    <dt>Total Number of Projects</dt>
+    <dd>{{hgf_num_projects}}</dd>
+</dl>
+
 <span class="group">Your Options</span>
     {% if user.is_authenticated %}
     <ul>

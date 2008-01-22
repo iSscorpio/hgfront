@@ -88,8 +88,11 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'hgfront.project',
+    'hgfront.config',
     'hgfront.issue',
+    'hgfront.project',
+    'hgfront.repo',
+    'hgfront.wiki',
     'registration',
 )
 
