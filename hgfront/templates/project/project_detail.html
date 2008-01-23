@@ -91,7 +91,17 @@
             <p>These people want to join {{project.name_long}}!</p>
             <ul>
                 {% for member in aspiring_members %}
-                    <li>{{member.username}}</li>
+                <li>
+                    <form method="post" action="{% url project-approve-join-request slug=project.name_short %}">
+                        {{member.username}}
+                        <input type="hidden" name="username" value="{{member.username}}" />
+                        <input type="submit" value="approve" />
+                    </form>
+                    <form style="display:inline" method="post" action="{% url project-deny-join-request slug=project.name_short %}">
+                        <input type="hidden" name="username" value="{{member.username}}" />
+                        <input type="submit" value="deny" />
+                    </form>
+                </li>
                 {% endfor %}
             </ul>
         {% endif %}

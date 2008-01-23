@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^$', 'hgfront.project.views.get_project_list', name="project-list"),
     url(r'^create/$', 'hgfront.project.views.create_project_form', name="project-create"),
     url(r'^(?P<slug>[-\w]+)/$', 'hgfront.project.views.get_project_details', name="project-detail"),
+    url(r'^(?P<slug>[-\w]+)/acceptjoinrequest/$', 'hgfront.project.views.acceptjoinrequest', name="project-approve-join-request"),
+    url(r'^(?P<slug>[-\w]+)/denyjoinrequest/$', 'hgfront.project.views.denyjoinrequest', name='project-deny-join-request'),
 )
 
 

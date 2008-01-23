@@ -132,7 +132,10 @@ class Project(models.Model):
     aspiring_members = property(_get_aspiring_members)
 
     def is_private(self):
-        return not self.projectpermissionset_set.filter(is_default=True)[0].view_project
+        return not self.get_default_permissionset().view_project
+
+    def get_default_permissionset(self):
+        return self.project_permissionset_set.filter(is_default=True)[0]
 
     @permalink
     def get_absolute_url(self):
