@@ -151,7 +151,7 @@ class Project(models.Model):
         # What's basically achieved here is that the permission set for the aspiring
         # member of the project gets all the permissions from the project's permission
         # set and then it gets the owner_accepted flag set to false.
-         permission set of the user who wants to join
+        # permission set of the user who wants to join
         defaultpermissionset = self.get_default_permissionset()
         newpermissionset = defaultpermissionset
         newpermissionset.id = permissionset.id
