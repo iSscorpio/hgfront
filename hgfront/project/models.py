@@ -156,7 +156,8 @@ class Project(models.Model):
         newpermissionset = defaultpermissionset
         newpermissionset.id = permissionset.id
         newpermissionset.user = permissionset.user
-        newpermissionset.owner_accepted = permissionset.owner_accepted
+        newpermissionset.user_accepted = permissionset.user_accepted
+        newpermissionset.owner_accepted = True
         newpermissionset.is_default = False
         newpermissionset.save()
 
