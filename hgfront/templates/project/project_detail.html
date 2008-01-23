@@ -85,4 +85,26 @@
         		<li><a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a></li>
     		{% endif %}
         </ul>
+    {% with project.aspiring_members as aspiring_members %}
+        {% if permissions.add_members and aspiring_members %}
+            <span class="group">Join requests</span>
+            <p>These people want to join {{project.name_long}}!</p>
+            <ul>
+                {% for member in aspiring_members %}
+                    <li>{{member.username}}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    {% with project.invited_members as invited_members %}
+        {% if permissions.add_members and invited_members %}
+            <span class="group">Invited users</span>
+            <p>You have invited these guys to join {{project.name_long}}</p>
+            <ul>
+                {% for member in invited_members %}
+                    <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
 {% endblock %}
