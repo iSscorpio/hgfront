@@ -147,12 +147,16 @@ class Project(models.Model):
         2. The permissions are set to the project's default permission set, which the owner
         will later probably want to change
         """
+
+        # What's basically achieved here is that the permission set for the aspiring
+        # member of the project gets all the permissions from the project's permission
+        # set and then it gets the owner_accepted flag set to false.
+         permission set of the user who wants to join
         defaultpermissionset = self.get_default_permissionset()
         newpermissionset = defaultpermissionset
         newpermissionset.id = permissionset.id
         newpermissionset.user = permissionset.user
-        newpermissionset.owner_accepted = True
-        newpermissionset.user_accepted = True
+        newpermissionset.owner_accepted = permissionset.owner_accepted
         newpermissionset.is_default = False
         newpermissionset.save()
 
