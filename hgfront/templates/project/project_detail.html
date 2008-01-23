@@ -92,15 +92,18 @@
             <ul>
                 {% for member in aspiring_members %}
                 <li>
-                    <form method="post" action="{% url project-approve-join-request slug=project.name_short %}">
-                        {{member.username}}
+                    {{member.username}}
+                    <form method="post" action="{% url project-process-join-request slug=project.name_short %}" style="float:left">
                         <input type="hidden" name="username" value="{{member.username}}" />
+                        <input type="hidden" name="action" value="accept" />
                         <input type="submit" value="approve" />
                     </form>
-                    <form style="display:inline" method="post" action="{% url project-deny-join-request slug=project.name_short %}">
+                    <form method="post" action="{% url project-process-join-request slug=project.name_short %}" style="float:left;">
                         <input type="hidden" name="username" value="{{member.username}}" />
+                        <input type="hidden" name="action" value="deny" />
                         <input type="submit" value="deny" />
                     </form>
+                    <div style="clear:both"></div>
                 </li>
                 {% endfor %}
             </ul>

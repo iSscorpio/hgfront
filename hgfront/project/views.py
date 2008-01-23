@@ -68,26 +68,17 @@ def create_project_form(request):
         return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth}, context_instance=RequestContext(request))
  
 @check_project_permissions('add_members')
-def acceptjoinrequest(request, slug):
+def processjoinrequest(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short = slug)
     if request.method == 'POST':
-        form = AcceptJoinRequestForm(request.POST)
+        form = JoinRequestForm(request.POST)
         if form.is_valid():
-            permissionset = get_object_or_404(project.projectpermissionset_set.select_related(), user__username = form['username'].data, owner_accepted = False)
-            project.accept_join_request(permissionset)
-            request.user.message_set.create(message='%s was added to the project!' % form['username'].data)
-            return HttpResponseRedirect(project.get_absolute_url())
-    return HttpResponse('Must be called with post and must be a valid username')
-
-
-@check_project_permissions('add_members')
-def denyjoinrequest(request, slug):
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
-    if request.method == 'POST':
-        form = AcceptJoinRequestForm(request.POST)
-        if form.is_valid():
-            permissionset = get_object_or_404(project.projectpermissionset_set.select_related(), user__username = form['username'].data, owner_accepted = False)
-            permissionset.delete()
-            request.user.message_set.create(message='the request from %s was denied' % form['username'].data)
+            permissionset = get_object_or_404(project.projectpermissionset_set.select_related(), user__username = form.cleaned_data['username'], owner_accepted = False)
+            if form.cleaned_data['action'] == 'accept':
+                project.accept_join_request(permissionset)
+                request.user.message_set.create(message='%s was added to the project!' % form.cleaned_data['username'])
+            elif form.cleaned_data['action'] == 'deny':
+                permissionset.delete()
+                request.user.message_set.create(message='the request from %s was denied' % form.cleaned_data['username'])
             return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponse('Must be called with post and must be a valid username')

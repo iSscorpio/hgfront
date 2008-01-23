@@ -18,8 +18,9 @@ class NewProjectStep2(forms.Form):
     hgweb_style=forms.MultipleChoiceField([(style.short_name, style.long_name) for style in InstalledStyles.objects.filter(is_active=True)])
 
 
-class AcceptJoinRequestForm(forms.Form):
+class JoinRequestForm(forms.Form):
     username=forms.CharField(max_length=255)
+    action=forms.CharField(max_length=255)
 
 
 #class ProjectCreateForm(ModelForm):
