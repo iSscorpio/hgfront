@@ -73,10 +73,8 @@ def acceptjoinrequest(request, slug):
     if request.method == 'POST':
         form = AcceptJoinRequestForm(request.POST)
         if form.is_valid():
-            #TODO: Make the permissions for the user equal to the default permission set of the project at first
             permissionset = get_object_or_404(project.projectpermissionset_set.select_related(), user__username = form['username'].data, owner_accepted = False)
-            permissionset.owner_accepted = True
-            permissionset.save()
+            project.accept_join_request(permissionset)
             request.user.message_set.create(message='%s was added to the project!' % form['username'].data)
             return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponse('Must be called with post and must be a valid username')

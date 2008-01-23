@@ -135,7 +135,26 @@ class Project(models.Model):
         return not self.get_default_permissionset().view_project
 
     def get_default_permissionset(self):
-        return self.project_permissionset_set.filter(is_default=True)[0]
+        return self.projectpermissionset_set.filter(is_default=True)[0]
+
+    def accept_join_request(self, permissionset):
+        """
+        This method takes a permissionset that has yet to be approved by the owner and approves it.
+        Basically it approves a user's request to join a project.
+
+        The procedure of approving a permissionset is
+        1. The owner_accepted flag is set to True
+        2. The permissions are set to the project's default permission set, which the owner
+        will later probably want to change
+        """
+        defaultpermissionset = self.get_default_permissionset()
+        newpermissionset = defaultpermissionset
+        newpermissionset.id = permissionset.id
+        newpermissionset.user = permissionset.user
+        newpermissionset.owner_accepted = True
+        newpermissionset.user_accepted = True
+        newpermissionset.is_default = False
+        newpermissionset.save()
 
     @permalink
     def get_absolute_url(self):
