@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 	url(r'^projects/',include('hgfront.project.urls')),
 	url(r'^config/', include('hgfront.config.urls')),
 	url(r'^registration/',include('registration.urls')),
+	url(r'^search/', include('hgfront.search.urls')),
 	url(r'^login/$', auth_views.login, {'template_name': 'registration/login.html'}, name='auth_login'),
 	url(r'^logout/$', auth_views.logout, {'template_name': 'registration/logout.html'}, name='auth_logout'),
 )
