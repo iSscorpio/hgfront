@@ -48,20 +48,9 @@
         
         <div class="column span-8 last" id="sidebar">
             <h2>Your Sidebar</h2>
-            <span class="group">Statistics</span>
-            <dl>
-                <dt>Total Number of Projects</dt>
-                <dd>{{hgf_num_projects}}</dd>
-                <dt>Total Project added in last 24 hours</dt>
-                <dd>{{hgf_num_projects_last_24_hours}}</dd>
-                <dt>Total Number of Repos</dt>
-                <dd>{{hgf_num_repos}}</dd>
-                <dt>Total Repos added in last 24 hours</dt>
-                <dd>{{hgf_num_repos_last_24_hours}}</dd>
-                
-                <span class="group">Random Project</span>
-                {% include "project/random_project.html" %}
-                
+             {% include "elements/side_stats.html" %}
+             {% include "elements/random_project.html" %}
+              
             {% block sidebar %}{% endblock sidebar %}
         </div>
         
