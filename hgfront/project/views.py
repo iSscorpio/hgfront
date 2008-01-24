@@ -51,7 +51,7 @@ def create_project_form(request):
         else:
             form = NewProjectStep2(request.POST)
             if form.is_valid():
-                style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data['hgweb_style'])
+                style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data.get('hgweb_style', '')[0])
                 project = Project(
                     name_short = form.cleaned_data['name_short'],
                     name_long = form.cleaned_data['name_long'],
