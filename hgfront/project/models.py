@@ -24,6 +24,7 @@ class ProjectManager(models.Manager):
         """
         return self.filter(
             projectpermissionset__user = user, 
+            projectpermissionset__is_default = False,
             projectpermissionset__user_accepted = True,
             projectpermissionset__owner_accepted = True
         )
@@ -111,6 +112,7 @@ class Project(models.Model):
         """
         return User.objects.filter (
             projectpermissionset__project__id = self.id, 
+            projectpermissionset__is_default = False,
             projectpermissionset__user_accepted = True,
             projectpermissionset__owner_accepted = True
         )
@@ -120,7 +122,7 @@ class Project(models.Model):
         """
         Gets the QuerySet of the users that have been invited to join the project but haven't accepted their invitation yet
         """
-        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__user_accepted = False)
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__is_default = False, projectpermissionset__user_accepted = False)
     invited_members = property(_get_invited_members)
 
     def _get_aspiring_members(self):
@@ -128,7 +130,7 @@ class Project(models.Model):
         Gets the QuerySet of the users that have requested to join the project but whose requests haven't been approved
         by the project owner.
         """
-        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__owner_accepted = False)
+        return User.objects.filter(projectpermissionset__project__id = self.id, projectpermissionset__is_default = False, projectpermissionset__owner_accepted = False)
     aspiring_members = property(_get_aspiring_members)
 
     def is_private(self):

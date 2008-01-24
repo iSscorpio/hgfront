@@ -92,7 +92,7 @@
             <ul>
                 {% for member in aspiring_members %}
                 <li>
-                    {{member.username}}
+                    <a href="{{member.get_absolute_url}}">{{member.username}}</a>
                     <form method="post" action="{% url project-process-join-request slug=project.name_short %}" style="float:left">
                         <input type="hidden" name="username" value="{{member.username}}" />
                         <input type="hidden" name="action" value="accept" />
