@@ -39,7 +39,7 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     Creates a hgweb.config file for use with hgwebdir
     """
     from hgfront.config.models import InstalledStyles, SiteOptions
-    s = InstalledStyles.objects.get(short_name = instance.hgweb_style)
+    s = instance.hgweb_style
     d = SiteOptions.objects.get(option_key__exact = 'repo_location')
     directory = os.path.join(d.option_value, instance.name_short)
     if bool(os.path.isdir(directory)):
