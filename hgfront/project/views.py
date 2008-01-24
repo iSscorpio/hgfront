@@ -40,28 +40,28 @@ def create_project_form(request):
         if 'name_long' not in request.POST:
             form = NewProjectForm(request.POST)
             if form.is_valid():
-                check = Project.objects.all().filter(name_short__exact = request.POST['name_short'])
-                if check:
-                    return render_to_response('project/project_create.html', {'form':form, 'fail':'A Project with this name already exists'}, context_instance=RequestContext(request))
-                else:
-                    form_data = request.POST.copy()
-                    form_data['user_owner'] = request.user.username
-                    form_data['pub_date'] = datetime.datetime.now()
-                    form = NewProjectStep2(form_data)
-                    return render_to_response('project/project_create_step_2.html', {'form':form, 'name_short':request.POST['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
+                form_data = request.POST.copy()
+                form_data['user_owner'] = request.user.username
+                form_data['pub_date'] = datetime.datetime.now()
+                form2 = NewProjectStep2(form_data)
+                return render_to_response('project/project_create_step_2.html', {'form':form2, 'name_short':form.cleaned_data['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
+            else:
+                return render_to_response('project/project_create.html', {'form':form,}, context_instance=RequestContext(request))
+                
         else:
-            style = InstalledStyles.objects.get(short_name__exact = request.POST['hgweb_style'])
+            form = NewProjectStep2(request.POST)
+            style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data['hgweb_style'])
             project = Project(
-                name_short = request.POST['name_short'],
-                name_long = request.POST['name_long'],
-                description_short = request.POST['description_short'],
-                description_long = request.POST['description_long'],
+                name_short = form.cleaned_data['name_short'],
+                name_long = form.cleaned_data['name_long'],
+                description_short = form.cleaned_data['description_short'],
+                description_long = form.cleaned_data['description_long'],
                 user_owner = request.user,
                 pub_date = datetime.datetime.now(),
                 hgweb_style = style
             ).save()
             request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
-            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':request.POST['name_short']}))
+            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
     else:
         form = NewProjectForm()
         is_auth = bool(request.user.is_authenticated())

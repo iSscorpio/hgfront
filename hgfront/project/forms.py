@@ -10,6 +10,17 @@ from hgfront.project.models import Project
 class NewProjectForm(forms.Form):
     name_short = forms.CharField(max_length=50)
     
+    def clean_name_short(self):
+        name_short = self.cleaned_data.get('name_short', '')
+        num_letters = len(name_short)
+        if num_letters < 4:
+            raise forms.ValidationError("A project short name must be at least 4 characters long!")
+        
+        if Project.objects.all().filter(name_short__exact = name_short):
+            raise forms.ValidationError("A project with this name already exists!")
+        
+        return name_short
+    
 class NewProjectStep2(forms.Form):
     name_short=forms.CharField(max_length=50)
     name_long=forms.CharField(max_length=255)
