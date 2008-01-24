@@ -88,10 +88,9 @@ class Project(models.Model):
                 permissions = self.projectpermissionset_set.get(user__id=user.id, user_accepted = True, owner_accepted = True)
             except ProjectPermissionSet.DoesNotExist:
                 #If there's no specific permission set for the user, try to find a default permission set
-                permission_list = self.projectpermissionset_set.filter(is_default=True)
-                if len(permission_list) > 0:
-                    permissions = permission_list[0]
-                else:
+                try:
+                    permissions = self.get_default_permissionset()
+                except ProjectPermissionSet.DoesNotExist:
                     #If even a default one isn't found (although this shouldn't happen), return a restricted permission set
                     permissions = ProjectPermissionSet.objects.get_null_permission_set(user, self)
         return permissions
@@ -137,7 +136,11 @@ class Project(models.Model):
         return not self.get_default_permissionset().view_project
 
     def get_default_permissionset(self):
-        return self.projectpermissionset_set.filter(is_default=True)[0]
+        default_permission_list = self.projectpermissionset_set.filter(is_default=True)
+        if len(default_permission_list) == 0:
+            raise ProjectPermissionSet.DoesNotExist
+        else:
+            return default_permission_list[0]
 
     def accept_join_request(self, permissionset):
         """
