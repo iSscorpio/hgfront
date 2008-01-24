@@ -7,15 +7,20 @@
 {% block main_content %}
 <h3>Projects</h3>
 <ul>
-    {% for project in projects %}
-        <li>{{project.name_long}}</li>
+    {% for t_project in projects %}
+        <li><a href="{{t_project.get_absolute_url}}">{{t_project.name_long}}</a></li>
     {% endfor %}
 </ul>
 <h3>Repos</h3>
 <ul>
     {% for repo in repos %}
-        <li>{{repo.repo_name}}</li>
+        <li><a href="{{repo.get_absolute_url}}">{{repo.repo_name}}</a></li>
     {% endfor %}
 </ul>
+<h3>Issues</h3>
+<ul>
+    {% for issue in issues %}
+        <li><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></li>
+    {% endfor %}
 
 {% endblock %}
