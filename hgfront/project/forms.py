@@ -26,7 +26,7 @@ class NewProjectStep2(forms.Form):
     name_long=forms.CharField(max_length=255)
     description_short=forms.CharField(max_length=255)
     description_long=forms.CharField(widget=forms.widgets.Textarea())
-    hgweb_style=forms.MultipleChoiceField([(style.short_name, style.long_name) for style in InstalledStyles.objects.filter(is_active=True)])
+    hgweb_style=forms.ChoiceField([(style.short_name, style.long_name) for style in InstalledStyles.objects.filter(is_active=True)])
 
 
 class JoinRequestForm(forms.Form):
