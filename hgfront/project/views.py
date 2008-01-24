@@ -50,18 +50,21 @@ def create_project_form(request):
                 
         else:
             form = NewProjectStep2(request.POST)
-            style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data['hgweb_style'])
-            project = Project(
-                name_short = form.cleaned_data['name_short'],
-                name_long = form.cleaned_data['name_long'],
-                description_short = form.cleaned_data['description_short'],
-                description_long = form.cleaned_data['description_long'],
-                user_owner = request.user,
-                pub_date = datetime.datetime.now(),
-                hgweb_style = style
-            ).save()
-            request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
-            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
+            if form.is_valid():
+                style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data['hgweb_style'])
+                project = Project(
+                    name_short = form.cleaned_data['name_short'],
+                    name_long = form.cleaned_data['name_long'],
+                    description_short = form.cleaned_data['description_short'],
+                    description_long = form.cleaned_data['description_long'],
+                    user_owner = request.user,
+                    pub_date = datetime.datetime.now(),
+                    hgweb_style = style
+                ).save()
+                request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
+                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
+            else:
+                return render_to_response('project/project_create_step_2.html', {'form':form,}, context_instance=RequestContext(request))
     else:
         form = NewProjectForm()
         is_auth = bool(request.user.is_authenticated())
