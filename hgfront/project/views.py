@@ -1,6 +1,6 @@
 # General Libraries
 from mercurial import hg, ui, hgweb
-import datetime
+import datetime, os
 # Django Libraries
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 # Project Libraries
-from hgfront.config.models import InstalledStyles
+from hgfront.config.models import InstalledStyles, SiteOptions
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
@@ -36,6 +36,12 @@ def create_project_form(request):
         4. Once the data is entered, save the form to the model
         5. Redirect to the project view
     """
+    
+    path_check = SiteOptions.objects.get(option_key__exact = 'repo_location')
+    
+    if not bool(os.path.isdir(path_check.option_value)):
+        raise IOError("The path to your repository directory is not valid.  Please update your settings.")
+    
     if request.method == "POST":
         if 'name_long' not in request.POST:
             form = NewProjectForm(request.POST)
