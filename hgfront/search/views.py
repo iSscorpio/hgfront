@@ -31,7 +31,10 @@ def search_results(request):
         results_repos = Repo.objects.filter(qset_repos).distinct()
         results_issues = Issue.objects.filter(qset_issues).distinct()
     else:
-        results_projects = []
+        results_projects = "There are no results for projects."
+        results_repos = "There are no results for repos."
+        results_issues = "There are no results for issues."
+        
     return render_to_response("search/search_results.html", {
         "projects": results_projects,
         "repos": results_repos,
