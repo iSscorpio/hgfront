@@ -4,8 +4,13 @@ import datetime
 from django.contrib.auth.models import User
 import django.newforms as forms
 # Project Libraries
-from hgfront.config.models import InstalledStyles
+import hgfront.config
 from hgfront.project.models import Project
+
+available_styles = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
 
 class NewProjectForm(forms.Form):
     name_short = forms.CharField(max_length=50)
@@ -26,7 +31,7 @@ class NewProjectStep2(forms.Form):
     name_long=forms.CharField(max_length=255)
     description_short=forms.CharField(max_length=255)
     description_long=forms.CharField(widget=forms.widgets.Textarea())
-    hgweb_style=forms.ChoiceField([(style.short_name, style.long_name) for style in InstalledStyles.objects.filter(is_active=True)])
+    hgweb_style=forms.ChoiceField(choices=available_styles)
 
 
 class JoinRequestForm(forms.Form):

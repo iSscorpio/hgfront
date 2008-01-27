@@ -7,8 +7,18 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-from hgfront.config.models import InstalledStyles
+import hgfront.config
 from hgfront.project.signals import *
+
+available_styles = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
+
+
+class ProjectOptions(hgfront.config.Group):
+    repository_directory = hgfront.config.StringValue("The central location to store your repositories.")
+    issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
 
 class ProjectManager(models.Manager):
     """
@@ -56,9 +66,10 @@ class Project(models.Model):
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    hgweb_style=models.ForeignKey(InstalledStyles)
-
-    objects = ProjectManager()
+    hgweb_style=models.CharField(max_length=50,choices=available_styles)
+    
+    objects = ProjectManager()    
+    project_options = ProjectOptions()
     
     def __unicode__(self):
         return self.name_long

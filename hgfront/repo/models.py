@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-from hgfront.config.models import InstalledStyles, InstalledExtensions
+import hgfront.config
 from hgfront.repo import signals as hgsignals
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
@@ -15,6 +15,11 @@ from hgfront.project.models import Project
 REPO_TYPES = (
     (1, 'New',),
     (2, 'Clone',),
+)
+
+available_styles = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
 )
 
 class Repo(models.Model):
@@ -31,13 +36,13 @@ class Repo(models.Model):
     anonymous_push=models.BooleanField(default=False)
     pull_members=models.ManyToManyField(User, related_name="pull_members")
     push_members=models.ManyToManyField(User, related_name="push_members")
-    hgweb_style=models.ForeignKey(InstalledStyles)
+    hgweb_style=models.CharField(max_length=50,choices=available_styles)
     
     offer_zip=models.BooleanField(default=True)
     offer_tar=models.BooleanField(default=True)
     offer_bz2=models.BooleanField(default=True)
     
-    active_extensions=models.ManyToManyField(InstalledExtensions)
+    #active_extensions=models.ManyToManyField(InstalledExtensions)
 
     def __unicode__(self):
         return self.repo_name

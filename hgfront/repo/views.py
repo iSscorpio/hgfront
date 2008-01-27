@@ -9,7 +9,6 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 # Project Libraries
-from hgfront.config.models import InstalledStyles, InstalledExtensions
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
 from hgfront.repo.models import Repo
@@ -56,14 +55,13 @@ def create_hgrc(project_name, repo_name):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
     repo = Repo.objects.get(repo_dirname__exact=repo_name)
     c = User.objects.get(username__exact=repo.repo_contact)
-    s = InstalledStyles.objects.get(short_name = repo.hgweb_style)
     directory = os.path.join(settings.MERCURIAL_REPOS, project_name, repo.repo_dirname)
        
     hgrc = open(os.path.join(directory, '.hg/hgrc'), 'w')
     hgrc.write('[paths]\n')
     hgrc.write('default = %s\n\n' % repo.repo_url)
     hgrc.write('[web]\n')
-    hgrc.write('style = %s\n' % s.short_name)
+    hgrc.write('style = %s\n' % repo.hgweb_style)
     hgrc.write('description = %s\n' % repo.repo_description)
     hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
     a = 'allow_archive = '
