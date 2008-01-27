@@ -95,14 +95,31 @@ class IssueStatus(models.Model):
         ordering = ['order']
 #Dispatchers
 
-
-class IssueManager(models.Manager):
-    """A manager for issues"""
+class IssueQuerySet(models.query.QuerySet):
+    """
+    Overiding the Issue default queryset for Issues as per http://www.djangosnippets.org/snippets/562/
+    """
     def get_open_issues(self):
         return self.filter(finished_date__isnull=True)
 
     def get_closed_issues(self):
         return self.filter(finished_date__isnull=False)
+
+class IssueManager(models.Manager):
+    """
+    A manager for issues.  Since we're overiding the queryset, we can chain the functions
+    as per http://www.djangosnippets.org/snippets/562/
+    """
+    def get_query_set(self):
+        model = models.get_model('issue', 'Issue')
+        return IssueQuerySet(model)
+        
+    def __getattr__(self, attr, *args):
+        try:
+            return getattr(self.__class__, attr, *args)
+        except AttributeError:
+            return getattr(self.get_query_set(), attr, *args)
+    
 
 class Issue(models.Model):
     """A class that represents an issue/bug"""
