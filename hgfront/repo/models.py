@@ -25,17 +25,17 @@ available_styles = (
 class Repo(models.Model):
     """A repo represents a physical repository on the hg system path"""
     creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Is this new or cloned?")
-    repo_name=models.CharField(max_length=20)
-    repo_dirname=models.CharField(max_length=20)
-    repo_description=models.CharField(max_length=255, null=True, blank=True)
-    repo_url=models.URLField(null=True, blank=True)
+    name_short=models.CharField(max_length=20)
+    name_long=models.CharField(max_length=50)
+    description_short=models.CharField(max_length=255, null=True, blank=True)
+    default_path=models.CharField(max_length=255, null=True, blank=True)
     repo_contact=models.ForeignKey(User, related_name="repo_contact")
-    project=models.ForeignKey(Project)
+    parent_project=models.ForeignKey(Project)
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     anonymous_pull=models.BooleanField(default=True)
     anonymous_push=models.BooleanField(default=False)
-    pull_members=models.ManyToManyField(User, related_name="pull_members")
-    push_members=models.ManyToManyField(User, related_name="push_members")
+    pull_members=models.ManyToManyField(User, related_name="pull_members", null=True, blank=True)
+    push_members=models.ManyToManyField(User, related_name="push_members", null=True, blank=True)
     hgweb_style=models.CharField(max_length=50,choices=available_styles)
     
     offer_zip=models.BooleanField(default=True)
@@ -45,13 +45,13 @@ class Repo(models.Model):
     #active_extensions=models.ManyToManyField(InstalledExtensions)
 
     def __unicode__(self):
-        return self.repo_name
+        return self.name_long
         
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('repo-detail', (), {
             "slug": self.project.name_short,
-            "repo_name": self.repo_name
+            "repo_name": self.name_short
             })
     get_absolute_url = permalink(get_absolute_url)
     
@@ -62,20 +62,20 @@ class Repo(models.Model):
 
     class Admin:
         fields = (
-                  ('Repository Creation', {'fields': ('creation_method', 'repo_name', 'repo_dirname', 'repo_url', 'repo_description', 'project', )}),
+                  ('Repository Creation', {'fields': ('creation_method', 'name_short', 'name_long', 'default_path', 'description_short', 'parent_project', )}),
                   ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members', 'repo_contact')}),
                   ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2', 'hgweb_style')}),
-                  ('Active Extentions', {'fields': ('active_extensions',)}),
+                  #('Active Extentions', {'fields': ('active_extensions',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
-        list_display = ('repo_name', 'project', 'was_cloned', 'pub_date',)
-        list_filter = ['pub_date', 'project',]
-        search_fields = ['name_long', 'project']
+        list_display = ('name_long', 'parent_project', 'was_cloned', 'pub_date',)
+        list_filter = ['pub_date', 'parent_project',]
+        search_fields = ['name_long', 'parent_project']
         date_hierarchy = 'pub_date'
         ordering = ('pub_date',)
 
     class Meta:
-        unique_together=('project','repo_dirname')
+        unique_together=('parent_project','name_short')
 
 
 # Dispatchers

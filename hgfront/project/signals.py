@@ -31,11 +31,10 @@ def delete_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path still exists for project and if it does, deletes it.
     """
-    from hgfront.config.models import SiteOptions
-    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
-    
-    if bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
-        return bool(shutil.rmtree(os.path.join(d.option_value, instance.name_short)))
+    from hgfront.project.models import Project
+    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
+    if bool(os.path.isdir(directory)):
+        return bool(shutil.rmtree(directory))
 
 def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """

@@ -41,12 +41,12 @@ def repo_create(request, slug):
     """
     project = get_object_or_404(Project, name_short__exact=slug)
     if request.method == "POST":
-        repo = Repo(project=project, pub_date=datetime.datetime.now())
+        repo = Repo(parent_project=project, pub_date=datetime.datetime.now())
         form = RepoCreateForm(request.POST, instance=repo)
         if form.is_valid():
             form.save()
             request.user.message_set.create(message="The repo has been added! Now start putting code in!")
-            return HttpResponseRedirect(reverse('repo-detail', kwargs={'slug':slug,'repo_name':request.POST['repo_dirname']}))
+            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':slug,'repo_name':request.POST['name_short']}))
     else:
         form = RepoCreateForm()
     return render_to_response('repos/repo_create.html', {'form':form.as_table(), 'project':project, 'permissions':project.get_permissions(request.user),}, context_instance=RequestContext(request))
@@ -55,14 +55,14 @@ def create_hgrc(project_name, repo_name):
     """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
     repo = Repo.objects.get(repo_dirname__exact=repo_name)
     c = User.objects.get(username__exact=repo.repo_contact)
-    directory = os.path.join(settings.MERCURIAL_REPOS, project_name, repo.repo_dirname)
+    directory = os.path.join(Project.project_options.repository_directory, project_name, repo.name_short)
        
     hgrc = open(os.path.join(directory, '.hg/hgrc'), 'w')
     hgrc.write('[paths]\n')
-    hgrc.write('default = %s\n\n' % repo.repo_url)
+    hgrc.write('default = %s\n\n' % repo.default_path)
     hgrc.write('[web]\n')
     hgrc.write('style = %s\n' % repo.hgweb_style)
-    hgrc.write('description = %s\n' % repo.repo_description)
+    hgrc.write('description = %s\n' % repo.description_short)
     hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
     a = 'allow_archive = '
     if repo.offer_zip:
@@ -72,9 +72,9 @@ def create_hgrc(project_name, repo_name):
     if repo.offer_bz2:
         a += 'bz2'
     hgrc.write(a + '\n\n')
-    hgrc.write('[extensions]\n')
-    for e in repo.active_extensions.all():
-        hgrc.write('hgext.%s = \n' % e.short_name)
+#    hgrc.write('[extensions]\n')
+#    for e in repo.active_extensions.all():
+#        hgrc.write('hgext.%s = \n' % e.short_name)
     hgrc.close()
     return True
 
