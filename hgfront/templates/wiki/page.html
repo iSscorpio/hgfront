@@ -1,12 +1,13 @@
 {% extends "base.html" %}
-{% load wikify %}
-{% block title %}{{ object.title|escape }}{% endblock %}
-{% block content %}
-<h1>{{ object.title }}</h1>
-<span class="lastedited"> <!-- change this -->
-Last edited on {{ object.last_modified|date:"F y, J" }}
-</span> 
-<div class="content">
-{{ object.content|wikify }}
-</div>
+
+{% block title %}{{page_name}}{% endblock %}
+
+{% block content_title %}<h2>{{page_name}}</h2>{% endblock %}
+{% block main_content %}
+
+    {% autoescape off %} {{content}} {% endautoescape %}
+    
+    <p>
+        <a href="/hgfront/projects/{{project}}/wiki/{{page_name}}/edit/">Edit this page?</a>
+    </p>
 {% endblock %}

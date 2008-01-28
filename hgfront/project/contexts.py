@@ -4,6 +4,13 @@ from random import randint
 from django.template import Context
 from hgfront.project.models import Project
 
+def site_options(request):
+    return dict([
+                ('hgf_site_name', Project.project_options.site_name),
+                ('hgf_site_owner', Project.project_options.site_owner),
+            ])
+
+
 def project_stats(request):
     """
     This function returns the number of projects

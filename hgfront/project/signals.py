@@ -4,7 +4,6 @@ import datetime, sys, os, shutil
 from django.conf import settings
 from django.template import Context, loader
 # Project Libraries
-import hgfront.config
 
 def create_default_permission_set(sender, instance, signal, *args, **kwargs):
     """
@@ -19,7 +18,7 @@ def create_default_permission_set(sender, instance, signal, *args, **kwargs):
 def create_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path already exists, and if not this is a new project so creates path.
-    """    
+    """
     from hgfront.project.models import Project
     directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
     try:

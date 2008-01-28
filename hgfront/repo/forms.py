@@ -31,3 +31,6 @@ class RepoCreateForm(forms.ModelForm):
     class Meta:
         model = Repo
         exclude = ('project','pub_date')
+        
+#class CloneRepoForm(forms.Form):
+#    name_short = forms.CharField(max_length=50)

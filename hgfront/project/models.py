@@ -20,6 +20,8 @@ class ProjectOptions(hgfront.config.Group):
     This is the Project Option group.  These options are global can can be used in any file
     where the Project model is imported.
     """
+    site_name = hgfront.config.StringValue("Site Name")
+    site_owner = hgfront.config.StringValue("Site Owner")
     repository_directory = hgfront.config.StringValue("The central location to store your repositories.")
     issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
 

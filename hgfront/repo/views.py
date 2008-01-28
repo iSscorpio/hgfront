@@ -86,3 +86,6 @@ def repo_manage(request, slug, repo_name):
     else:
         HttpResponse('Failed')
     
+#def local_clone(request, slug, repo_name):
+#    if request.method = "POST":
+        

@@ -7,7 +7,7 @@ from django.views.generic.simple import direct_to_template
 
 # Generic Patterns
 urlpatterns = patterns('',
-    url(r'^$', 'hgfront.wiki.views.wiki_index', name="wiki-index"),
-    url(r'^(?P<page_name>[-\w]+)/$', 'hgfront.wiki.views.wiki_page', name="wiki-page"),
-    url(r'^edit/(?P<page_name>[-\w]+)/$', 'hgfront.wiki.views.wiki_edit', name="wiki-edit"),
+    url(r'^(?P<page_name>[-\w]+)/$', 'hgfront.wiki.views.view_page', name="wiki-page"),
+    url(r'^(?P<page_name>[-\w]+)/edit/$', 'hgfront.wiki.views.edit_page', name="wiki-edit"),
+    url(r'^(?P<page_name>[-\w]+)/save/$', 'hgfront.wiki.views.save_page', name="wiki-save"),
 )
