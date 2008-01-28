@@ -52,3 +52,9 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
         shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(directory, 'hgwebdir.cgi'))
         os.chmod(os.path.join(directory, 'hgwebdir.cgi'), 0755)
         return True
+        
+def create_wikipage(sender, instance, signal, *args, **kwargs):
+    from hgfront.wiki.models import Page
+    
+    page = Page(name="Main_Page", parent_project=instance, content="Please edit me or create a NewPage")
+    page.save()
