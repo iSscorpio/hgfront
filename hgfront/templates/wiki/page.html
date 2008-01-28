@@ -1,13 +1,16 @@
 {% extends "base.html" %}
+{% load wikilink %}
+
 
 {% block title %}{{page_name}}{% endblock %}
 
-{% block content_title %}<h2>{{page_name}}</h2>{% endblock %}
+{% block content_title %}<h2>{{page_name|escape}}</h2>{% endblock %}
 {% block main_content %}
 
-    {% autoescape off %} {{content}} {% endautoescape %}
+    {% autoescape off %} {{content|wikify}} {% endautoescape %}
     
-    <p>
-        <a href="/hgfront/projects/{{project}}/wiki/{{page_name}}/edit/">Edit this page?</a>
-    </p>
+    <ul>
+        <li><a href="/hgfront/projects/{{project}}/wiki/{{page_name}}/edit/">Edit this page?</a></li>
+        <li><a href="/hgfront/projects/{{project}}/wiki/Main_Page/">Back to Main_Page</a></li>
+    </ul>
 {% endblock %}
