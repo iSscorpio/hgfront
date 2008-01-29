@@ -1,8 +1,10 @@
-{% extends "base.html" %}
+{% extends "project/project_detail.html" %}
 {% load wikilink %}
 
 
 {% block title %}{{formatted_page_name}}{% endblock %}
+
+{% block breadcrumbs %}{{block.super}} <li class="wikipage">&raquo; {{formatted_page_name}}</li>{% endblock %}
 
 {% block content_title %}<h2>{{formatted_page_name|escape}}</h2>{% endblock %}
 {% block main_content %}
@@ -10,8 +12,8 @@
     {% autoescape off %} {{content|wikify}} {% endautoescape %}
     
     <ul>
-        <li><a href="/hgfront/projects/{{project}}/wiki/{{page_name}}/edit/">Edit this page?</a></li>
-        <li><a href="/hgfront/projects/{{project}}/wiki/Main_Page/">Back to Main_Page</a></li>
+        <li><a href="/hgfront/projects/{{project.name_short}}/wiki/{{page_name}}/edit/">Edit this page?</a></li>
+        <li><a href="/hgfront/projects/{{project.name_short}}/wiki/Main_Page/">Back to Main_Page</a></li>
     </ul>
 {% endblock %}
 

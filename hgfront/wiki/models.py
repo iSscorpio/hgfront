@@ -20,5 +20,8 @@ class PageChange(models.Model):
     page_id = models.ForeignKey(Page)
     change_message = models.CharField(max_length=255)
 
+    def __unicode__(self):
+        return "Changeset for " + self.page_id.parent_project.name_short + ' / ' + self.page_id.name 
+
     class Admin:
         pass
