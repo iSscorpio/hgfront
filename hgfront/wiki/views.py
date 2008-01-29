@@ -10,10 +10,9 @@ def view_page(request, slug, page_name):
         page = Page.objects.get(pk=page_name)
     except Page.DoesNotExist:
         return render_to_response("wiki/create.html", {"project":slug, "page_name": page_name})
-    formatted_page_name = ' '.join( page_name.split( '_' ) ).title()
-    changesets = PageChange.objects.all().filter(page_id=page_name)
+    page = Page.objects.get(name=page_name)
     project = Project.objects.get(name_short__exact=slug)
-    return render_to_response("wiki/page.html", {"project":project, "page_name":page_name, "changesets":changesets, "formatted_page_name":formatted_page_name, "content":markdown.markdown(page.content)})
+    return render_to_response("wiki/page.html", {"project":project, "page": page, "content":markdown.markdown(page.content)})
     
 def edit_page(request, slug, page_name):
     try:
@@ -38,3 +37,8 @@ def save_page(request, slug, page_name):
         changeset.save()
     
     return HttpResponseRedirect("/hgfront/projects/" + slug + "/wiki/" + page_name + "/")
+    
+def view_changes(request, slug, page_name):
+    project = Project.objects.get(name_short__exact=slug)
+    page = Page.objects.get(name=page_name)
+    return render_to_response("wiki/changes.html", {"project":project, "page":page, "changesets": page.changesets()})

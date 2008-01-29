@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^(?P<page_name>[-\w]+)/$', 'hgfront.wiki.views.view_page', name="wiki-page"),
     url(r'^(?P<page_name>[-\w]+)/edit/$', 'hgfront.wiki.views.edit_page', name="wiki-edit"),
     url(r'^(?P<page_name>[-\w]+)/save/$', 'hgfront.wiki.views.save_page', name="wiki-save"),
+    url(r'^(?P<page_name>[-\w]+)/changes/$', 'hgfront.wiki.views.view_changes', name="wiki-changes"),
 )
