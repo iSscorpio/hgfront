@@ -20,17 +20,16 @@ def repo_list(request, slug):
     List all repoistories linked to a project
     """
     project = get_object_or_404(Project, name_short__exact=slug)
-    repos = Repo.objects.filter(project=project.id)
+    repos = Repo.objects.filter(parent_project=project.id)
     is_auth = [project for project in Project.objects.all() if project.get_permissions(request.user).view_repos]
     return render_to_response('repos/repo_list.html', {'project':project, 'repos': repos, 'permissions':project.get_permissions(request.user), 'is_auth': is_auth}, context_instance=RequestContext(request))
 
 @check_project_permissions('view_repos')
-def repo_detail(request, slug, repo_name):
-    from mercurial.hgweb.request import wsgiapplication
-    from mercurial.hgweb.hgweb_mod import hgweb
-    def make_web_app():
-        return hgweb(str(settings.MERCURIAL_REPOS + slug + '/' + repo_name ))
-    return HttpResponse(wsgiapplication(make_web_app))
+def view_changeset(request, slug, repo_name, changeset="tip"):
+    u = ui.ui()  # get a ui object
+    r = hg.repository(u, ".") # get a repo object for the current directory
+    c = r.changectx(changeset) # get a context object for the "tip" revision
+    return render_to_response("repos/repo_detail.html", {"changeset_id": c, "changeset_user": c.user(), "changeset_notes": c.description(), "changeset_files": c.files()})
 
 @check_project_permissions('add_repos')
 def repo_create(request, slug):

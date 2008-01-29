@@ -1,1 +1,26 @@
-{{display}}
+{% extends "project/project_detail.html" %}
+
+{% block title %}{{project.name_long}} : All Repositories{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li>Repositories for {{project.name_long}}</li>{% endblock %}
+
+{% block content_title %}Repositories for {{project.name_long}}{% endblock %}
+
+{% block main_content %}
+<h3>Tip Details</h3>
+    <dl>
+        <dt>Changeset ID</dt>
+        <dd>{{changeset_id}}</dd>
+        <dt>Changeset Author</dt>
+        <dd>{{changeset_user}}</dd>
+        <dt>Changeset Notes</dt>
+        <dd>{{changeset_notes}}</dd>
+        <dt>Manifest</dt>
+        <dd>
+            <ul>
+            {% for file in changeset_files %}
+                <li>{{file}}</li>
+            {% endfor %}
+            </ul>
+        </dd>
+    </dl>
+{% endblock %}
