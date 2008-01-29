@@ -7,6 +7,9 @@
 
     <form method="post" action="/hgfront/projects/{{project}}/wiki/{{page_name}}/save/">
         <textarea name="content" rows="20" cold="60">{{content}}</textarea>
+        <hr />
+        Changeset: <input type="input" name="change" />
+        <br />
         <input type="submit" />
     </form>
 
