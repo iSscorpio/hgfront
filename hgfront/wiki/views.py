@@ -2,6 +2,7 @@ from hgfront.wiki.models import Page, PageChange
 from hgfront.project.models import Project
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
+from django.template import RequestContext
 
 import hgfront.markdown as markdown
 
@@ -9,10 +10,10 @@ def view_page(request, slug, page_name):
     try:
         page = Page.objects.get(pk=page_name)
     except Page.DoesNotExist:
-        return render_to_response("wiki/create.html", {"project":slug, "page_name": page_name})
+        return render_to_response("wiki/create.html", {"project":slug, "page_name": page_name}, context_instance=RequestContext(request))
     page = Page.objects.get(name=page_name)
     project = Project.objects.get(name_short__exact=slug)
-    return render_to_response("wiki/page.html", {"project":project, "page": page, "content":markdown.markdown(page.content)})
+    return render_to_response("wiki/page.html", {"project":project, "page": page, "content":markdown.markdown(page.content)}, context_instance=RequestContext(request))
     
 def edit_page(request, slug, page_name):
     try:
@@ -20,7 +21,7 @@ def edit_page(request, slug, page_name):
         content = page.content
     except Page.DoesNotExist:
         content = ""
-    return render_to_response("wiki/edit.html", {"project":slug, "page_name": page_name, "content":content})
+    return render_to_response("wiki/edit.html", {"project":slug, "page_name": page_name, "content":content}, context_instance=RequestContext(request))
     
 def save_page(request, slug, page_name):
 
@@ -41,4 +42,4 @@ def save_page(request, slug, page_name):
 def view_changes(request, slug, page_name):
     project = Project.objects.get(name_short__exact=slug)
     page = Page.objects.get(name=page_name)
-    return render_to_response("wiki/changes.html", {"project":project, "page":page, "changesets": page.changesets()})
+    return render_to_response("wiki/changes.html", {"project":project, "page":page, "changesets": page.changesets()}, context_instance=RequestContext(request))

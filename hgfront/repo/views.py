@@ -31,7 +31,7 @@ def view_changeset(request, slug, repo_name, changeset="tip"):
     u = ui.ui()  # get a ui object
     r = hg.repository(u, directory) # get a repo object for the current directory
     c = r.changectx(changeset) # get a context object for the "tip" revision
-    return render_to_response("repos/repo_detail.html", {"changeset_id": c, "changeset_user": c.user(), "changeset_notes": c.description(), "changeset_files": c.files()})
+    return render_to_response("repos/repo_detail.html", {"changeset_id": c, "changeset_user": c.user(), "changeset_notes": c.description(), "changeset_files": c.files()}, context_instance=RequestContext(request))
 
 @check_project_permissions('add_repos')
 def repo_create(request, slug):
