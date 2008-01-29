@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}{{page_name}} - Create New Page{% endblock %}
+
+{% block content_title %}<h2>{{page_name|escape}}</h2>{% endblock %}
+{% block main_content %}
+
+This page does not exist. <a href="/hgfront/projects/{{project}}/wiki/{{page_name}}/edit/">Create {{page_name}}?</a>.
+
+
+{% endblock %}

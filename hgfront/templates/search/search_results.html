@@ -1,26 +1,41 @@
 {% extends "base.html" %}
 
-{% block title %}{{block.super}} Search Results for {{search_term}}{% endblock %}
+{% block title %}Search Results for {{search_term}}{% endblock %}
 
 {% block content_title %}<h2>Search Results for {{search_term}}</h2>{% endblock %}
 
 {% block main_content %}
 <h3>Projects</h3>
-<ul>
-    {% for t_project in projects %}
-        <li><a href="{{t_project.get_absolute_url}}">{{t_project.name_long}}</a></li>
-    {% endfor %}
-</ul>
-<h3>Repos</h3>
-<ul>
-    {% for repo in repos %}
-        <li><a href="{{repo.get_absolute_url}}">{{repo.repo_name}}</a></li>
-    {% endfor %}
-</ul>
-<h3>Issues</h3>
-<ul>
-    {% for issue in issues %}
-        <li><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></li>
-    {% endfor %}
+{% if projects %}
+    <ul>
+        {% for t_project in projects %}
+            <li><a href="{{t_project.get_absolute_url}}">{{t_project.name_long}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>There are no projects for this search result</strong>
+{% endif %}
 
+<h3>Repos</h3>
+{% if repos %}
+    <ul>
+        {% for repo in repos %}
+            <li><a href="{{repo.get_absolute_url}}">{{repo.repo_name}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>There are no repos for this search result</strong>
+{% endif %}
+
+<h3>Issues</h3>
+{% if issues %}
+    <ul>
+        {% for issue in issues %}
+            <li><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <strong>There are no issues for this search result</strong>
+{% endif %}
+    
 {% endblock %}

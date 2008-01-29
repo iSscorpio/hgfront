@@ -1,60 +1,44 @@
-# General Libraries
-# Django Libraries
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
-# Project Libraries
+from hgfront.wiki.models import Page, PageChange
 from hgfront.project.models import Project
-from hgfront.wiki.models import WikiPage
-from hgfront.wiki.forms import WikiPageCreateForm
-from hgfront.project.decorators import check_project_permissions
+from django.shortcuts import render_to_response
+from django.http import HttpResponseRedirect
 
-@check_project_permissions('view_wiki')
-def wiki_index(request, slug):
-    project = get_object_or_404(Project, name_short=slug)
-    permissions = project.get_permissions(request.user)
-    return render_to_response('wiki/wiki_home.html',
-        {
-            'project':project,
-            'permissions':permissions,
-        }, context_instance=RequestContext(request)
-    )
+import hgfront.markdown as markdown
 
-@check_project_permissions('view_wiki')
-def wiki_page(request, slug, page_name):
-    """Return a Wiki page"""
+def view_page(request, slug, page_name):
     try:
-        page = WikiPage.objects.get(slug=page_name)
-        project = Project.objects.get(name_short__exact=slug)
-        return render_to_response('wiki/wiki_page.html',
-                {
-                     'page':page,
-                     'project':project,
-                     'permissions': project.get_permissions(request.user),
-                }, context_instance=RequestContext(request)
-        )
-    except WikiPage.DoesNotExist:
-        return HttpResponseRedirect(reverse('wiki-edit', kwargs={'slug':slug, 'page_name':page_name}))
+        page = Page.objects.get(pk=page_name)
+    except Page.DoesNotExist:
+        return render_to_response("wiki/create.html", {"project":slug, "page_name": page_name})
+    page = Page.objects.get(name=page_name)
+    project = Project.objects.get(name_short__exact=slug)
+    return render_to_response("wiki/page.html", {"project":project, "page": page, "content":markdown.markdown(page.content)})
+    
+def edit_page(request, slug, page_name):
+    try:
+        page = Page.objects.get(pk=page_name)
+        content = page.content
+    except Page.DoesNotExist:
+        content = ""
+    return render_to_response("wiki/edit.html", {"project":slug, "page_name": page_name, "content":content})
+    
+def save_page(request, slug, page_name):
 
-@check_project_permissions('edit_wiki')
-def wiki_edit(request, slug, page_name):
-    """Create or edit and Wiki page"""
-    project = get_object_or_404(Project, name_short=slug)
-    if request.method == "POST":
-        form = WikiPageCreateForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('wiki-page', kwargs={'slug':project.name_short,'page_name':page_name}))
-    else:
-        form = WikiPageCreateForm()
-        title = page_name.replace('_', ' ')
-    return render_to_response('wiki/wiki_create.html',
-                {
-                     'form':form,
-                     'project':slug,
-                     'page_name':page_name,
-                     'title': title,
-                     'permissions': project.get_permissions(request.user),
-                 }, context_instance=RequestContext(request)
-    )
+    content = request.POST['content']
+
+    try:
+        page = Page.objects.get(pk=page_name)
+        page.content = content
+    except Page.DoesNotExist:
+        page = Page(name=page_name, content=content)
+    page.save()
+    if request.POST['change']:
+        changeset = PageChange(page_id=page, change_message = request.POST['change'])
+        changeset.save()
+    
+    return HttpResponseRedirect("/hgfront/projects/" + slug + "/wiki/" + page_name + "/")
+    
+def view_changes(request, slug, page_name):
+    project = Project.objects.get(name_short__exact=slug)
+    page = Page.objects.get(name=page_name)
+    return render_to_response("wiki/changes.html", {"project":project, "page":page, "changesets": page.changesets()})

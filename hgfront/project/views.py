@@ -9,7 +9,6 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 # Project Libraries
-from hgfront.config.models import InstalledStyles, SiteOptions
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
@@ -22,8 +21,7 @@ def get_project_list(request):
 def get_project_details(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
-    issues_shown = 10 #TODO: Move this either to settings.py or make it user configurabl
-    issue_short_list = project.issue_set.select_related()[:issues_shown]
+    issue_short_list = project.issue_set.select_related()[:Project.project_options.issues_per_page]
     return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
 
 @login_required
@@ -37,9 +35,7 @@ def create_project_form(request):
         5. Redirect to the project view
     """
     
-    path_check = SiteOptions.objects.get(option_key__exact = 'repo_location')
-    
-    if not bool(os.path.isdir(path_check.option_value)):
+    if not bool(os.path.isdir(Project.project_options.repository_directory)):
         raise IOError("The path to your repository directory is not valid.  Please update your settings.")
     
     if request.method == "POST":
@@ -57,7 +53,6 @@ def create_project_form(request):
         else:
             form = NewProjectStep2(request.POST)
             if form.is_valid():
-                style = InstalledStyles.objects.get(short_name__exact = form.cleaned_data.get('hgweb_style', ''))
                 project = Project(
                     name_short = form.cleaned_data['name_short'],
                     name_long = form.cleaned_data['name_long'],
@@ -65,7 +60,7 @@ def create_project_form(request):
                     description_long = form.cleaned_data['description_long'],
                     user_owner = request.user,
                     pub_date = datetime.datetime.now(),
-                    hgweb_style = style
+                    hgweb_style = form.cleaned_data.get('hgweb_style', '')
                 ).save()
                 request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
                 return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))

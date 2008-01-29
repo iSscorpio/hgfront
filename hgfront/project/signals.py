@@ -19,36 +19,42 @@ def create_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path already exists, and if not this is a new project so creates path.
     """
-    from hgfront.config.models import SiteOptions
-    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
-    if not bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
-        return bool(shutil.os.mkdir(os.path.join(d.option_value ,instance.name_short)))
+    from hgfront.project.models import Project
+    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
+    try:
+        shutil.os.mkdir(directory)
+    except:
+        IOError("Failed to create project directory")
 
 def delete_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path still exists for project and if it does, deletes it.
     """
-    from hgfront.config.models import SiteOptions
-    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
-    
-    if bool(os.path.isdir(os.path.join(d.option_value, instance.name_short))):
-        return bool(shutil.rmtree(os.path.join(d.option_value, instance.name_short)))
+    from hgfront.project.models import Project
+    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
+    if bool(os.path.isdir(directory)):
+        return bool(shutil.rmtree(directory))
 
 def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
     Creates a hgweb.config file for use with hgwebdir
     """
-    from hgfront.config.models import InstalledStyles, SiteOptions
-    s = instance.hgweb_style
-    d = SiteOptions.objects.get(option_key__exact = 'repo_location')
-    directory = os.path.join(d.option_value, instance.name_short)
+    from hgfront.project.models import Project
+    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
+    
     if bool(os.path.isdir(directory)):
         config = open(os.path.join(directory, 'hgweb.config'), 'w')
         config.write('[collections]\n')
         config.write('%s = %s\n\n' % (directory, directory))
         config.write('[web]\n')
-        config.write('style = %s' % s.short_name)
+        config.write('style = %s' % instance.hgweb_style)
         config.close()
-        shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(d.option_value, instance.name_short, 'hgwebdir.cgi'))
-        os.chmod(os.path.join(d.option_value, instance.name_short, 'hgwebdir.cgi'), 0755)
+        shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(directory, 'hgwebdir.cgi'))
+        os.chmod(os.path.join(directory, 'hgwebdir.cgi'), 0755)
         return True
+        
+def create_wikipage(sender, instance, signal, *args, **kwargs):
+    from hgfront.wiki.models import Page
+    
+    page = Page(name="Main_Page", parent_project=instance, content="Please edit me or create a NewPage")
+    page.save()

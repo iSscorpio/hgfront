@@ -71,7 +71,7 @@
             <span class="group">Project Repositories</span>
             <ul>
             {% for repo in repos %}
-                <li><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.repo_name}}</a></li>
+                <li><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a></li>
             {% endfor %}
             </ul>
         {% endif %}

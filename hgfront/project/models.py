@@ -7,8 +7,23 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-from hgfront.config.models import InstalledStyles
+import hgfront.config
 from hgfront.project.signals import *
+
+available_styles = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
+
+class ProjectOptions(hgfront.config.Group):
+    """
+    This is the Project Option group.  These options are global can can be used in any file
+    where the Project model is imported.
+    """
+    site_name = hgfront.config.StringValue("Site Name")
+    site_owner = hgfront.config.StringValue("Site Owner")
+    repository_directory = hgfront.config.StringValue("The central location to store your repositories.")
+    issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
 
 class ProjectManager(models.Manager):
     """
@@ -56,9 +71,10 @@ class Project(models.Model):
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    hgweb_style=models.ForeignKey(InstalledStyles)
-
-    objects = ProjectManager()
+    hgweb_style=models.CharField(max_length=50,choices=available_styles)
+    
+    objects = ProjectManager()    
+    project_options = ProjectOptions()
     
     def __unicode__(self):
         return self.name_long
@@ -188,6 +204,7 @@ class Project(models.Model):
 dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_project_dir, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_hgwebconfig, signal=signals.post_save, sender=Project )
+dispatcher.connect( create_wikipage, signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir, signal=signals.post_delete, sender=Project )
 
 class ProjectPermissionSetManager(models.Manager):

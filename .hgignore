@@ -3,6 +3,10 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+format
+entries
+all-wcprops
+*.svn-base
 *.default~
 *.html~
 *.py~

@@ -1,12 +1,23 @@
-{% extends "base.html" %}
-{% load wikify %}
-{% block title %}{{ object.title|escape }}{% endblock %}
-{% block content %}
-<h1>{{ object.title }}</h1>
-<span class="lastedited"> <!-- change this -->
-Last edited on {{ object.last_modified|date:"F y, J" }}
-</span> 
-<div class="content">
-{{ object.content|wikify }}
-</div>
+{% extends "project/project_detail.html" %}
+{% load wikilink %}
+
+
+{% block title %}{{page}}{% endblock %}
+
+{% block breadcrumbs %}{{block.super}} <li class="wikipage">&raquo; {{page}}</li>{% endblock %}
+
+{% block content_title %}<h2>{{page|escape}}</h2>{% endblock %}
+{% block main_content %}
+
+    {% autoescape off %} {{content|wikify}} {% endautoescape %}
+    
+    <ul>
+        <li><a href="/hgfront/projects/{{project.name_short}}/wiki/{{page.name}}/edit/">Edit this page?</a></li>
+        <li><a href="/hgfront/projects/{{project.name_short}}/wiki/{{page.name}}/changes/">View Changes</a></li>
+        <li><a href="/hgfront/projects/{{project.name_short}}/wiki/Main_Page/">Back to Main_Page</a></li>
+    </ul>
+{% endblock %}
+
+{% block sidebar %}
+
 {% endblock %}

@@ -8,7 +8,6 @@ from django.core.paginator import ObjectPaginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 # Project Libraries
-from hgfront.config.models import SiteOptions
 from hgfront.issue.models import *
 from hgfront.issue.forms import IssueCreateForm
 from hgfront.project.models import Project
@@ -31,9 +30,7 @@ def issue_list(request, slug):
 
     ?page=1&issue_sev__slug=minor&issue_type__slug=bug&completed=no
     """
-    i = SiteOptions.objects.get(option_key__exact = 'issues_per_page')
-    issues_per_page = int(i.option_value)
-
+    
     #read the page variable in the querystring to determine which page we are at
     page = request.GET['page'] if request.GET.has_key('page') else 1
     try:
@@ -59,7 +56,7 @@ def issue_list(request, slug):
     issues = issues.filter(**dict([(str(key),str(value)) for key,value in GET_copy.items()]))
 
     #initialize the pagination
-    paginator = ObjectPaginator(issues, issues_per_page)
+    paginator = ObjectPaginator(issues, Project.project_options.issues_per_page)
     try:
         issues = paginator.get_page(page)
     except InvalidPage:
