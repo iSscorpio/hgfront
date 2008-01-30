@@ -6,82 +6,84 @@
 {% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{{project.get_absolute_url}}">{{project.name_long}}</a></li>{% endblock %}
 
 {% block main_content %}
-        <table>
-            <thead>
-                <caption>Project Details for {{project.name_long}}</caption>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Project Description</td>
-                    <td>{{project.description_long}}</td>
-                </tr>
-                <tr>
-                    <td>Project Owner</td>
-                    <td><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></td>
-                </tr>
-                <tr>
-                    <td>Project Members</td>
-                    <td>
-                    {% with project.members as members %}
-                        {% if members %}
-                            <ul>
-                                {% for member in members %}
-                                    <li><a href="{{member.get_absolute_url}}">{{member.username}}</a></li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            This project has no additional members
-                        {% endif %}                    
-                    {% endwith %}
-                    </td>
-            </tbody>
-        </table>
-        {% if user_can_request_to_join %} 
-            <form method="post" action="{% url project-join-project slug=project.name_short %}">
-                If you want to join this project, click on this button!
-                <input type="submit" value="Join" />
-            </form>
-        {% endif %}
-	    
-        {% if permissions.view_issues %}
-            {% if issues %}
-                <table>
-                    <thead>
-                        <caption>Recent Issues for {{project.name_long}}</caption>
+
+    <h3>Project Details</h3>
+    <dl id="project-details">
+        <dt>Project Name</dt>
+        <dd>{{project.name_long}}</dd>
+        <dt>Project Owner</dt>
+        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
+        <dt>Project Description</dt>
+        <dd>{{project.description_long}}</dd>
+    </dl>
+    
+    {% with project.members as members %}
+        <dl id="project-members">
+            <dt>Project Members</dt>
+            {% for member in members %}
+                <dd><a href="{{member.get_absolute_url}}">{{member.username}}</a></dd>
+            {% endfor %}
+        </dl>
+    {% endwith %}
+    
+    {% if user_can_request_to_join %} 
+        <form method="post" action="{% url project-join-project slug=project.name_short %}">
+            If you want to join this project, click on this button!
+            <input type="submit" value="Join" />
+        </form>
+    {% endif %}
+    
+    {% with project.repo_set.select_related as repos %}
+        {% if repos %}
+            <table>
+                <thead>
+                    <caption>Repositories {{project.name_long}}</caption>
+                    <tr>
+                        <th>Name</th>
+                        <th>Last Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for repo in repos %}
                         <tr>
-                            <th>Title</th>
-                            <th>Created by</th>
+                            <td><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a></td>
+                            <td></td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {% for issue in issues %}
-                            <tr>
-                                <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
-                                <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
-            {% else %}
-                <h4>This project has no issues, yay!</h4>
-            {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    {% endwith %}
+	    
+    {% if permissions.view_issues %}
+        {% if issues %}
+            <table>
+                <thead>
+                    <caption>Recent Issues for {{project.name_long}}</caption>
+                    <tr>
+                        <th>Title</th>
+                        <th>Created by</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for issue in issues %}
+                        <tr>
+                            <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
+                            <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
+        {% else %}
+            <h4>This project has no issues, yay!</h4>
+        {% endif %}
         {% else %}
             <h4>You can't view the issues, man!</h4>
         {% endif %}
 {% endblock %}
 
 {% block sidebar %}
-    {% with project.repo_set.select_related as repos %}
-        {% if repos %}
-            <span class="group">Project Repositories</span>
-            <ul>
-            {% for repo in repos %}
-                <li><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a></li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
 	<span class="group">Your Options for {{project.name_long}}</span>
 		<ul>
 			{% if permissions.add_repos %} 
