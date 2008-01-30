@@ -27,11 +27,8 @@ def repo_list(request, slug):
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset="tip"):
     directory = os.path.join(Project.project_options.repository_directory, slug, repo_name)
-
-    u = ui.ui()  # get a ui object
-    r = hg.repository(u, directory) # get a repo object for the current directory
-    c = r.changectx(changeset) # get a context object for the "tip" revision
-    return render_to_response("repos/repo_detail.html", {"changeset_id": c, "changeset_user": c.user(), "changeset_notes": c.description(), "changeset_files": c.files()}, context_instance=RequestContext(request))
+    repo = Repo.objects.get(name_short__exact=repo_name)
+    return render_to_response("repos/repo_detail.html", {"tags":repo.get_tags(), "branches":repo.get_branches(),"changeset_id": repo.get_changeset(), "changeset_user": repo.get_changeset().user(), "changeset_notes": repo.get_changeset().description(), "changeset_files": repo.get_changeset().files()}, context_instance=RequestContext(request))
 
 @check_project_permissions('add_repos')
 def repo_create(request, slug):

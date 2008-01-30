@@ -49,10 +49,9 @@ class Repo(models.Model):
         
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
-        return ('view-changeset', (), {
+        return ('view-tip', (), {
             "slug": self.project.name_short,
-            "repo_name": self.name_short,
-            "changeset": "tip"
+            "repo_name": self.name_short
             })
     get_absolute_url = permalink(get_absolute_url)
     
@@ -60,7 +59,29 @@ class Repo(models.Model):
         """Checks to see if this was a cloned repositories"""
         return bool(self.creation_method == '2')
     was_cloned.short_description = "Cloned Repository?"
-
+    
+    def repo_directory(self):
+        return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
+    
+    def get_branches(self):
+        u = ui.ui()  # get a ui object
+        r = hg.repository(u, self.repo_directory())
+        b = r.branchtags() # get a repo object for the current directory
+        branches = b.keys()
+        branches.sort()
+        return branches            
+        
+    def get_changeset(self, changeset="tip"):
+        u = ui.ui()  # get a ui object
+        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        c = r.changectx(changeset) # get a context object for the "tip" revision
+        return c
+        
+    def get_tags(self):
+        u = ui.ui()  # get a ui object
+        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        return r.tags()
+        
     class Admin:
         fields = (
                   ('Repository Creation', {'fields': ('creation_method', 'name_short', 'name_long', 'default_path', 'description_short', 'parent_project', )}),
