@@ -1,36 +1,49 @@
 {% extends "project/project_detail.html" %}
 
-{% block title %}{{project.name_long}} : All Repositories{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li>Repositories for {{project.name_long}}</li>{% endblock %}
+{% block title %}{{repo.name_long}} : Details{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li>Details of {{repo.name_long}}</li>{% endblock %}
 
-{% block content_title %}Repositories for {{project.name_long}}{% endblock %}
+{% block content_title %}{{repo.name_long}}{% endblock %}
 
 {% block main_content %}
-<h3>Branches</h3>
-{% for branch in branches %}
-    <li>{{branch}}</li>
-{% endfor %}
-
-<h3>Tags</h3>
-{% for tag in tags %}
-    <li>{{tag}}</li>
-{% endfor %}
-
 <h3>Tip Details</h3>
-    <dl>
-        <dt>Changeset ID</dt>
-        <dd>{{changeset_id}}</dd>
-        <dt>Changeset Author</dt>
-        <dd>{{changeset_user}}</dd>
-        <dt>Changeset Notes</dt>
-        <dd>{{changeset_notes}}</dd>
-        <dt>Manifest</dt>
-        <dd>
-            <ul>
+<dl>
+    <dt>Changeset ID</dt>
+    <dd>{{changeset_number}} - {{changeset_id}}</dd>
+    <dt>Changeset Author</dt>
+    <dd>{{changeset_user}}</dd>
+    <dt>Changeset Notes</dt>
+    <dd>{{changeset_notes}}</dd>
+    <dt>Manifest</dt>
+    <dd>
+        <ul>
             {% for file in changeset_files %}
                 <li>{{file}}</li>
             {% endfor %}
-            </ul>
-        </dd>
-    </dl>
+        </ul>
+    </dd>
+</dl>
+
+
+<dl id="repo-branches">
+    <dt>{{repo.name_long}} Branches</dt>
+    {% for branch in branches %}
+        <dd>{{branch}}</dd>
+    {% endfor %}
+</dl>
+
+<dl id="repo-tags">
+    <dt>{{repo.name_long}} Branches</dt>
+    {% for tag in tags %}
+        <dd>{{tag}}</dd>
+    {% endfor %}
+</dl>
+
+<dl id="repo-changesets">
+    <dt>{{repo.name_long}} Changesets</dt>
+    {% for change in all_changesets %}
+        <dd>{{change}}</dd>
+    {% endfor %}
+</dl>
+
 {% endblock %}

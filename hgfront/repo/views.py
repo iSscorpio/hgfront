@@ -32,6 +32,7 @@ def repo_list(request, slug):
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset='tip'):
     repo = Repo.objects.get(name_short__exact=repo_name)
+    project = Project.objects.get(name_short__exact=slug)
     return render_to_response('repos/repo_detail.html',
         {
             'tags': repo.get_tags(),
@@ -39,7 +40,11 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
             'changeset_id': repo.get_changeset(),
             'changeset_user': repo.get_changeset().user(),
             'changeset_notes': repo.get_changeset().description(),
-            'changeset_files': repo.get_changeset().files()
+            'changeset_files': repo.get_changeset().files(),
+            'changeset_number': repo.get_changeset_number(),
+            'project': project,
+            'repo': repo,
+            'test': repo.test()
         }, context_instance=RequestContext(request)
     )
 

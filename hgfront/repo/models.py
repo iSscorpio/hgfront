@@ -1,5 +1,6 @@
 # General Libraries
 import datetime, sys, os, shutil
+from mercurial.cmdutil import revrange, show_changeset
 # Django Libraries
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -70,6 +71,13 @@ class Repo(models.Model):
         branches = b.keys()
         branches.sort()
         return branches            
+    
+    def get_changeset_number(self):
+        u = ui.ui()
+        r = hg.repository(u, self.repo_directory())
+        c = r.changectx('tip').rev()
+        print c
+        return c
         
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object

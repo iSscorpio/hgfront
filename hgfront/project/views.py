@@ -16,7 +16,11 @@ from hgfront.issue.models import Issue
 
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
-    return render_to_response('project/project_list.html', {'object_list':projects}, context_instance=RequestContext(request))
+    return render_to_response('project/project_list.html',
+        {
+            'object_list':projects
+        }, context_instance=RequestContext(request)
+    )
 
 @check_project_permissions('view_project')
 def get_project_details(request, slug):
@@ -24,7 +28,14 @@ def get_project_details(request, slug):
     permissions = project.get_permissions(request.user)
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
     user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user=request.user).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
-    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list, 'user_can_request_to_join':user_can_request_to_join}, context_instance=RequestContext(request))
+    return render_to_response('project/project_detail.html',
+        {
+            'project': project,
+            'permissions':permissions,
+            'issues':issue_short_list,
+            'user_can_request_to_join':user_can_request_to_join
+        }, context_instance=RequestContext(request)
+    )
 
 @login_required
 def create_project_form(request):
@@ -48,9 +59,19 @@ def create_project_form(request):
                 form_data['user_owner'] = request.user.username
                 form_data['pub_date'] = datetime.datetime.now()
                 form2 = NewProjectStep2(form_data)
-                return render_to_response('project/project_create_step_2.html', {'form':form2, 'name_short':form.cleaned_data['name_short'], 'user_owner':request.user.username}, context_instance=RequestContext(request))
+                return render_to_response('project/project_create_step_2.html',
+                    {
+                        'form':form2,
+                        'name_short':form.cleaned_data['name_short'],
+                        'user_owner':request.user.username
+                    }, context_instance=RequestContext(request)
+                )
             else:
-                return render_to_response('project/project_create.html', {'form':form,}, context_instance=RequestContext(request))
+                return render_to_response('project/project_create.html',
+                    {
+                        'form':form,
+                    }, context_instance=RequestContext(request)
+                )
                 
         else:
             form = NewProjectStep2(request.POST)
@@ -67,11 +88,20 @@ def create_project_form(request):
                 request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
                 return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
             else:
-                return render_to_response('project/project_create_step_2.html', {'form':form,}, context_instance=RequestContext(request))
+                return render_to_response('project/project_create_step_2.html',
+                    {
+                        'form':form,
+                    }, context_instance=RequestContext(request)
+                )
     else:
         form = NewProjectForm()
         is_auth = bool(request.user.is_authenticated())
-        return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth}, context_instance=RequestContext(request))
+        return render_to_response('project/project_create.html',
+            {
+                'form':form,
+                'is_auth': is_auth
+            }, context_instance=RequestContext(request)
+        )
  
 @check_project_permissions('add_members')
 def process_join_request(request, slug):
