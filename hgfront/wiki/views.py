@@ -4,8 +4,6 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 from django.template import RequestContext
 
-import hgfront.markdown as markdown
-
 def view_page(request, slug, page_name):
     try:
         page = Page.objects.get(pk=page_name)
@@ -13,7 +11,7 @@ def view_page(request, slug, page_name):
         return render_to_response("wiki/create.html", {"project":slug, "page_name": page_name}, context_instance=RequestContext(request))
     page = Page.objects.get(name=page_name)
     project = Project.objects.get(name_short__exact=slug)
-    return render_to_response("wiki/page.html", {"project":project, "page": page, "content":markdown.markdown(page.content)}, context_instance=RequestContext(request))
+    return render_to_response("wiki/page.html", {"project":project, "page": page}, context_instance=RequestContext(request))
     
 def edit_page(request, slug, page_name):
     try:
