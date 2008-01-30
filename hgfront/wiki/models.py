@@ -7,7 +7,7 @@ class Page(models.Model):
     content = models.TextField(blank=True)
 
     def __unicode__(self):
-        page_name = ' '.join( self.name.split( '_' ) ).title()
+        page_name = self.name.replace('_',' ').title()
         return self.parent_project.name_long + ' / ' + page_name
         
     def changesets(self):
@@ -16,6 +16,10 @@ class Page(models.Model):
             return changes
         else:
             return "There are no changesets"
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('wiki-page', (), {'slug':self.parent_project.name_short,'page_name':self.name})
 
     class Admin:
         pass
