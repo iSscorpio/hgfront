@@ -55,6 +55,13 @@ class ProjectManager(models.Manager):
         """
         return self.filter(projectpermissionset__user = user, projectpermissionset__owner_accepted = False)
 
+    def request_to_join(self, project, user):
+        """
+        This makes a ProjectPermissionSet for the project `project` with the user `user` and it's set so it's
+        accepted by the user but not the project.
+        """
+        ProjectPermissionSet(is_default=False, user_accepted=True, owner_accepted=False, user=user, project=project).save()
+
 
 class Project(models.Model):
     """

@@ -23,7 +23,8 @@ def get_project_details(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
-    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
+    user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user=request.user).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
+    return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list, 'user_can_request_to_join':user_can_request_to_join}, context_instance=RequestContext(request))
 
 @login_required
 def create_project_form(request):
@@ -73,7 +74,7 @@ def create_project_form(request):
         return render_to_response('project/project_create.html', {'form':form, 'is_auth': is_auth}, context_instance=RequestContext(request))
  
 @check_project_permissions('add_members')
-def processjoinrequest(request, slug):
+def process_join_request(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short = slug)
     if request.method == 'POST':
         form = JoinRequestForm(request.POST)
@@ -87,3 +88,18 @@ def processjoinrequest(request, slug):
                 request.user.message_set.create(message='the request from %s was denied' % form.cleaned_data['username'])
             return HttpResponseRedirect(project.get_absolute_url())
     return HttpResponse('Must be called with post and must be a valid username')
+
+def join_project(request, slug):
+    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    if request.method == 'POST' and request.user.is_authenticated():
+        permissionset, created = ProjectPermissionSet.objects.get_or_create(is_default=False, user=request.user, project=project)
+        if created:
+            permissionset.user_accepted = True
+            permissionset.owner_accepted = False
+            permissionset.save()
+        else:
+            return HttpResponse('You are already either in the project or waiting to be accepted or invited')
+        request.user.message_set.create(message='You have requested to join this project!')
+        return HttpResponseRedirect(project.get_absolute_url())
+    else:
+        return HttpResponse('Must be called via post and you must be logged in')

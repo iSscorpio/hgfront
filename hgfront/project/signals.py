@@ -55,6 +55,7 @@ def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
         
 def create_wikipage(sender, instance, signal, *args, **kwargs):
     from hgfront.wiki.models import Page
-    
-    page = Page(name="Main_Page", parent_project=instance, content="Please edit me or create a NewPage")
-    page.save()
+    page, created = Page.objects.get_or_create(name="Main_Page", parent_project=instance)
+    if created:
+        page.content = "This is the main wiki page for this project, write something here!"
+        page.save()

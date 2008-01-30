@@ -36,6 +36,12 @@
                     </td>
             </tbody>
         </table>
+        {% if user_can_request_to_join %} 
+            <form method="post" action="{% url project-join-project slug=project.name_short %}">
+                If you want to join this project, click on this button!
+                <input type="submit" value="Join" />
+            </form>
+        {% endif %}
 	    
         {% if permissions.view_issues %}
             {% if issues %}
