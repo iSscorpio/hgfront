@@ -1,6 +1,6 @@
 {% extends "project/project_detail.html" %}
 {% load wikilink %}
-
+{% load markup %}
 
 {% block title %}{{page}}{% endblock %}
 
@@ -9,7 +9,7 @@
 {% block content_title %}<h2>{{page|escape}}</h2>{% endblock %}
 {% block main_content %}
 
-    {% autoescape off %} {{content|wikify}} {% endautoescape %}
+    {% autoescape off %} {{page.content|restructuredtext|wikify}} {% endautoescape %}
     
     <ul>
         <li><a href="/hgfront/projects/{{project.name_short}}/wiki/{{page.name}}/edit/">Edit this page?</a></li>
