@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 def view_page(request, slug, page_name):
     project = get_object_or_404(Project, name_short=slug)
     try:
-        page = Page.objects.get(pk=page_name, parent_project=project)
+        page = Page.objects.get(name=page_name, parent_project=project)
     except Page.DoesNotExist:
         return render_to_response("wiki/create.html", {"project":project, "page_name": page_name}, context_instance=RequestContext(request))
     page = Page.objects.get(name=page_name, parent_project=project)
@@ -20,7 +20,7 @@ def view_page(request, slug, page_name):
 def edit_page(request, slug, page_name):
     project = get_object_or_404(Project, name_short=slug)
     try:
-        page = Page.objects.get(pk=page_name, parent_project=project)
+        page = Page.objects.get(name=page_name, parent_project=project)
         content = page.content
     except Page.DoesNotExist:
         content = ""
@@ -31,7 +31,7 @@ def save_page(request, slug, page_name):
     project = get_object_or_404(Project, name_short=slug)
     content = request.POST['content']
     try:
-        page = Page.objects.get(pk=page_name, parent_project=project)
+        page = Page.objects.get(name=page_name, parent_project=project)
         page.content = content
     except Page.DoesNotExist:
         page = Page(name=page_name, content=content, parent_project=project)

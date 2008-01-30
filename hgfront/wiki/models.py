@@ -3,7 +3,7 @@ from hgfront.project.models import Project
 
 class Page(models.Model):
     parent_project = models.ForeignKey(Project)
-    name = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(max_length=255)
     content = models.TextField(blank=True)
 
     def __unicode__(self):
