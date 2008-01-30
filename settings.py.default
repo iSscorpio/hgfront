@@ -1,7 +1,7 @@
 # Django settings for hgfront project.
 
-DEBUG = True
-DEBUG_SQL=True
+DEBUG = False
+DEBUG_SQL=False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -98,10 +98,6 @@ INSTALLED_APPS = (
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7
-
-MERCURIAL_REPOS = '/path/to/repo/home'
-
-ISSUE_FROM_EMAIL = 'test@myreposite.com'
 
 HGFRONT_STATIC_PATH = '/path/to/my/hgfront/templates/static'
 
