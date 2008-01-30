@@ -23,7 +23,6 @@ class ProjectOptions(hgfront.config.Group):
     site_name = hgfront.config.StringValue("Site Name")
     site_owner = hgfront.config.StringValue("Site Owner")
     repository_directory = hgfront.config.StringValue("The central location to store your repositories.")
-    issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
 
 class ProjectManager(models.Manager):
     """

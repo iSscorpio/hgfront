@@ -10,4 +10,4 @@ class IssueCreateForm(ModelForm):
     """
     class Meta:
         model = Issue
-        exclude = ('project','user_posted','user_assigned_to','finished_date','pub_date')
+        exclude = ('project','user_posted','finished_date','pub_date')

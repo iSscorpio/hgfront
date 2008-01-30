@@ -56,7 +56,7 @@ def issue_list(request, slug):
     issues = issues.filter(**dict([(str(key),str(value)) for key,value in GET_copy.items()]))
 
     #initialize the pagination
-    paginator = ObjectPaginator(issues, Project.project_options.issues_per_page)
+    paginator = ObjectPaginator(issues, Issue.issue_options.issues_per_page)
     try:
         issues = paginator.get_page(page)
     except InvalidPage:

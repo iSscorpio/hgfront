@@ -9,8 +9,10 @@ from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 from django.template.defaultfilters import slugify
 # Project Libraries
+import hgfront.config
 from hgfront.issue.signals import *
 from hgfront.project.models import Project
+from hgfront.repo.models import Repo
 
 class IssueType(models.Model):
     """Represents the type of issue such as a bug or feature enhancment"""
@@ -18,21 +20,21 @@ class IssueType(models.Model):
     slug=models.SlugField()
     order=models.IntegerField(max_length=3)
     is_active=models.BooleanField(default=1)
-    
+
     def __unicode__(self):
         return self.title
-    
+
     def save(self):
         if not self.slug:
             self.slug = slugify(self.title)
         super(IssueType, self).save()
-    
+
     def delete(self):
         self.is_active=0
-    
+
     class Admin:
         pass
-    
+
     class Meta:
         verbose_name = 'issue type'
         verbose_name_plural = 'issue types'
@@ -46,49 +48,49 @@ class IssueSeverity(models.Model):
     slug=models.SlugField()
     order=models.IntegerField(max_length=3)
     is_active=models.BooleanField(default=1)
-    
+
     def __unicode__(self):
         return self.title
-    
+
     def save(self):
         if not self.slug:
             self.slug = slugify(self.title)
         super(IssueSeverity, self).save()
-    
+
     def delete(self):
         self.is_active=0
-    
+
     class Admin:
         pass
-    
+
     class Meta:
         verbose_name = 'issue severity'
         verbose_name_plural = 'issue severity'
         ordering = ['order']
 #Dispatchers
 
-        
+
 class IssueStatus(models.Model):
     """Represents what stage a issue is at"""
     title=models.CharField(max_length=50)
     slug=models.SlugField()
     order=models.IntegerField(max_length=3)
     is_active=models.BooleanField(default=1)
-    
+
     def __unicode__(self):
         return self.title
-    
+
     def save(self):
         if not self.slug:
             self.slug = slugify(self.title)
         super(IssueStatus, self).save()
-    
+
     def delete(self):
         self.is_active=0
-    
+
     class Admin:
         pass
-    
+
     class Meta:
         verbose_name = 'issue status'
         verbose_name_plural = 'issue status'
@@ -113,13 +115,20 @@ class IssueManager(models.Manager):
     def get_query_set(self):
         model = models.get_model('issue', 'Issue')
         return IssueQuerySet(model)
-        
+
     def __getattr__(self, attr, *args):
         try:
             return getattr(self.__class__, attr, *args)
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args)
-    
+
+class IssueOptions(hgfront.config.Group):
+    """
+    This is the Project Option group.  These options are global can can be used in any file
+    where the Project model is imported.
+    """
+    issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
+    issue_from_email = hgfront.config.StringValue("Email address to have issues come from.")
 
 class Issue(models.Model):
     """A class that represents an issue/bug"""
@@ -131,6 +140,7 @@ class Issue(models.Model):
     issue_type = models.ForeignKey(IssueType)
     issue_sev = models.ForeignKey(IssueSeverity)
     issue_status = models.ForeignKey(IssueStatus)
+    issue_repos = models.ManyToManyField(Repo, blank=True, null=True)
     user_posted = models.ForeignKey(User, blank=True, null=True, related_name='user_posted', verbose_name='posted by')
     pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
@@ -141,9 +151,11 @@ class Issue(models.Model):
         return ('issue-detail',(),{'slug':self.project.name_short,'issue_id':self.pk})
     def __unicode__(self):
         return self.title
-        
+
     def completed(self):
         return self.finished_date is not None
+        
+    issue_options = IssueOptions()
 
     class Admin:
         list_display = ('title','project','pub_date','user_posted','user_assigned_to', 'issue_type', 'issue_sev', 'issue_status', 'completed')

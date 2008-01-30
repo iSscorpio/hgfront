@@ -12,6 +12,7 @@ from django.contrib.auth.decorators import login_required
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
+from hgfront.issue.models import Issue
 
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
@@ -21,7 +22,7 @@ def get_project_list(request):
 def get_project_details(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
-    issue_short_list = project.issue_set.select_related()[:Project.project_options.issues_per_page]
+    issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
     return render_to_response('project/project_detail.html', {'project': project, 'permissions':permissions, 'issues':issue_short_list}, context_instance=RequestContext(request))
 
 @login_required
