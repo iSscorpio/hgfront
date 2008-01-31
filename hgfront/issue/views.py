@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.template import RequestContext
 # Project Libraries
 from hgfront.issue.models import *
-from hgfront.issue.forms import IssueCreateForm
+from hgfront.issue.forms import IssueCreateForm, IssueEditForm
 from hgfront.project.models import Project
 from hgfront.project.decorators import check_project_permissions
 
@@ -112,13 +112,45 @@ def issue_create(request, slug):
             # Let's send a message of success to the user if the user isn't anonymous
             if request.user.is_authenticated():
                 request.user.message_set.create(message="The issue has been added. Let's hope someone solves it soon!")
-            return HttpResponseRedirect(reverse('issue-detail', kwargs={'slug':slug,'issue_id':issue.id}))
+            return HttpResponseRedirect(issue.get_absolute_url())
     else:
         form = IssueCreateForm()
     return render_to_response('issue/issue_create.html', 
         {
             'form':form, 
             'project':project, 
+            'permissions':project.get_permissions(request.user)
+        }, context_instance=RequestContext(request)
+    )
+
+@check_project_permissions('edit_issues')
+def issue_edit(request, slug, issue_id):
+    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
+    issue = get_object_or_404(project.issue_set.select_related(), id=issue_id)
+    if request.method == "POST":
+        form = IssueEditForm(request.POST)
+        if form.is_valid():
+            new_issue = form.save(commit=False)
+            if form.cleaned_data['completed']:
+                new_issue.finished_date = datetime.datetime.now()
+            else:
+                new_issue.finished_date = None
+            new_issue.project = project
+            new_issue.user_posted = issue.user_posted
+            new_issue.pub_date = issue.pub_date
+            new_issue.id = issue.id
+            new_issue.save()
+            form.save_m2m()
+            request.user.message_set.create(message='The issue has been edited!')
+            return HttpResponseRedirect(new_issue.get_absolute_url())
+    else:
+        form = IssueEditForm(instance=issue)
+        #TODO: Make it so that the 'completed' checkbox correctly display whether the issue is completed or not
+    return render_to_response('issue/issue_edit.html',
+        {
+            'form':form,
+            'issue':issue,
+            'project':project,
             'permissions':project.get_permissions(request.user)
         }, context_instance=RequestContext(request)
     )

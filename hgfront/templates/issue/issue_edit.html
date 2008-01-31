@@ -1,0 +1,14 @@
+{% extends "issue/issue_detail.html" %}
+
+{% block title %}{{project.name_long}} : Editing Issue {{issue.id}}{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li><a href="{% url issue-edit slug=project.name_short,issue_id=issue.id %}">Edit</a></li>{% endblock %}
+
+{% block content_title %}Editing issue {{issue.id}}{% endblock %}
+
+{% block main_content %}
+    {{fail}}
+        <form action="{% url issue-edit slug=project.name_short,issue_id=issue.id %}" method="post">
+            <table>{{form.as_table}}</table>
+            <input type="submit">
+        </form>
+{% endblock %}
