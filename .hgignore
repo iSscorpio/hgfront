@@ -3,6 +3,7 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+*.txt~
 format
 entries
 all-wcprops

@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 # Project Libraries
 
 def send_email_to_owner(sender, instance, signal, *args, **kwargs):
@@ -10,20 +11,19 @@ def send_email_to_owner(sender, instance, signal, *args, **kwargs):
     from hgfront.issue.models import Issue
     try:
         owner = instance.user_posted
-        
-        message = """
-            Issue Type: %s \n
-            Issue Severity: %s \n
-            Issue Status: %s \n
-            \n
-            User Raised: %s \n
-            User Assigned To: %s \n
-            \n
-            Issue Message: %s
-            """ % (instance.issue_type, instance.issue_sev, instance.issue_status, instance.user_posted, owner.username, instance.body)
-            
-        
-        email = EmailMessage(instance.title, message, Issue.issue_options.issue_from_email, [owner.email])
+    
+        email_body = render_to_string("issue/email/issue.txt",
+            {
+                'issue_type': instance.issue_type,
+                'issue_sev': instance.issue_sev,
+                'issue_status': instance.issue_status,
+                'issue_raised_by': instance.user_posted,
+                'issue_assigned_to': owner.username,
+                'issue_message': instance.body
+            }
+        )
+    
+        email = EmailMessage(instance.title, email_body, Issue.issue_options.issue_from_email, [owner.email])
         try:
             email.send()
         except:
@@ -32,3 +32,9 @@ def send_email_to_owner(sender, instance, signal, *args, **kwargs):
         pass
     else:
         print "Email sent to %s" % owner.email
+        
+        
+        
+        
+        
+

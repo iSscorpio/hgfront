@@ -1,0 +1,8 @@
+Issue Type: {{issue_type}}
+Issue Severity: {{issue_sev}}
+Issue Status: {{issue_status}}
+
+User Raised: {{issue_raised_by}}
+User Assigned To: {{issue_assigned_to}}
+
+Issue Message: {{issue_message}}
