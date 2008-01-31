@@ -13,5 +13,6 @@
     Severity:{{issue.issue_sev.title}}<br />
     Type:{{issue.issue_type.title}}<br />
     Status:{{issue.issue_status.title}}<br />
+    {% if permissions.edit_issues %}<a href="{% url issue-edit slug=project.name_short, issue_id=issue.id %}">Edit this issue</a>{% endif %}
 
 {% endblock main_content %}
