@@ -7,7 +7,7 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-import hgfront.config
+import hgfront.config as config
 from hgfront.project.signals import *
 
 available_styles = (
@@ -15,14 +15,16 @@ available_styles = (
     ('gitweb', 'Gitweb'),
 )
 
-class ProjectOptions(hgfront.config.Group):
+class ProjectOptions(config.Group):
     """
     This is the Project Option group.  These options are global can can be used in any file
     where the Project model is imported.
     """
-    site_name = hgfront.config.StringValue("Site Name")
-    site_owner = hgfront.config.StringValue("Site Owner")
-    repository_directory = hgfront.config.StringValue("The central location to store your repositories.")
+    site_name = config.StringValue("Site Name")
+    site_owner = config.StringValue("Site Owner")
+    repository_directory = config.StringValue("The central location to store your repositories.")
+    backups_directory = config.StringValue("The location of your backups")
+    backups_max_days = config.PositiveIntegerValue("The number of days to beek backups (0 for forever)")
 
 class ProjectManager(models.Manager):
     """

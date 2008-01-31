@@ -114,6 +114,11 @@ a.home {
     padding: 5px 0 5px 25px;
 }
 
+.link-create-backup {
+    background: url('images/projects/backup.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
 .link-show-repo {
     background: url('images/repos/repo.png') no-repeat;
     padding: 5px 0 5px 25px;

@@ -1,6 +1,7 @@
 # General Libraries
 from mercurial import hg, ui, hgweb
 import datetime, os
+from time import strftime
 # Django Libraries
 from django.core.urlresolvers import reverse
 from django.conf import settings
@@ -115,7 +116,7 @@ def create_project_backup(request, slug):
     contents = os.listdir(directory)
     
     # Open the tar file
-    tar = tarfile.open(os.path.join(Project.project_options.repository_directory, "backups/", slug + "_backup.tar.gz"), "w:gz")
+    tar = tarfile.open(os.path.join(Project.project_options.backups_directory, slug + "_backup_" + str(strftime("%Y.%m.%d.%H.%M.%S")) + ".tar.gz"), "w:gz")
     for item in contents:
         tar.add(item)
     tar.close()
