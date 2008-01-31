@@ -10,7 +10,20 @@ def send_email_to_owner(sender, instance, signal, *args, **kwargs):
     from hgfront.issue.models import Issue
     try:
         owner = instance.user_posted
-        email = EmailMessage(instance.title, instance.body, Issue.issue_options.issue_from_email, [owner.email])
+        
+        message = """
+            Issue Type: %s \n
+            Issue Severity: %s \n
+            Issue Status: %s \n
+            \n
+            User Raised: %s \n
+            User Assigned To: %s \n
+            \n
+            Issue Message: %s
+            """ % (instance.issue_type, instance.issue_sev, instance.issue_status, instance.user_posted, owner.username, instance.body)
+            
+        
+        email = EmailMessage(instance.title, message, Issue.issue_options.issue_from_email, [owner.email])
         try:
             email.send()
         except:
