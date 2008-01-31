@@ -97,14 +97,17 @@
 {% endblock %}
 
 {% block sidebar %}
-	<span class="group">Your Options for {{project.name_long}}</span>
-		<ul>
-			{% if permissions.add_repos %} 
-        		<li><a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a></li>
-    		{% endif %}
-			{% if permissions.add_issues %} 
-        		<li><a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a></li>
-    		{% endif %}
+    <span class="group">Your Options for {{project.name_long}}</span>
+        <ul>
+            {% if permissions.add_repos %} 
+                <li><a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a></li>
+            {% endif %}
+            {% if permissions.add_issues %} 
+                <li><a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a></li>
+            {% endif %}
+            {% if permissions.add_repos %} 
+                <li><a href="{% url create-backup project.name_short %}" class="link-create-backup">Backup Project</a></li>
+            {% endif %}
         </ul>
     {% with project.aspiring_members as aspiring_members %}
         {% if permissions.add_members and aspiring_members %}

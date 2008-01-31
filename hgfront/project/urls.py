@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^(?P<slug>[-\w]+)/$', 'hgfront.project.views.get_project_details', name="project-detail"),
     url(r'^(?P<slug>[-\w]+)/process_join_request/$', 'hgfront.project.views.process_join_request', name="project-process-join-request"),
     url(r'^(?P<slug>[-\w]+)/join/$', 'hgfront.project.views.join_project', name="project-join-project"),
+    url(r'^(?P<slug>[-\w]+)/backup/$', 'hgfront.project.views.create_project_backup', name="create-backup"),
 )
 
 

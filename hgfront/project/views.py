@@ -102,6 +102,25 @@ def create_project_form(request):
                 'is_auth': is_auth
             }, context_instance=RequestContext(request)
         )
+
+
+@login_required
+def create_project_backup(request, slug):
+    import tarfile
+    
+    project = Project.objects.get(name_short__exact=slug)
+    # Switch to the project directory and get the file contents
+    os.chdir(project.project_directory())
+    directory = os.getcwd()
+    contents = os.listdir(directory)
+    
+    # Open the tar file
+    tar = tarfile.open(os.path.join(Project.project_options.repository_directory, "backups/", slug + "_backup.tar.gz"), "w:gz")
+    for item in contents:
+        tar.add(item)
+    tar.close()
+    
+    return HttpResponseRedirect(project.get_absolute_url())
  
 @check_project_permissions('add_members')
 def process_join_request(request, slug):

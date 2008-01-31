@@ -89,6 +89,9 @@ class Project(models.Model):
         """Returns the number of repositories linked to this project"""
         return self.repo_set.count()
     num_repos.short_description = "Number of Repositories"
+    
+    def project_directory(self):
+        return os.path.join(Project.project_options.repository_directory, self.name_short)
 
     def user_in_project(self, user):
         return len(self.members.filter(id = user.id)) > 0
