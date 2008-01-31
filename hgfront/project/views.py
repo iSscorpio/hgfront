@@ -49,7 +49,7 @@ def create_project_form(request):
     """
     
     if not bool(os.path.isdir(Project.project_options.repository_directory)):
-        raise IOError("The path to your repository directory is not valid.  Please update your settings.")
+        return HttpResponseRedirect(reverse('site-config'))
     
     if request.method == "POST":
         if 'name_long' not in request.POST:

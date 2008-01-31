@@ -43,8 +43,7 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
             'changeset_files': repo.get_changeset().files(),
             'changeset_number': repo.get_changeset_number(),
             'project': project,
-            'repo': repo,
-            'test': repo.test()
+            'repo': repo
         }, context_instance=RequestContext(request)
     )
 
