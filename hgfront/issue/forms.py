@@ -17,7 +17,6 @@ class IssueEditForm(ModelForm):
     """
     Edit an issue!
     """
-    completed = forms.BooleanField(label="Is this completed?")
     class Meta:
         model = Issue
         exclude = ('project','user_posted','finished_date','pub_date')
