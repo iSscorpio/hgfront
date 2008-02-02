@@ -9,6 +9,6 @@ urlpatterns = patterns('hgfront.repo.views',
     url('^$','repo_list', name='repo-list'),
     url('^create/$','repo_create', name='repo-create'),
     url('^(?P<repo_name>[-\w]+)/$', 'view_changeset', name='view-tip'),
-    url('^(?P<repo_name>[-\w]+)/(?P<changeset>[-\w]+)/$', 'view_changeset', name='view-changeset'),
+    url('^(?P<repo_name>[-\w]+)/changeset/(?P<changeset>[-\w]+)/$', 'view_changeset', name='view-changeset'),
     url('^(?P<repo_name>[-\w]+)/manage/$', 'repo_manage', name='repo-manage'),
 )

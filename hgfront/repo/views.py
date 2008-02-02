@@ -37,11 +37,12 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
         {
             'tags': repo.get_tags(),
             'branches': repo.get_branches(),
-            'changeset_id': repo.get_changeset(),
-            'changeset_user': repo.get_changeset().user(),
-            'changeset_notes': repo.get_changeset().description(),
-            'changeset_files': repo.get_changeset().files(),
-            'changeset_number': repo.get_changeset_number(),
+            'changeset_id': repo.get_changeset(changeset),
+            'changeset_user': repo.get_changeset(changeset).user(),
+            'changeset_notes': repo.get_changeset(changeset).description(),
+            'changeset_files': repo.get_changeset(changeset).files(),
+            'changeset_number': repo.get_changeset_number(changeset),
+            'changset_parent': repo.get_previous_changeset(changeset)[0],
             'project': project,
             'repo': repo
         }, context_instance=RequestContext(request)
