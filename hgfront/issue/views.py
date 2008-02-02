@@ -128,24 +128,32 @@ def issue_edit(request, slug, issue_id):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     issue = get_object_or_404(project.issue_set.select_related(), id=issue_id)
     if request.method == "POST":
-        form = IssueEditForm(request.POST)
-        if form.is_valid():
-            new_issue = form.save(commit=False)
-            if form.cleaned_data['completed']:
-                new_issue.finished_date = datetime.datetime.now()
+        #this view is called by post either when editing an issue or when toggling its completed state
+        #so here we check what we're doing
+        if request.POST.has_key('toggling_completed'):
+            if issue.finished_date is None:
+                issue.finished_date = datetime.datetime.now()
+                issue.save()
+                request.user.message_set.create(message='The issue has been marked as completed!')
             else:
-                new_issue.finished_date = None
-            new_issue.project = project
-            new_issue.user_posted = issue.user_posted
-            new_issue.pub_date = issue.pub_date
-            new_issue.id = issue.id
-            new_issue.save()
-            form.save_m2m()
-            request.user.message_set.create(message='The issue has been edited!')
-            return HttpResponseRedirect(new_issue.get_absolute_url())
+                issue.finished_date = None
+                issue.save()
+                request.user.message_set.create(message='The issue has been reopened!')
+            return HttpResponseRedirect(issue.get_absolute_url())
+        else:
+            form = IssueEditForm(request.POST)
+            if form.is_valid():
+                new_issue = form.save(commit=False)
+                new_issue.project = project
+                new_issue.user_posted = issue.user_posted
+                new_issue.pub_date = issue.pub_date
+                new_issue.id = issue.id
+                new_issue.save()
+                form.save_m2m()
+                request.user.message_set.create(message='The issue has been edited!')
+                return HttpResponseRedirect(new_issue.get_absolute_url())
     else:
         form = IssueEditForm(instance=issue)
-        #TODO: Make it so that the 'completed' checkbox correctly display whether the issue is completed or not
     return render_to_response('issue/issue_edit.html',
         {
             'form':form,
