@@ -90,6 +90,12 @@ class Repo(models.Model):
         c = r.changectx(changeset).parents() # get a context object for the "tip" revision
         return c
         
+    def get_next_changeset(self, changeset="tip"):
+        u = ui.ui()  # get a ui object
+        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        c = r.changectx(changeset).children() # get a context object for the "tip" revision
+        return c
+        
     def get_tags(self):
         u = ui.ui()  # get a ui object
         r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory

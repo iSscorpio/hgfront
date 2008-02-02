@@ -9,9 +9,29 @@
 <h3>Tip Details</h3>
 <dl>
     <dt>Changeset ID</dt>
-    <dd>{{changeset_number}} - {{changeset_id}}</dd>
-    <dt>Changset Parent</td>
-    <dd><a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_parent}}/">{{changset_parent}}</a></dd>
+    <dd>
+        {% ifequal repo.get_changeset_number -1 %}
+            No Changesets (please add and commit files).
+        {% else %}
+            {{repo.get_changeset_number}} - {{repo.get_changeset}}
+        {% endifequal %}
+    </dd>
+    <dt>Changeset Parent</td>
+    <dd>
+        {% ifequal changset_parent "None" %}
+            {{changset_parent}}
+        {% else %}
+            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_parent}}/">{{changset_parent}}</a>
+        {% endifequal %}
+    </dd>
+    <dt>Changeset Child</td>
+    <dd>
+        {% ifequal changset_child "None" %}
+            {{changset_child}}
+        {% else %}
+            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_child}}/">{{changset_child}}</a>
+        {% endifequal %}
+    </dd>
     <dt>Changeset Author</dt>
     <dd>{{changeset_user}}</dd>
     <dt>Changeset Notes</dt>
