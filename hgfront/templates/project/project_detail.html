@@ -48,7 +48,13 @@
                     {% for repo in repos %}
                         <tr>
                             <td><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a></td>
-                            <td>{{repo.get_changeset_number}} - {{repo.get_changeset}}</td>
+                            <td>
+                                {% ifequal repo.get_changeset_number -1 %}
+                                    No Changesets (please add and commit files).
+                                {% else %}
+                                    {{repo.get_changeset_number}} - {{repo.get_changeset}}
+                                {% endifequal %}
+                            </td>
                             <td>
                                 <select name="repo-action">
                                     <option>Clone</option>
