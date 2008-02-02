@@ -29,7 +29,7 @@ def get_project_details(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
     
-    backups = ProjectBackup.objects.filter(parent_project__exact=project)
+    backups = ProjectBackup.objects.filter(parent_project__exact=project).order_by('-created')
     
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
     user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user=request.user).count()<1 and request.user.is_authenticated() and request.user != project.user_owner

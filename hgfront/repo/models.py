@@ -76,7 +76,6 @@ class Repo(models.Model):
         u = ui.ui()
         r = hg.repository(u, self.repo_directory())
         c = r.changectx('tip').rev()
-        print c
         return c
         
     def get_changeset(self, changeset="tip"):
