@@ -8,6 +8,7 @@ def site_options(request):
     return dict([
                 ('hgf_site_name', Project.project_options.site_name),
                 ('hgf_site_owner', Project.project_options.site_owner),
+                ('hgf_logged_in_user', request.user.username),
             ])
 
 

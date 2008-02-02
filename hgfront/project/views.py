@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 # Project Libraries
+from hgfront.backup.models import ProjectBackup
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet
 from hgfront.project.decorators import check_project_permissions
@@ -27,6 +28,9 @@ def get_project_list(request):
 def get_project_details(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
+    
+    backups = ProjectBackup.objects.filter(parent_project__exact=project)
+    
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
     user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user=request.user).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
     return render_to_response('project/project_detail.html',
@@ -34,6 +38,7 @@ def get_project_details(request, slug):
             'project': project,
             'permissions':permissions,
             'issues':issue_short_list,
+            'backups': backups,
             'user_can_request_to_join':user_can_request_to_join
         }, context_instance=RequestContext(request)
     )
@@ -103,25 +108,6 @@ def create_project_form(request):
                 'is_auth': is_auth
             }, context_instance=RequestContext(request)
         )
-
-
-@login_required
-def create_project_backup(request, slug):
-    import tarfile
-    
-    project = Project.objects.get(name_short__exact=slug)
-    # Switch to the project directory and get the file contents
-    os.chdir(project.project_directory())
-    directory = os.getcwd()
-    contents = os.listdir(directory)
-    
-    # Open the tar file
-    tar = tarfile.open(os.path.join(Project.project_options.backups_directory, slug + "_backup_" + str(strftime("%Y.%m.%d.%H.%M.%S")) + ".tar.gz"), "w:gz")
-    for item in contents:
-        tar.add(item)
-    tar.close()
-    
-    return HttpResponseRedirect(project.get_absolute_url())
  
 @check_project_permissions('add_members')
 def process_join_request(request, slug):

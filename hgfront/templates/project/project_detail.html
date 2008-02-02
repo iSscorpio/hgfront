@@ -94,6 +94,27 @@
         {% else %}
             <h4>You can't view the issues, man!</h4>
         {% endif %}
+        
+    {% if backups %}
+        <table>
+            <thead>
+                <caption>Backups of {{project.name_long}}</caption>
+                <tr>
+                    <th>Creation Date</th>
+                    <th>Format</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for backup in backups %}
+                    <tr>
+                        <td>{{backup.created}}</td>
+                        <td>{{backup.format}}</td>
+                     </tr>
+                 {% endfor %}
+             </tbody>
+         </table>
+     {% endif %}
+    
 {% endblock %}
 
 {% block sidebar %}
