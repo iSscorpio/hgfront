@@ -77,7 +77,7 @@ class Project(models.Model):
     name_long=models.CharField(max_length=255)
     description_short=models.CharField(max_length=255, blank=True, null=True)
     description_long=models.TextField()
-    user_owner=models.ForeignKey(User, related_name='user_owner', verbose_name='project owner')
+    user_owner=models.ForeignKey(User, related_name='owned_projects', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     hgweb_style=models.CharField(max_length=50,choices=available_styles)
     

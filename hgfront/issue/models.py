@@ -141,9 +141,9 @@ class Issue(models.Model):
     issue_sev = models.ForeignKey(IssueSeverity)
     issue_status = models.ForeignKey(IssueStatus)
     issue_repos = models.ManyToManyField(Repo, blank=True, null=True)
-    user_posted = models.ForeignKey(User, blank=True, null=True, related_name='user_posted', verbose_name='posted by')
+    user_posted = models.ForeignKey(User, blank=True, null=True, related_name='posted_issues', verbose_name='posted by')
     pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    user_assigned_to = models.ForeignKey(User, related_name='user_assigned_to', blank=True, null=True, verbose_name='assigned to')
+    user_assigned_to = models.ForeignKey(User, related_name='assigned_issues', blank=True, null=True, verbose_name='assigned to')
     finished_date = models.DateTimeField(blank=True, null=True, verbose_name='finished on')
 
     @permalink
