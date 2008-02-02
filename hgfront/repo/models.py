@@ -72,16 +72,22 @@ class Repo(models.Model):
         branches.sort()
         return branches            
     
-    def get_changeset_number(self):
+    def get_changeset_number(self, changeset='tip'):
         u = ui.ui()
         r = hg.repository(u, self.repo_directory())
-        c = r.changectx('tip').rev()
+        c = r.changectx(changeset).rev()
         return c
         
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
         r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
         c = r.changectx(changeset) # get a context object for the "tip" revision
+        return c
+        
+    def get_previous_changeset(self, changeset="tip"):
+        u = ui.ui()  # get a ui object
+        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        c = r.changectx(changeset).parents() # get a context object for the "tip" revision
         return c
         
     def get_tags(self):
