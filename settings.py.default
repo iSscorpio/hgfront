@@ -91,6 +91,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'hgfront.config',
+    'hgfront.backup',
     'hgfront.issue',
     'hgfront.project',
     'hgfront.repo',
