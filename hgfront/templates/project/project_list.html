@@ -6,7 +6,21 @@
 {% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{% url project-list %}">Projects</a></li>{% endblock %}
 
 {% block main_content %}
-	{% if object_list %}
+
+    {% if project_news %}
+        <h2>Latest News</h2>
+        <dl>
+            {% for item in project_news %}
+                <dt>{{item.parent_project}}</dt>
+                <dd class="news-item-title">{{item.news_title}}</dd>
+                <dd class="news-item-pub-date">{{item.pub_date}}</dd>
+                <dd class="news-item-body">{{item.news_body}}</dd>
+             {% endfor %}
+        </dl>
+    {% endif %}
+
+
+	{% if projects %}
 	<table>
 	<thead>
 		<tr>
@@ -17,7 +31,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{% for project in object_list %}
+		{% for project in projects %}
 				<tr>
 					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
 					<td>{{project.description_short|truncatewords_html:10}}</td>

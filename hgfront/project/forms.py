@@ -3,9 +3,10 @@ import datetime
 # Django Libraries
 from django.contrib.auth.models import User
 import django.newforms as forms
+from django.newforms import ModelForm
 # Project Libraries
 import hgfront.config
-from hgfront.project.models import Project
+from hgfront.project.models import Project, ProjectNews
 
 available_styles = (
     ('default', 'Default'),
@@ -37,6 +38,10 @@ class NewProjectStep2(forms.Form):
 class JoinRequestForm(forms.Form):
     username=forms.CharField(max_length=255)
     action=forms.CharField(max_length=255)
+    
+class ProjectNewsForm(ModelForm):
+    class Meta:
+        model = ProjectNews
 
 
 #class ProjectCreateForm(ModelForm):

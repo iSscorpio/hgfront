@@ -12,15 +12,18 @@ from django.contrib.auth.decorators import login_required
 # Project Libraries
 from hgfront.backup.models import ProjectBackup
 from hgfront.project.forms import *
-from hgfront.project.models import Project, ProjectPermissionSet
+from hgfront.project.models import Project, ProjectPermissionSet, ProjectNews
 from hgfront.project.decorators import check_project_permissions
 from hgfront.issue.models import Issue
 
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
+    project_news = ProjectNews.objects.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
+    
     return render_to_response('project/project_list.html',
         {
-            'object_list':projects
+            'projects': projects,
+            'project_news': project_news
         }, context_instance=RequestContext(request)
     )
 
@@ -139,3 +142,21 @@ def join_project(request, slug):
         return HttpResponseRedirect(project.get_absolute_url())
     else:
         return HttpResponse('Must be called via post and you must be logged in')
+        
+def add_project_news(request, slug):
+    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    if request.method == 'POST' and request.user.is_authenticated():
+        form = ProjectNewsForm(request.POST)
+        if form.is_valid():
+            newsitem = ProjectNews.objects.get_or_create(parent_project=project, news_title=form.cleaned_data['news_title'], news_body=form.cleaned_data['news_body'], pub_date=datetime.datetime.now(), published=form.cleaned_data['published'], frontpage=form.cleaned_data['frontpage'], authorised=form.cleaned_data['authorised'])
+            newsitem.save()
+            return HttpResponseRedirect(project.get_absolute_url())
+        else:
+            return form
+    else:
+        form = ProjectNewsForm()
+        return render_to_response('project/project_news_create.html',
+            {
+                'form':form
+            }, context_instance=RequestContext(request)
+        )

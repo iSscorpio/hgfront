@@ -294,3 +294,25 @@ class ProjectPermissionSet(models.Model):
     
     class Meta:
         unique_together = ('user','project')
+        
+        
+class ProjectNews(models.Model):
+    parent_project=models.ForeignKey(Project)
+    news_title=models.CharField(max_length=255)
+    news_body=models.TextField()
+    published=models.BooleanField(default=True)
+    frontpage=models.BooleanField(default=False)
+    authorised=models.BooleanField(default=False)
+    pub_date=models.DateTimeField()
+    
+    def __unicode__(self):
+        return self.parent_project.name_long + ' / ' + self.news_title
+    
+    class Admin:
+        pass
+        
+    class Meta:
+        verbose_name = 'project news item'
+        verbose_name_plural = 'project news items'
+        ordering = ['pub_date', 'parent_project']
+
