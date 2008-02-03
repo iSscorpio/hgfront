@@ -42,17 +42,17 @@ div#header h1 {
 
 
 /* Navigation */
-ul.navigation {
-    
+ul.toolbar-buttons {
+    float:right;
 }
 
-ul.navigation li {
+ul.toolbar-buttons li {
     float:left;
     border:0;
     margin-right:10px;
 }
 
-ul.navigation li a {
+ul.toolbar-buttons li a {
     font-size: 1.3em;
 }
 

@@ -10,10 +10,10 @@
 <dl>
     <dt>Changeset ID</dt>
     <dd>
-        {% ifequal repo.get_changeset_number -1 %}
+        {% ifequal changeset_number -1 %}
             No Changesets (please add and commit files).
         {% else %}
-            {{repo.get_changeset_number}} - {{repo.get_changeset}}
+            {{changeset_number}} - {{changeset_id}}
         {% endifequal %}
     </dd>
     <dt>Changeset Parent</td>
@@ -21,7 +21,7 @@
         {% ifequal changset_parent "None" %}
             {{changset_parent}}
         {% else %}
-            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_parent}}/">{{changset_parent}}</a>
+            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_parent}}/">&laquo; {{changset_parent}}</a>
         {% endifequal %}
     </dd>
     <dt>Changeset Child</td>
@@ -29,7 +29,7 @@
         {% ifequal changset_child "None" %}
             {{changset_child}}
         {% else %}
-            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_child}}/">{{changset_child}}</a>
+            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_child}}/">{{changset_child}} &raquo;</a>
         {% endifequal %}
     </dd>
     <dt>Changeset Author</dt>
