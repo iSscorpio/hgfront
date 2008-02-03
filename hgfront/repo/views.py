@@ -37,12 +37,12 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
     try:
         changeset_children = repo.get_next_changeset(changeset)
     except:
-        changeset_children = 'None'
+        changeset_children = []
         
     try:
         changeset_parents = repo.get_previous_changeset(changeset)
     except:
-        changeset_parents = 'None'
+        changeset_parents = []
     
     return render_to_response('repos/repo_detail.html',
         {
