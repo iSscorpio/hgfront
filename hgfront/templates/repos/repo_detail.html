@@ -1,7 +1,7 @@
 {% extends "project/project_detail.html" %}
 
 {% block title %}{{repo.name_long}} : Details{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li>Details of {{repo.name_long}}</li>{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li><a href="{{repo.get_absolute_url}}">{{repo.name_long}}</a></li>{% endblock %}
 
 {% block content_title %}{{repo.name_long}}{% endblock %}
 
@@ -16,22 +16,24 @@
             {{changeset_number}} - {{changeset_id}}
         {% endifequal %}
     </dd>
-    <dt>Changeset Parent</td>
-    <dd>
-        {% ifequal changset_parent "None" %}
-            {{changset_parent}}
-        {% else %}
-            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_parent}}/">&laquo; {{changset_parent}}</a>
-        {% endifequal %}
-    </dd>
-    <dt>Changeset Child</td>
-    <dd>
-        {% ifequal changset_child "None" %}
-            {{changset_child}}
-        {% else %}
-            <a href="/hgfront/projects/{{project.name_short}}/repos/{{repo.name_short}}/changeset/{{changset_child}}/">{{changset_child}} &raquo;</a>
-        {% endifequal %}
-    </dd>
+    {%if changeset_parents %}
+        <dt>Changeset Parents</td>
+        {% for changeset in changeset_parents %}
+            <dd>
+                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+            </dd>
+        {% endfor %}
+        </dt>
+    {%endif%}
+    {%if changeset_children %}
+        <dt>Changeset Children</td>
+        {% for changeset in changeset_children %}
+            <dd>
+                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+            </dd>
+        {% endfor %}
+        </dt>
+    {%endif%}
     <dt>Changeset Author</dt>
     <dd>{{changeset_user}}</dd>
     <dt>Changeset Notes</dt>

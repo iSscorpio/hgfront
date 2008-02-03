@@ -35,14 +35,14 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
     project = Project.objects.get(name_short__exact=slug)
     
     try:
-        changeset_child = repo.get_next_changeset(changeset)[0]
+        changeset_children = repo.get_next_changeset(changeset)
     except:
-        changeset_child = 'None'
+        changeset_children = 'None'
         
     try:
-        changeset_parent = repo.get_previous_changeset(changeset)[0]
+        changeset_parents = repo.get_previous_changeset(changeset)
     except:
-        changeset_parent = 'None'
+        changeset_parents = 'None'
     
     return render_to_response('repos/repo_detail.html',
         {
@@ -53,8 +53,8 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
             'changeset_notes': repo.get_changeset(changeset).description(),
             'changeset_files': repo.get_changeset(changeset).files(),
             'changeset_number': repo.get_changeset_number(changeset),
-            'changset_parent': changeset_parent,
-            'changset_child': changeset_child,
+            'changeset_parents': changeset_parents,
+            'changeset_children': changeset_children,
             'project': project,
             'repo': repo
         }, context_instance=RequestContext(request)
