@@ -93,7 +93,9 @@
                     {% endfor %}
                 </tbody>
             </table>
-            <a href="{% url issue-list project.name_short %}">view all issues for this project</a>
+            <a href="{% url issue-list project.name_short %}">view all issues for this project</a><br/>
+            <a href="{% url issue-list project.name_short %}?completed=no">view live issues for this project</a><br/>
+            <a href="{% url issue-list project.name_short %}?completed=yes">view completed issues for this project</a>
         {% else %}
             <h4>This project has no issues, yay!</h4>
         {% endif %}
