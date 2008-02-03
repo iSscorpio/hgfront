@@ -1,6 +1,6 @@
 # General Libraries
 from mercurial import hg, ui, hgweb
-import datetime, os
+import datetime, os, string
 from time import strftime
 # Django Libraries
 from django.core.urlresolvers import reverse
@@ -68,7 +68,7 @@ def create_project_form(request):
                 return render_to_response('project/project_create_step_2.html',
                     {
                         'form':form2,
-                        'name_short':form.cleaned_data['name_short'],
+                        'name_short':string.lower(form.cleaned_data['name_short']),
                         'user_owner':request.user.username
                     }, context_instance=RequestContext(request)
                 )
@@ -83,7 +83,7 @@ def create_project_form(request):
             form = NewProjectStep2(request.POST)
             if form.is_valid():
                 project = Project(
-                    name_short = form.cleaned_data['name_short'],
+                    name_short = string.lower(form.cleaned_data['name_short']),
                     name_long = form.cleaned_data['name_long'],
                     description_short = form.cleaned_data['description_short'],
                     description_long = form.cleaned_data['description_long'],
