@@ -1,0 +1,8 @@
+Email from {{hgf_site_name}}
+
+{{email_intro}}
+
+======================================================================
+
+Project Name: {{project_name}}
+Project Description: {{project_desription}}

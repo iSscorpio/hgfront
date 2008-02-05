@@ -215,6 +215,7 @@ class Project(models.Model):
 dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_project_dir, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_hgwebconfig, signal=signals.post_save, sender=Project )
+dispatcher.connect( send_email_to_owner, signal=signals.post_save, sender=Project )
 dispatcher.connect( create_wikipage, signal=signals.post_save, sender=Project )
 dispatcher.connect( delete_project_dir, signal=signals.post_delete, sender=Project )
 

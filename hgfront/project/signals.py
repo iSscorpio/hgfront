@@ -2,7 +2,10 @@
 import datetime, sys, os, shutil
 # Django Libraries
 from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
 from django.template import Context, loader
+from django.template.loader import render_to_string
 # Project Libraries
 
 def create_default_permission_set(sender, instance, signal, *args, **kwargs):
@@ -59,3 +62,29 @@ def create_wikipage(sender, instance, signal, *args, **kwargs):
     if created:
         page.content = "This is the main wiki page for this project, write something here!"
         page.save()
+
+def send_email_to_owner(sender, instance, signal, *args, **kwargs):
+	"""Send the project owner a reminder email about their project"""
+	from hgfront.project.models import Project
+	try:
+		owner = instance.user_owner
+		email_intro = "This email is from hgfront to advise you of the project you have created."
+
+		email_body = render_to_string("project/email/project_created.txt",
+			{
+				'email_intro': email_intro,
+				'project_name': instance.name_long,
+				'project_short_name': instance.name_short,
+				'project_desription': instance.description_short
+	        }
+        )
+    
+		email = EmailMessage(instance.name_long, email_body, 'noreply@testing.com', [owner.email])
+		try:
+			email.send()
+		except:
+			pass
+	except User.DoesNotExist:
+		pass
+	else:
+		print "Email sent to %s" % owner.email
