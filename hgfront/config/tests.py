@@ -1,8 +1,10 @@
+"""
 from django.db import models
 from django import test
 from django.utils.functional import curry
 
 import hgfront.config
+from hgfront import config as dbsettings
 from hgfront.config import loading, views
 
 # Set up some settings to test
@@ -174,3 +176,4 @@ class SettingsTestCase(test.TestCase):
         # And the data submitted should be immediately available in Python
         self.assertEqual(Editable.settings.integer, 4)
         self.assertEqual(Editable.settings.string, 'Success!')
+"""
