@@ -89,39 +89,13 @@ def repo_create(request, slug):
         }, context_instance=RequestContext(request)
     )
 
-def create_hgrc(project_name, repo_name):
-    """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
-    repo = Repo.objects.get(repo_dirname__exact=repo_name)
-    c = User.objects.get(username__exact=repo.repo_contact)
-       
-    hgrc = open(os.path.join(repo.repo_directory(), '.hg/hgrc'), 'w')
-    hgrc.write('[paths]\n')
-    hgrc.write('default = %s\n\n' % repo.default_path)
-    hgrc.write('[web]\n')
-    hgrc.write('style = %s\n' % repo.hgweb_style)
-    hgrc.write('description = %s\n' % repo.description_short)
-    hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
-    a = 'allow_archive = '
-    if repo.offer_zip:
-        a += 'zip '
-    if repo.offer_tar:
-        a += 'gz '
-    if repo.offer_bz2:
-        a += 'bz2'
-    hgrc.write(a + '\n\n')
-#    hgrc.write('[extensions]\n')
-#    for e in repo.active_extensions.all():
-#        hgrc.write('hgext.%s = \n' % e.short_name)
-    hgrc.close()
-    return True
-
-
 @check_project_permissions('add_repos')
 def repo_manage(request, slug, repo_name):
-    if bool(create_hgrc(slug, repo_name)):
-        HttpResponse('Created')
+    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    if repo.create_hgrc():
+        return HttpResponse('Created')
     else:
-        HttpResponse('Failed')
+        return HttpResponse('Failed')
     
 #def local_clone(request, slug, repo_name):
 #    if request.method = "POST":

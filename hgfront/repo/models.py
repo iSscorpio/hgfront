@@ -63,6 +63,31 @@ class Repo(models.Model):
     
     def repo_directory(self):
         return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
+
+    def create_hgrc(self):
+        """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
+        repo = self
+        c = self.repo_contact
+        hgrc = open(os.path.join(repo.repo_directory(), '.hg/hgrc'), 'w')
+        hgrc.write('[paths]\n')
+        hgrc.write('default = %s\n\n' % repo.default_path)
+        hgrc.write('[web]\n')
+        hgrc.write('style = %s\n' % repo.hgweb_style)
+        hgrc.write('description = %s\n' % repo.description_short)
+        hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
+        a = 'allow_archive = '
+        if repo.offer_zip:
+            a += 'zip '
+        if repo.offer_tar:
+            a += 'gz '
+        if repo.offer_bz2:
+            a += 'bz2'
+        hgrc.write(a + '\n\n')
+#    hgrc.write('[extensions]\n')
+#    for e in repo.active_extensions.all():
+#        hgrc.write('hgext.%s = \n' % e.short_name)
+        hgrc.close()
+        return True
     
     def get_branches(self):
         u = ui.ui()  # get a ui object
