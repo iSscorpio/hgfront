@@ -12,3 +12,4 @@ all-wcprops
 *.html~
 *.py~
 *.orig
+*.db
