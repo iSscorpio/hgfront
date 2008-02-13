@@ -16,6 +16,11 @@ from hgfront.project.models import Project, ProjectPermissionSet, ProjectNews
 from hgfront.project.decorators import check_project_permissions
 from hgfront.issue.models import Issue
 
+# Experimental Caching stuff
+from django.core.cache import cache
+CACHE_EXPIRES = 5 * 60 # 5 minutes
+# End caching stuff
+
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
     project_news = ProjectNews.objects.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
@@ -29,6 +34,12 @@ def get_project_list(request):
 
 @check_project_permissions('view_project')
 def get_project_details(request, slug):
+    #cache_key = "hgfrontcache%s" % slug
+    #object_list = cache.get(cache_key)
+    #if not object_list:
+    #    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
+    #    cache.set(cache_key, project, CACHE_EXPIRES)
+
     project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
     

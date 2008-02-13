@@ -25,14 +25,21 @@ def create_project_backup(request, slug, format='tar'):
     if format == 'tar':
         import tarfile
         # Open the tar file
-        filepath = str(os.path.join(Project.project_options.backups_directory, slug + "_backup_" + str(strftime("%Y.%m.%d.%H.%M.%S")) + ".tar.gz"))
+        filename = slug + "_backup_" + str(strftime("%Y.%m.%d.%H.%M.%S")) + ".tar.gz"
+        filepath = str(os.path.join(Project.project_options.backups_directory, filename))
         tar = tarfile.open(filepath, "w:gz")
         for item in contents:
             tar.add(item)
         tar.close()
         made = 'tar'
     
-    backup = ProjectBackup(parent_project=project, format=made, created=datetime.datetime.now(), file_path=filepath)
+    backup = ProjectBackup(parent_project=project, format=made, created=datetime.datetime.now(), file_path=filepath, file_name=filename)
     backup.save()
     
     return HttpResponseRedirect(project.get_absolute_url())
+
+@login_required
+def download_project_backup( request, slug, backup_id ):
+    project = Project.objects.get( name_short__exact=slug )
+    backup = ProjectBackup.objects.get( pk=backup_id )
+    return HttpResponse( open( backup.file_path ) )

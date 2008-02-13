@@ -10,6 +10,7 @@ class ProjectBackup(models.Model):
     created=models.DateTimeField()
     expires=models.DateTimeField(null=True,blank=True)
     file_path = models.TextField()
+    file_name = models.CharField(max_length=255)
     
     class Admin:
         pass

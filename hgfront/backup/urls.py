@@ -5,4 +5,5 @@ from django.conf.urls.defaults import *
 urlpatterns = patterns('hgfront.backup.views',
     url('^$','create_project_backup', name='default-backup'),
     url('^(?P<format>[-\w]+)/$', 'create_project_backup', name='selected-backup'),
+	url('^download/(?P<backup_id>[-\d]+)/$', 'download_project_backup', name='download-backup'),
 )
