@@ -19,8 +19,12 @@ class HGFTestCase(TestCase):
     set to True, it will perform the tests as an anonymous user"""
     anonymous = False
     fixtures = ['data.json']
-    username = 'test_admin'
-    password = 'test_admin'
+    user = 'test_admin'
+    passwords = {
+        'test_admin':'test_admin',
+        'charles':'charles',
+        'johnny':'johnny',
+    }
     def setUp(self):
         """
         The set up here makes the test use the repository and backup directory specified
@@ -36,29 +40,81 @@ class HGFTestCase(TestCase):
         repo_backup_setting.value = my_backup_dir
         repo_dir_setting.save()
         repo_backup_setting.save()
+
         if not self.anonymous:
-            self.client.login(username=self.username, password=self.password)
+            self.client.login(username=self.user, password=self.passwords[self.user])
 
 class ProjectTestCase(HGFTestCase):
     """ A test case for testing project related stuff """
     def test_project_list_view(self):
+        """ Tests the project list view """
+        expected = {
+            'status_code':200,
+            'template_used':'project/project_list.html',
+        }
         response = self.client.get(reverse('project-list'))
-
-        self.assert_(response.status_code, 200)
-        self.assertTemplateUsed(response, 'project/project_list.html')
+        self.assert_(response.status_code == expected['status_code'])
+        self.assertTemplateUsed(response, expected['template_used'])
     
     def test_project_detail_view(self):
-        project = Project.objects.get(name_short='manhattan')
-        response = self.client.get(project.get_absolute_url())
-
-        self.assert_(response.status_code, 200)
-        self.assertTemplateUsed(response, 'project/project_detail.html')
+        expected = {
+            'project':Project.objects.get(name_short='manhattan'),
+            'status_code':200,
+            'template_used':'project/project_detail.html'
+        }
+        response = self.client.get(expected['project'].get_absolute_url())
+        self.assert_(response.status_code == expected['status_code'])
+        self.assertTemplateUsed(response, expected['template_used'])
         #using context[0] here because for some strange reason, the test
         #gets a list of 6 identical contexts. TODO: find out wtf
-        self.assertEquals(response.context[0]['project'], project)
+        self.assertEquals(response.context[0]['project'], expected['project'])
 
 class AnonymousProjectTestCase(ProjectTestCase):
-    """ This is like the ProjectTestCase test case only it does the testing
+    """ This is like the ProjectTestCase test case only it does the testingd
     with an anonymous user, whereas ProjectTestCase does the tests with a 
     logged in user"""
     anonymous = True
+
+class SecretProjectTestCase(HGFTestCase):
+    """ This tests stuff against the project that has minimal permissions enabled """
+    project_used = Project.objects.get(name_short='secret_project')
+
+    def test_unauthorized_403(self):
+        """ An unauthorized but logged in user should get a 403 error """
+        expected = {
+            'status_code':403,
+            'template_used':'403.html',
+        }
+        response = self.client.get(self.project_used.get_absolute_url())
+        self.assert_(response.status_code == expected['status_code'])
+        self.assertTemplateUsed(response, expected['template_used'])
+
+    def test_anonymouse_403(self):
+        """ An anonymous user should get a 403 error """
+        expected = {
+            'status_code':403,
+            'template_used':'403.html',
+        }
+        self.client.logout()
+        response = self.client.get(self.project_used.get_absolute_url())
+        self.client.login(username=self.user, password=self.passwords[self.user])
+        self.assert_(response.status_code == expected['status_code'])
+        self.assertTemplateUsed(response, expected['template_used'])
+    
+    def test_authorized_200(self):
+        """ An authorized user should get a 200 response code """
+        expected = {'status_code':200,}
+        authorized_username = 'charles'
+        self.client.login(username=authorized_username, password=self.passwords[authorized_username])
+        response = self.client.get(self.project_used.get_absolute_url())
+        self.assert_(response.status_code == expected['status_code'])
+        self.client.login(username=self.user, password=self.passwords[self.user])
+    
+    def test_admin_200(self):
+        """ The admin should be able to view the project and get a 200 response code """
+        expected = {'status_code':200,}
+        authorized_username = 'johnny'
+        self.client.login(username=authorized_username, password=self.passwords[authorized_username])
+        response = self.client.get(self.project_used.get_absolute_url())
+        self.assert_(response.status_code == expected['status_code'])
+        self.client.login(username=self.user, password=self.passwords[self.user])
