@@ -9,7 +9,7 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 # Project Libraries
-import hgfront.config
+from hgfront.core.configs import RepoOptions
 from hgfront.repo import signals as hgsignals
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
@@ -143,6 +143,8 @@ class Repo(models.Model):
 
     class Meta:
         unique_together=('parent_project','name_short')
+
+    repo_options = RepoOptions()
 
 
 # Dispatchers

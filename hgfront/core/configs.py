@@ -12,6 +12,17 @@ class ProjectOptions(config.Group):
     backups_directory = config.StringValue("The location of your backups")
     backups_max_days = config.PositiveIntegerValue("The number of days to beek backups (0 for forever)")
 
+AVAILABLE_STYLES = (
+    ('default', 'Default'),
+    ('gitweb', 'Gitweb'),
+)
+
+class RepoOptions(config.Group):
+    """
+    Repo options
+    """
+    default_style = config.StringValue("Default style for repositories", choices=AVAILABLE_STYLES) 
+
 class IssueOptions(config.Group):
     """
     This is the Project Option group.  These options are global can can be used in any file
