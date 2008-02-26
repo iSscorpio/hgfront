@@ -1,6 +1,7 @@
 # General Libraries
 import datetime, sys, os, shutil
 from mercurial.cmdutil import revrange, show_changeset
+from mercurial.node import nullid
 # Django Libraries
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -111,15 +112,15 @@ class Repo(models.Model):
         
     def get_previous_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        c = r.changectx(changeset).parents() # get a context object for the "tip" revision
-        return c
+        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        changesets = repository.changectx(changeset).parents() # get a context object for the "tip" revision
+        return [str(changeset) for changeset in changesets if changeset.node() != nullid]
         
     def get_next_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        c = r.changectx(changeset).children() # get a context object for the "tip" revision
-        return c
+        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        changesets = repository.changectx(changeset).children() # get a context object for the "tip" revision
+        return [str(changeset) for changeset in changesets if changeset.node() != nullid]
         
     def get_tags(self):
         u = ui.ui()  # get a ui object

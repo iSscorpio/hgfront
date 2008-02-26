@@ -3,6 +3,7 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+hgfrontdb
 *.txt~
 format
 entries
