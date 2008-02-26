@@ -100,15 +100,15 @@ class Repo(models.Model):
     
     def get_changeset_number(self, changeset='tip'):
         u = ui.ui()
-        r = hg.repository(u, self.repo_directory())
-        c = r.changectx(changeset).rev()
-        return c
+        repository = hg.repository(u, self.repo_directory())
+        changeset = repository.changectx(changeset).rev()
+        return changeset
         
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        c = r.changectx(changeset) # get a context object for the "tip" revision
-        return c
+        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+        changeset = repository.changectx(changeset) # get a context object for the "tip" revision
+        return changeset
         
     def get_previous_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
