@@ -1,4 +1,5 @@
 {% extends "project/project_list.html" %}
+{% load core_templatetags %}
 
 {% block title %}{{block.super}} Project details for {{project.name_long}} ({{project.name_short}}){% endblock %}
 
@@ -126,7 +127,6 @@
 {% endblock %}
 
 {% block sidebar %}
-	{% load project_templatetags %}
 	{% menubox project.name_long %}
         <ul>
             {% if permissions.add_repos %} 
