@@ -9,7 +9,7 @@ from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 from django.template.defaultfilters import slugify
 # Project Libraries
-import hgfront.config
+from hgfront.core.configs import IssueOptions
 from hgfront.issue.signals import *
 from hgfront.project.models import Project
 from hgfront.repo.models import Repo
@@ -121,14 +121,6 @@ class IssueManager(models.Manager):
             return getattr(self.__class__, attr, *args)
         except AttributeError:
             return getattr(self.get_query_set(), attr, *args)
-
-class IssueOptions(hgfront.config.Group):
-    """
-    This is the Project Option group.  These options are global can can be used in any file
-    where the Project model is imported.
-    """
-    issues_per_page = hgfront.config.PositiveIntegerValue("Default number of issues per page")
-    issue_from_email = hgfront.config.StringValue("Email address to have issues come from.")
 
 class Issue(models.Model):
     """A class that represents an issue/bug"""
