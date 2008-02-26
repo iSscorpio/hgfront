@@ -126,7 +126,8 @@
 {% endblock %}
 
 {% block sidebar %}
-    <span class="group">Your Options for {{project.name_long}}</span>
+	{% load project_templatetags %}
+	{% menubox project.name_long %}
         <ul>
             {% if permissions.add_repos %} 
                 <li><a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a></li>
@@ -172,5 +173,6 @@
                 {% endfor %}
             </ul>
         {% endif %}
-    {% endwith %}
+		{% endwith %}
+	{% endmenubox %}
 {% endblock %}

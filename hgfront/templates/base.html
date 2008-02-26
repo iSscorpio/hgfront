@@ -4,6 +4,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>{% block title %}{{hgf_site_name}}{% endblock %}</title>
+    <link rel="stylesheet" href="/hgfront/static/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/hgfront/static/blueprint/print.css" type="text/css" media="print">    
+    <!--[if IE]>
+        <link rel="stylesheet" href="/hgfront/static/blueprint/ie.css" type="text/css" media="screen, projection">
+    <![endif]-->
     <link rel="stylesheet" type="text/css" href="/hgfront/static/style.css" />
     <script type="text/javascript" src="/hgfront/static/js/jquery.js"></script>
     <script type="text/javascript" src="/hgfront/static/js/hgfront.js"></script>
@@ -12,7 +17,7 @@
 <body>
     <div class="container">
     
-        <div class="column span-24" id="toolbar">
+        <div class="span-24" id="toolbar">
             <span class="userbar">
                 {% if hgf_logged_in_user %}
                     {{hgf_logged_in_user}} (<a href="/hgfront/logout/">Logout</a>)
@@ -28,11 +33,11 @@
         </div>
 
     
-        <div class="column span-24" id="header">
+        <div class="span-24" id="header">
                 <h1>{{hgf_site_name}}</h1>
         </div>
         
-        <div class="column span-24" id="breadcrumbs">
+        <div class="span-24" id="breadcrumbs">
             <ul>
                 {% block breadcrumbs %}
                     <li class="home"><a href="/hgfront/projects/">Home</a></li>            
@@ -42,26 +47,25 @@
         
         {% if messages %}
             {% for message in messages %}
-                <div class="column span-24" id="message">
+                <div class="span-24" id="message">
                     {{message}}
                 </div>
             {% endfor %}
         {% endif %}
         
-        <div class="column span-16" id="content">
+        <div class="span-16" id="content">
             <h2>{% block content_title %}Content title{% endblock content_title %}</h2>
             {% block main_content %}{% endblock main_content %}
         </div>
         
-        <div class="column span-8 last" id="sidebar">
+        <div class="span-8 last" id="sidebar">
              {% include "elements/search_form.html" %}
-             {% include "elements/side_stats.html" %}
-             {% include "elements/random_project.html" %}
-              
-            {% block sidebar %}{% endblock sidebar %}
+			 {% block sidebar %}
+				{% include "elements/side_stats.html" %}
+			 {% endblock sidebar %}
         </div>
         
-        <div class="column span-24" id="footer">
+        <div class="span-24" id="footer">
                 {% block footer %}{% endblock footer %}
         </div>
         

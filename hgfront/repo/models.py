@@ -57,10 +57,10 @@ class Repo(models.Model):
             })
     get_absolute_url = permalink(get_absolute_url)
     
-    def was_cloned(self):
+    def is_cloned(self):
         """Checks to see if this was a cloned repositories"""
         return bool(self.creation_method == '2')
-    was_cloned.short_description = "Cloned Repository?"
+    is_cloned.short_description = "Cloned Repository?"
     
     def repo_directory(self):
         return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
@@ -135,7 +135,7 @@ class Repo(models.Model):
                   #('Active Extentions', {'fields': ('active_extensions',)}),
                   ('Date information', {'fields': ('pub_date',)}),
         )
-        list_display = ('name_long', 'parent_project', 'was_cloned', 'pub_date',)
+        list_display = ('name_long', 'parent_project', 'is_cloned', 'pub_date',)
         list_filter = ['pub_date', 'parent_project',]
         search_fields = ['name_long', 'parent_project']
         date_hierarchy = 'pub_date'

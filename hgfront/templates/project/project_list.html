@@ -47,10 +47,12 @@
 {% endblock %}
 
 {% block sidebar %}
-<span class="group">Your Options</span>
-    {% if user.is_authenticated %}
-    <ul>
-        <li><a href="{% url project-create project.name_short %}" class="link-create-project">Create New Project</a></li>
-    </ul>
-    {% endif %}
+	{% load project_templatetags %}
+	{% menubox "Your Options" %}
+	    {% if user.is_authenticated %}
+			<ul>
+				<li><a href="{% url project-create project.name_short %}" class="link-create-project">Create New Project</a></li>
+			</ul>
+			{% endif %}
+	{% endmenubox %}
 {% endblock %}

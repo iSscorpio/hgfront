@@ -1,16 +1,26 @@
-# General Libraries
-# Django Libraries
-from django import template
-# Project Libraries
-from hgfront.project.models import Project
+from django.template import Library, Node, TemplateSyntaxError
 
-register = template.Library()
+register = Library()
 
-@register.inclusion_tag("project/tags/list_all_projects.html")
-def list_all_projects(limit=0):
-    """This will list all public projects.  Takes an optional limiter"""
-    if limit == 0:
-        projects = Project.objects.all().filter(private__exact=0).distinct()
-    else:
-        projects = Project.objects.all().filter(private__exact=0).distinct()[:limit]
-    return {'projects': projects, 'limit': limit}
+def do_menubox(parser, token):
+    nodelist = parser.parse(('endmenubox',))
+    parser.delete_first_token()
+    try:
+        tag_name, title = token.split_contents()
+    except ValueError:
+        raise TemplateSyntaxError, "%r tag requires exactly two arguments" % \
+              token.contents.split()[0]
+    return MenuboxNode(nodelist, parser.compile_filter(title))
+
+register.tag('menubox', do_menubox)
+
+class MenuboxNode(Node):
+    
+    def __init__(self, nodelist, title):
+        self.nodelist = nodelist
+        self.title = title
+        
+    def render(self, context):
+        title = self.title.resolve(context)
+        output = self.nodelist.render(context)
+        return '''<div class="box"><div class="box-outer"><div class="box-inner"><h2>%s</h2>%s</div></div></div>''' % (title, output)

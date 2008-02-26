@@ -1,4 +1,6 @@
-<h3>Site Statistics</h3>
+{% load project_templatetags %}
+
+{% menubox "Site Statistics" %}
 <dl>
     <dt>Total Number of Projects</dt>
     <dd>{{hgf_num_projects}}</dd>
@@ -12,3 +14,4 @@
     <dt>Total Repos added in last 24 hours</dt>
     <dd>{{hgf_num_repos_last_24_hours}}</dd>
 </dl>
+{% endmenubox %}
