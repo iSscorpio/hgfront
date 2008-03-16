@@ -28,6 +28,8 @@ def member_register(request):
                     )
             member = Member(member_user = user, member_homepage = 'http://digitalspaghetti.me.uk')
             member.save()
+            new_user = auth.authenticate(username=form.cleaned_data['member_username'], password=form.cleaned_data['member_password'])
+            auth.login(request, new_user)
             return HttpResponseRedirect(reverse('project-list'))
             
     else:
