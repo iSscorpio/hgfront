@@ -16,3 +16,6 @@ class MemberRegisterForm(forms.Form):
 class MemberLoginForm(forms.Form):
     member_username = forms.CharField(max_length=25)
     member_password = forms.CharField(widget=forms.PasswordInput)
+    
+class MemberPasswordResetForm(forms.Form):
+    member_email = forms.EmailField()

@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 # Project Libraries
-from hgfront.member.forms import MemberRegisterForm, MemberLoginForm
+from hgfront.member.forms import MemberRegisterForm, MemberLoginForm, MemberPasswordResetForm
 from hgfront.member.models import Member
 from hgfront.project.models import Project
 # Create your views here.
@@ -26,7 +26,7 @@ def member_register(request):
                     email = form.cleaned_data['member_email'],
                     password = form.cleaned_data['member_password']
                     )
-            member = Member(member_user = user, member_homepage = 'http://digitalspaghetti.me.uk')
+            member = Member(member_user = user, member_displayname = form.cleaned_data['member_real_name'])
             member.save()
             new_user = auth.authenticate(username=form.cleaned_data['member_username'], password=form.cleaned_data['member_password'])
             auth.login(request, new_user)
@@ -78,3 +78,16 @@ def member_home(request):
          'user_projects_owns': user_projects_owns
         }, context_instance=RequestContext(request)
     )
+
+def member_password(request):
+    if request.method == 'POST':
+        print "moo"
+    else:
+        form = MemberPasswordResetForm()
+    return render_to_response('member/password_reset.html',
+        {
+         'form': form
+        }, context_instance=RequestContext(request)
+    )
+        
+    
