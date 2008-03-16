@@ -18,5 +18,10 @@ class Member(models.Model):
     def __unicode__(self):
         return self.member_user.username
     
+    @permalink
+    def get_absolute_url(self):
+        """Creates a permalink to the project page"""
+        return ('member-home', (), {})
+    
     class Admin:
         pass

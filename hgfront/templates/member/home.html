@@ -8,17 +8,23 @@
 
 {% block main_content %}
 
-    <h3>Project that belong to you</h3>
+    <h3>Project that belong to you {{member.member_real_name}}</h3>
 	<table>
 		<thead>
 			<tr>
 				<th>Project Name</th>
+				<th># Repos</th>
+				<th># Members</th>
+				<th># Waiting Members</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for project in user_projects_owns %}
 				<tr>
 					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
+					<td>{{project.num_repos}}</td>
+					<td>{{project.members.count}}</td>
+					<td>{{project.aspiring_members.count}}</td>
 				</tr>
 			{% endfor %}
 		</tbody>

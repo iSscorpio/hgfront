@@ -70,11 +70,13 @@ def member_logout(request):
 
 def member_home(request):
     user = auth.get_user(request)
+    member = Member.objects.get(member_user = user)
     
     user_projects_owns = Project.objects.filter(user_owner__exact = user)
     return render_to_response('member/home.html',
         {
          'user': user,
+         'member': member,
          'user_projects_owns': user_projects_owns
         }, context_instance=RequestContext(request)
     )
