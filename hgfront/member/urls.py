@@ -6,4 +6,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('hgfront.member.views',
     url('^register/$','member_register', name='member-register'),
+    url('^login/$','member_login', name='member-login'),
+    url('^logout/$','member_logout', name='member-logout'),
+    url('^home/$','member_home', name='member-home'),
 )
