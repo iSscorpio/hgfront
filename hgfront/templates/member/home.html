@@ -9,14 +9,19 @@
 {% block main_content %}
 
     <h3>Project that belong to you</h3>
-	{% for project in user_projects_owns %}
-    <dl id="project-details">
-        <dt>Project Name</dt>
-        <dd>{{project.name_long}}</dd>
-        <dt>Project Owner</dt>
-        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
-        <dt>Project Description</dt>
-        <dd>{{project.description_long}}</dd>
-    </dl>
- 	{% endfor %}
+	<table>
+		<thead>
+			<tr>
+				<th>Project Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for project in user_projects_owns %}
+				<tr>
+					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<h3>Issues assigned to you</h3>
 {% endblock %}
