@@ -20,9 +20,12 @@
         <div class="span-24" id="toolbar">
             <span class="userbar">
                 {% if hgf_logged_in_user %}
-                    {{hgf_logged_in_user}} (<a href="/hgfront/logout/">Logout</a>)
+                    {{hgf_logged_in_user}} (
+						<a href="/hgfront/member/logout/">Logout</a>
+						{% if user.is_staff %} | <a href="/admin/">Admin</a> {% endif %}
+						)
                 {% else %}
-                    <a href="/hgfront/login/">Login</a> / <a href="/hgfront/registration/register/" class="link-create-user">Register</a>
+                    <a href="/hgfront/member/login/">Login</a> / <a href="/hgfront/member/register/" class="link-create-user">Register</a>
                 {% endif %}
             </span>
             

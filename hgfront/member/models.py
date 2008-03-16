@@ -11,7 +11,7 @@ class Member(models.Model):
     member_homepage = models.URLField()
     
     def __unicode__(self):
-        return self.user
+        return self.member_user.username
     
     class Admin:
         pass

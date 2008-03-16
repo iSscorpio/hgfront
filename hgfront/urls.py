@@ -10,8 +10,6 @@ urlpatterns = patterns('',
 	url(r'^config/', include('hgfront.config.urls')),
 	url(r'^member/',include('hgfront.member.urls')),
 	url(r'^search/', include('hgfront.search.urls')),
-	url(r'^login/$', auth_views.login, {'template_name': 'member/login.html'}, name='auth_login'),
-	url(r'^logout/$', auth_views.logout, {'template_name': 'member/logout.html'}, name='auth_logout'),
 )
 #static content
 urlpatterns += patterns('',
