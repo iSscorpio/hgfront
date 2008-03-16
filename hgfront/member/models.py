@@ -7,8 +7,13 @@ from django.dispatch import dispatcher
 # Create your models here.
 
 class Member(models.Model):
-    member_user = models.ForeignKey(User)
-    member_homepage = models.URLField()
+    member_user = models.ForeignKey(User, unique=True)
+    member_displayname = models.CharField(max_length=25)
+    member_homepage = models.URLField(blank = True, null = True)
+    member_gtalk = models.CharField(max_length = 50, blank = True, null = True)
+    member_msn = models.CharField(max_length = 50, blank = True, null = True)
+    member_jabber = models.CharField(max_length = 50, blank = True, null = True)
+    member_bio = models.TextField()
     
     def __unicode__(self):
         return self.member_user.username
