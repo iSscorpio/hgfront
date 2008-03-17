@@ -11,4 +11,5 @@ urlpatterns = patterns('hgfront.member.views',
     url('^home/$','member_home', name='member-home'),
     url('^passwordreset/$','member_password', name='member-password'),
     url('^verifyusername/$','member_verifyusername', name='member-verifyusername'),
+    url('^verifyuseremail/$','member_verifyuseremail', name='member-verifyuseremail'),
 )

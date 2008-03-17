@@ -18,7 +18,8 @@
 				},
 				member_email : {
 					required: true,
-					email: true
+					email: true,
+					remote: "/hgfront/member/verifyuseremail/"
 				},
 				member_password : {
 					required: true
@@ -35,6 +36,10 @@
 				member_username: {
 					required: "Enter a username",
 					minlength: jQuery.format("Enter at least {0} characters"),
+					remote: jQuery.format("{0} is already in use")
+				},
+				member_email: {
+					required: "Enter a valid email",
 					remote: jQuery.format("{0} is already in use")
 				}
 			}

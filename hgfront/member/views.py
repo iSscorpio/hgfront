@@ -103,3 +103,15 @@ def member_verifyusername(request):
         return HttpResponse('false')
     else:
         return HttpResponse('true')
+    
+def member_verifyuseremail(request):
+    member_email = request['member_email']  
+    try:
+        check = User.objects.get(email__exact=member_email)
+    except User.DoesNotExist:
+        check = False
+    
+    if check:
+        return HttpResponse('false')
+    else:
+        return HttpResponse('true')
