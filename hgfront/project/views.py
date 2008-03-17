@@ -171,3 +171,15 @@ def add_project_news(request, slug):
                 'form':form
             }, context_instance=RequestContext(request)
         )
+
+def project_verifyprojectshortname(request):
+    name_short = request['name_short']  
+    try:
+        check = Project.objects.get(name_short__exact=name_short)
+    except Project.DoesNotExist:
+        check = False
+    
+    if check:
+        return HttpResponse('false')
+    else:
+        return HttpResponse('true')

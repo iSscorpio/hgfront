@@ -6,8 +6,32 @@
 {% block breadcrumbs %}{{block.super}}<li class="project-add">&raquo; <a href="{% url project-create %}">New project</a></li>{% endblock %}
 
 {% block main_content %}
+	<script type="text/javascript" src="/hgfront/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#project-create-step-1').validate({
+				rules : {
+					name_short : {
+						required: true,
+						minlength: 4,
+						maxlength: 25,
+						remote: '/hgfront/projects/verifyprojectshortname/'
+					}
+				},
+				messages : {
+					name_short : {
+						required: 'A short name for project is required.',
+						minlength: jQuery.format("Enter at least {0} characters"),
+						remote: jQuery.format("{0} is already in use")
+					}
+				}
+			});
+		});
+	</script>
+
+
 	{{fail}}
-    <form action="{% url project-create %}" method="post">
+    <form id="project-create-step-1" action="{% url project-create %}" method="post">
         <ul>
             <li>
                 {{form.name_short.errors}}

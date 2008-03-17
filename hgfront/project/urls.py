@@ -8,6 +8,7 @@ from django.views.generic.simple import direct_to_template
 # Generic Patterns
 urlpatterns = patterns('hgfront.project.views',
     url(r'^$', 'get_project_list', name="project-list"),
+    url(r'^verifyprojectshortname/$','project_verifyprojectshortname', name='project-verifyprojectshortname'),
     url(r'^create/$', 'create_project_form', name="project-create"),
     url(r'^(?P<slug>[-\w]+)/$', 'get_project_details', name="project-detail"),
     url(r'^(?P<slug>[-\w]+)/process_join_request/$', 'process_join_request', name="project-process-join-request"),
