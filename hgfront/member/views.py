@@ -92,4 +92,14 @@ def member_password(request):
         }, context_instance=RequestContext(request)
     )
         
+def member_verifyusername(request):
+    member_username = request['member_username']  
+    try:
+        check = User.objects.get(username__exact=member_username)
+    except User.DoesNotExist:
+        check = False
     
+    if check:
+        return HttpResponse('false')
+    else:
+        return HttpResponse('true')

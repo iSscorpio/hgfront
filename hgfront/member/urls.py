@@ -10,4 +10,5 @@ urlpatterns = patterns('hgfront.member.views',
     url('^logout/$','member_logout', name='member-logout'),
     url('^home/$','member_home', name='member-home'),
     url('^passwordreset/$','member_password', name='member-password'),
+    url('^verifyusername/$','member_verifyusername', name='member-verifyusername'),
 )

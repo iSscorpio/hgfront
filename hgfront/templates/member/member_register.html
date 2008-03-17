@@ -4,14 +4,47 @@
 {% block main_content %}
 
 <script type="text/javascript" src="/hgfront/static/js/jquery.pstrength.js"></script>
+<script type="text/javascript" src="/hgfront/static/js/jquery.validate.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
+		$('#member-register').validate({
+			debug: true,
+			rules: {
+				member_username : {
+					required: true,
+					minlength: 4,
+					maxlength: 25,
+					remote: "/hgfront/member/verifyusername/"
+				},
+				member_email : {
+					required: true,
+					email: true
+				},
+				member_password : {
+					required: true
+				},
+				member_verify_password : {
+					required: true,
+					equalTo: "#member_password"
+				},
+				member_real_name : {
+					required: true
+				}
+			},
+			messages : {
+				member_username: {
+					required: "Enter a username",
+					minlength: jQuery.format("Enter at least {0} characters"),
+					remote: jQuery.format("{0} is already in use")
+				}
+			}
+		});
 		$('#id_member_password').pstrength();
 	});
 </script>
 
 <div class="registration-form">
-	<form action="." method="POST">
+	<form id="member-register" action="." method="POST">
 		<fieldset>
 			<legend>Registration Details</legend>
 		<div class="module aligned">

@@ -37,7 +37,7 @@
     <dt>Changeset Author</dt>
     <dd>{{changeset_user}}</dd>
     <dt>Changeset Notes</dt>
-    <dd>{{changeset_notes}}</dd>
+    <dd>{% autoescape on %}{{changeset_notes}}{% endautoescape %}</dd>
     <dt>Manifest</dt>
     <dd>
         <ul>
