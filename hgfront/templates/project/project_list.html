@@ -37,7 +37,7 @@
 					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
 					<td>{{project.description_short|truncatewords_html:10}}</td>
 					<td>{{project.pub_date|date:"d M Y"}}</td>
-					<td><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></td>
+					<td><a href="{% url member-profile %}/{{project.user_owner}}/">{{project.user_owner}}</a></td>
 				</tr>
 		{% endfor %}
 	</tbody>

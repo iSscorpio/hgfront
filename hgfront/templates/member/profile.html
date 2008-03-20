@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load core_templatetags %}
+
+{% block title %}{{block.super}} {{user}}'s Profile{% endblock %}
+
+{% block content_title %}{{user}}'s Profile{% endblock %}
+{% block breadcrumbs %}{{block.super}} {{user}}'s Profile{% endblock %}
+
+{% block main_content %}
+
+    <h3>Project that belong to {{user}}</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>Project Name</th>
+				<th># Repos</th>
+				<th># Members</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for project in user_projects_owns %}
+				<tr>
+					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
+					<td>{{project.num_repos}}</td>
+					<td>{{project.members.count}}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	<h3>Issues assigned to {{user}}</h3>
+{% endblock %}
