@@ -19,8 +19,8 @@ urlpatterns = patterns('hgfront.project.views',
 
 # Issues
 urlpatterns += patterns('',
-    url(r'^(?P<slug>[-\w]+)/issues/', include('hgfront.issue.urls')),
-    url(r'^(?P<slug>[-\w]+)/repos/', include('hgfront.repo.urls')),
-    url(r'^(?P<slug>[-\w]+)/wiki/',include('hgfront.wiki.urls')),
-    url(r'^(?P<slug>[-\w]+)/backup/', include('hgfront.backup.urls')),
+    url(r'^(?P<slug>[-\w]+)/i/', include('hgfront.issue.urls')),
+    url(r'^(?P<slug>[-\w]+)/r/', include('hgfront.repo.urls')),
+    url(r'^(?P<slug>[-\w]+)/w/',include('hgfront.wiki.urls')),
+    url(r'^(?P<slug>[-\w]+)/b/', include('hgfront.backup.urls')),
 )

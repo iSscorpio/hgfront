@@ -3,8 +3,8 @@
 
 {% block main_content %}
 
-<script type="text/javascript" src="/hgfront/static/js/jquery.pstrength.js"></script>
-<script type="text/javascript" src="/hgfront/static/js/jquery.validate.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.pstrength.js"></script>
+<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function(){
 		$('#member-register').validate({
@@ -14,12 +14,12 @@
 					required: true,
 					minlength: 4,
 					maxlength: 25,
-					remote: "/hgfront/member/verifyusername/"
+					remote: "/m/verifyusername/"
 				},
 				member_email : {
 					required: true,
 					email: true,
-					remote: "/hgfront/member/verifyuseremail/"
+					remote: "/m/verifyuseremail/"
 				},
 				member_password : {
 					required: true
