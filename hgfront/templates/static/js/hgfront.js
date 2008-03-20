@@ -10,7 +10,7 @@ $(function () {
     // options
     var distance = 10;
     var time = 250;
-    var hideDelay = 500;
+    var hideDelay = 200;
 
     var hideDelayTimer = null;
 

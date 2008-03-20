@@ -122,6 +122,16 @@ a.home {
     padding: 5px 0 5px 25px;
 }
 
+.link-open-project {
+    background: url('images/projects/open.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
+.link-join-project {
+    background: url('images/projects/join.png') no-repeat;
+    padding: 5px 0 5px 25px;
+}
+
 /* Forms */
 
 label {
@@ -144,8 +154,12 @@ label {
 .popup {
     position: absolute;
     display: none; /* keeps the popup hidden if no JS available */
-	background: url('images/bg1.png') repeat-x;
-	padding: 10px;
-	border: 2px solid #000;
+	background: url('images/coda-popup.png') no-repeat center center;
+	width: 250px;
+	height: 187px;
+}
+
+.popup-content {
+	padding: 20px 10px;
 }
 

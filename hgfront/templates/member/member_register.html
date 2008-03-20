@@ -14,12 +14,12 @@
 					required: true,
 					minlength: 4,
 					maxlength: 25,
-					remote: "/m/verifyusername/"
+					remote: "{% url member-verifyusername %}"
 				},
 				member_email : {
 					required: true,
 					email: true,
-					remote: "/m/verifyuseremail/"
+					remote: "{% url member-verifyuseremail %}"
 				},
 				member_password : {
 					required: true
