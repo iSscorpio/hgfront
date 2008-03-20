@@ -135,3 +135,17 @@ label {
     background: url('images/help.png') no-repeat 40px;
     border-top: 1px dotted #f00;
 }
+
+/* Coda Popup */
+.bubbleInfo {
+    position: relative;
+}
+
+.popup {
+    position: absolute;
+    display: none; /* keeps the popup hidden if no JS available */
+	background: url('images/bg1.png') repeat-x;
+	padding: 10px;
+	border: 2px solid #000;
+}
+

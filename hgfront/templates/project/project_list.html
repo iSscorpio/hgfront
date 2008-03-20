@@ -22,26 +22,24 @@
 
 
 	{% if projects %}
-	<table>
-	<thead>
-		<tr>
-			<th>Project Name</th>
-			<th>Description</th>
-			<th>Active Since</th>
-			<th>Project Owner</th>
-		</tr>
-	</thead>
-	<tbody>
+	<ul>
 		{% for project in projects %}
-				<tr>
-					<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
-					<td>{{project.description_short|truncatewords_html:10}}</td>
-					<td>{{project.pub_date|date:"d M Y"}}</td>
-					<td><a href="{% url member-profile %}/{{project.user_owner}}/">{{project.user_owner}}</a></td>
-				</tr>
+				<li class="bubbleInfo">
+					<a class="trigger" href="{{project.get_absolute_url}}">{{project.name_long}}</a>
+					<div class="popup">
+						<dl>
+							<dt>Project Description</dt>
+							<dd>{{project.description_short|truncatewords_html:10}}</dd>
+							<dt>Project Owner</dt>
+							<dd><a href="{% url member-profile %}/{{project.user_owner}}/">{{project.user_owner}}</a></dd>
+							<dt>Creation Date</dt>
+							<dd>{{project.pub_date|date:"d M Y"}}</dd>
+						</dl>
+						<a href="{{project.get_absolute_url}}">Open Project</a>
+ 	 				</div>
+				</li>
 		{% endfor %}
-	</tbody>
-	</table>
+	</ul>
 	{% else %}
 		<strong>There are currently no projects on the system.</strong>
 	{% endif %}
