@@ -148,5 +148,5 @@ class Repo(models.Model):
 
 
 # Dispatchers
-dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
-dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
+#dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
+#dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
