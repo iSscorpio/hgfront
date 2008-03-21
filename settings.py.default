@@ -108,3 +108,6 @@ HGFRONT_TEMPLATES_PATH = '/home/alisic/hgfront-working/mysite/hgfront/templates/
 APPEND_SLASH=False
 
 LOGIN_URL = '/login/'
+
+HTPASSWD_FILE = '/path/to/htpasswd'
+

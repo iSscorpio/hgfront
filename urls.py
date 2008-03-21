@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     url(r'^login/', 'django.contrib.auth.views.login', {'template_name':'login.html'}, name='login-screen')
 )
 
+# TODO this should be optional
 from hgfront import htpasswdutils
 htpasswdutils.monkeypatch_user_model()
 
