@@ -6,7 +6,7 @@
 {% block breadcrumbs %}{{block.super}}<li class="project-add">&raquo; <a href="{% url project-create %}">New project</a></li>{% endblock %}
 
 {% block main_content %}
-	<script type="text/javascript" src="/hgfront/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function(){
 			$('#project-create-step-1').validate({
@@ -15,7 +15,7 @@
 						required: true,
 						minlength: 4,
 						maxlength: 25,
-						remote: '/hgfront/projects/verifyprojectshortname/'
+						remote: '/p/verifyprojectshortname/'
 					}
 				},
 				messages : {

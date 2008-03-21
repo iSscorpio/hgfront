@@ -4,14 +4,14 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>{% block title %}{{hgf_site_name}}{% endblock %}</title>
-    <link rel="stylesheet" href="/hgfront/static/blueprint/screen.css" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="/hgfront/static/blueprint/print.css" type="text/css" media="print">    
+    <link rel="stylesheet" href="/static/blueprint/screen.css" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="/static/blueprint/print.css" type="text/css" media="print">    
     <!--[if IE]>
         <link rel="stylesheet" href="/hgfront/static/blueprint/ie.css" type="text/css" media="screen, projection">
     <![endif]-->
-    <link rel="stylesheet" type="text/css" href="/hgfront/static/style.css" />
-    <script type="text/javascript" src="/hgfront/static/js/jquery.js"></script>
-    <script type="text/javascript" src="/hgfront/static/js/hgfront.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/hgfront.js"></script>
 </head>
 
 <body>
@@ -21,11 +21,11 @@
             <span class="userbar">
                 {% if hgf_logged_in_user %}
                     {{hgf_logged_in_user}} (
-						<a href="/hgfront/member/logout/">Logout</a>
+						<a href="{% url member-logout %}">Logout</a>
 						{% if user.is_staff %} | <a href="/admin/">Admin</a> {% endif %}
 						)
                 {% else %}
-                    <a href="/hgfront/member/login/">Login</a> / <a href="/hgfront/member/register/" class="link-create-user">Register</a>
+                    <a href="{% url member-login %}">Login</a> / <a href="{% url member-register %}" class="link-create-user">Register</a>
                 {% endif %}
             </span>
             
@@ -43,7 +43,7 @@
         <div class="span-24" id="breadcrumbs">
             <ul>
                 {% block breadcrumbs %}
-                    <li class="home"><a href="/hgfront/projects/">Home</a></li>            
+                    <li class="home"><a href="{% url project-list %}">Home</a></li>            
                 {% endblock breadcrumbs %}
             </ul>
         </div>

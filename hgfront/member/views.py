@@ -69,7 +69,7 @@ def member_logout(request):
     return HttpResponseRedirect(reverse('project-list'))
 
 def member_home(request):
-    user = auth.get_user(request)
+    user = request.user
     member = Member.objects.get(member_user = user)
     
     user_projects_owns = Project.objects.filter(user_owner__exact = user)
@@ -80,6 +80,20 @@ def member_home(request):
          'user_projects_owns': user_projects_owns
         }, context_instance=RequestContext(request)
     )
+    
+def member_profile(request, member_name):
+    user = User.objects.get(username__exact = member_name)
+    member = Member.objects.get(member_user__exact = user)
+    
+    user_projects_owns = Project.objects.filter(user_owner__exact = user)
+    return render_to_response('member/profile.html',
+        {
+         'user': user,
+         'member': member,
+         'user_projects_owns': user_projects_owns
+        }, context_instance=RequestContext(request)
+    )
+
 
 def member_password(request):
     if request.method == 'POST':

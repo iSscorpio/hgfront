@@ -16,7 +16,7 @@
     {% if permissions.edit_issues %}<a href="{% url issue-edit slug=project.name_short, issue_id=issue.id %}">Edit this issue</a>{% endif %}
     <form method="post" action="{% url issue-edit slug=project.name_short, issue_id=issue.id %}">
         <input type="hidden" name="toggling_completed" value="1" />
-        <input type="submit" value="{{issue.completed|yesno:"Repoen,Mark as completed"}}" />
+        <input type="submit" value="{{issue.completed|yesno:"Re-open,Mark as completed"}}" />
     </form>
 
 {% endblock main_content %}
