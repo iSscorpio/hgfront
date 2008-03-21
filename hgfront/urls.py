@@ -10,4 +10,5 @@ urlpatterns = patterns('',
 	url(r'^config/', include('hgfront.config.urls')),
 	url(r'^u/',include('hgfront.member.urls')),
 	url(r'^s/', include('hgfront.search.urls')),
+	url(r'^q/', include('hgfront.queue.urls')),
 )

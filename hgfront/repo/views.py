@@ -97,6 +97,12 @@ def repo_manage(request, slug, repo_name):
     else:
         return HttpResponse('Failed')
     
+def repo_action(request, slug, repo_name, action):
+    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    u = ui.ui()
+    r = hg.repository(u, repo.repo_directory())
+    return HttpResponse('Foo Bar')
+    
 #def local_clone(request, slug, repo_name):
 #    if request.method = "POST":
         
