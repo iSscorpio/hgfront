@@ -39,6 +39,7 @@
 			<h2>Repositories {{project.name_long}}</h2>
 			<ul>
 				{% for repo in repos %}
+				 {% if repo.repo_created %}
 					<li class="bubbleInfo">
 						<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a>
 						<div class="popup">
@@ -59,6 +60,7 @@
 							</div>
 						</div>
 					</li>
+				{% endif %}
 	            {% endfor %}
 			</ul>
         {% endif %}

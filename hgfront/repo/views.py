@@ -120,15 +120,18 @@ def repo_create(request, slug):
         if form.is_valid():
             creation_method = int(form.cleaned_data['creation_method'])
             if creation_method==1:
+                # We create the repo right away
                 u = ui.ui()
                 print repo.repo_directory()
                 hg.repository(u, repo.repo_directory() + form.cleaned_data['name_short'] , create=True)
                 form.save();
             else:
+                # We pass off to a queue event
                 q = Queue.objects.get(name='repoclone')
                 clone = form.cleaned_data['name_short']
                 msg = Message(message=clone, queue=q)
                 msg.save()
+                # Save the repo, save the world!
                 form.cleaned_data['repo_created'] = False
                 form.save()
         # Return to the project view    
@@ -253,6 +256,8 @@ def get(request, queue_name, response_type='text'):
         if msg:
             u = ui.ui()
             clone = Repo.objects.get(name_short__exact=msg.message)
+            clone.repo_created = True
+            clone.save()
             hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
         return HttpResponse(response_data, mimetype='text/plain')
 
