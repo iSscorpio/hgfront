@@ -36,42 +36,31 @@
     
     {% with project.repo_set.select_related as repos %}
         {% if repos %}
-            <table>
-                <thead>
-                    <caption>Repositories {{project.name_long}}</caption>
-                    <tr>
-                        <th>Name</th>
-                        <th>Last Changeset ID</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for repo in repos %}
-                        <tr>
-                            <td><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a></td>
-                            <td>
-                                {% ifequal repo.get_changeset_number -1 %}
-                                    No Changesets (please add and commit files).
-                                {% else %}
-                                    {{repo.get_changeset_number}} - {{repo.get_changeset}}
-                                {% endifequal %}
-                            </td>
-                            <td>
-                                <select name="repo-action">
-                                    <option>Clone</option>
-                                    <option>Push</option>
-                                    <option>Pull</option>
-                                    <option>Update</option>
-                                    <option>Merge</option>
-                                    <option>Add</option>
-                                    <option>Remove (files)</option>
-                                    <option>Delete (repo)</option>
-                                </select>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+			<h2>Repositories {{project.name_long}}</h2>
+			<ul>
+				{% for repo in repos %}
+					<li class="bubbleInfo">
+						<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a>
+						<div class="popup">
+							<div class="popup-content">
+								<dl>
+									<dt>Last Changeset ID</dt>
+									<dd>
+										 {% ifequal repo.get_changeset_number -1 %}
+	                            	        No Changesets (please add and commit files).
+    	                            	{% else %}
+	                                   		{{repo.get_changeset_number}} - {{repo.get_changeset}}
+	    	                            {% endifequal %}
+									</dd>
+									<dt>Actions</dt>
+									<dd><a href="{{repo.get_absolute_url}}" class="link-show-repo">Open</a></dd>
+									<dd><a href="{% url repo-action %}/fetch/" class="link-update-merge-repo">Fetch</a></dd>
+								</dl>
+							</div>
+						</div>
+					</li>
+	            {% endfor %}
+			</ul>
         {% endif %}
     {% endwith %}
 	    
