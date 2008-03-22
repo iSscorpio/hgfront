@@ -41,6 +41,41 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
     project = Project.objects.get(name_short__exact=slug)
     
     try:
+        changeset_tags = repo.get_tags()
+    except:
+        changeset_tags = []
+        
+    try:
+        changeset_branches = repo.get_branches()
+    except:
+        changeset_branches = []
+    
+    try:
+        changeset_id = repo.get_changeset(changeset)
+    except:
+        changeset_id = []
+        
+    try:
+        changeset_user = repo.get_changeset(changeset).user()
+    except:
+        changeset_user = []
+        
+    try:
+        changeset_notes = repo.get_changeset(changeset).description()
+    except:
+        changeset_notes = []
+        
+    try:
+        changeset_files = repo.get_changeset(changeset).files()
+    except:
+        changeset_files = []
+        
+    try:
+        changeset_number = repo.get_changeset_number(changeset)
+    except:
+        changeset_number = []
+    
+    try:
         changeset_children = repo.get_next_changeset(changeset)
     except:
         changeset_children = []
@@ -52,13 +87,13 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
     
     return render_to_response('repos/repo_detail.html',
         {
-            'tags': repo.get_tags(),
-            'branches': repo.get_branches(),
-            'changeset_id': repo.get_changeset(changeset),
-            'changeset_user': repo.get_changeset(changeset).user(),
-            'changeset_notes': repo.get_changeset(changeset).description(),
-            'changeset_files': repo.get_changeset(changeset).files(),
-            'changeset_number': repo.get_changeset_number(changeset),
+            'changeset_tags': changeset_tags,
+            'changeset_branches': changeset_branches,
+            'changeset_id': changeset_id,
+            'changeset_user': changeset_user,
+            'changeset_notes': changeset_notes,
+            'changeset_files': changeset_files,
+            'changeset_number': changeset_number,
             'changeset_parents': changeset_parents,
             'changeset_children': changeset_children,
             'project': project,
@@ -73,24 +108,25 @@ def repo_create(request, slug):
         who can create repos.  If the repo does not already exist in the project then it
         is created and the user is redirected there
     """
+    
+    # Get the project from the database that we want to associate with
     project = get_object_or_404(Project, name_short__exact=slug)
+    
+    # Lets decide if we show the form or create a repo
     if request.method == "POST":
+        # Were saving, so lets create our instance
         repo = Repo(parent_project=project, pub_date=datetime.datetime.now())
         form = RepoCreateForm(request.POST, instance=repo)
+        # Lets check the form is valid
         if form.is_valid():
-            try:
-                q = Queue.objects.get(name='createrepos')
-                msg = Message(message=form.cleaned_data['name_short'], queue=q)
-                msg.save()
-                request.user.message_set.create(message="The repo was not put in the queue.  Contact the administator.")
-                form.save();
-            except Queue.DoesNotExist:
-                 request.user.message_set.create(message="The repo has been added to the queue")
-            return HttpResponseRedirect(reverse('project-detail',
-                kwargs={
-                    'slug': slug,
-                    'repo_name':form.cleaned_data['name_short']})
-            )
+            form.save();
+        # Return to the project view    
+        return HttpResponseRedirect(reverse('project-detail',
+            kwargs={
+                'slug': slug,
+                'repo_name':form.cleaned_data['name_short']
+            })
+        )
     else:
         form = RepoCreateForm()
     return render_to_response('repos/repo_create.html',
@@ -114,7 +150,4 @@ def repo_action(request, slug, repo_name, action):
     u = ui.ui()
     r = hg.repository(u, repo.repo_directory())
     return HttpResponse('Foo Bar')
-    
-#def local_clone(request, slug, repo_name):
-#    if request.method = "POST":
         

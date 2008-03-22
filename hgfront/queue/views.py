@@ -11,6 +11,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 import datetime
 
+from hgfront.repo.models import Repo
+from mercurial import hg, ui, hgweb
+
 
 def check_allowed_methods(methods=['GET']):
     '''Convenient decorator that verifies that a view is being called with 
@@ -106,7 +109,9 @@ def get(request, queue_name, response_type='text'):
     else:
         response_data = ''
         if msg:
-            response_data = msg.message
+            repo = Repo.objects.get(name_short__exact = msg.message)
+            u = ui.ui()
+            hg.clone(u, str(repo.default_path), str(repo.repo_directory()), True)
         return HttpResponse(response_data, mimetype='text/plain')
 
 #@check_allowed_methods(['POST'])

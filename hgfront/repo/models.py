@@ -63,7 +63,10 @@ class Repo(models.Model):
     is_cloned.short_description = "Cloned Repository?"
     
     def repo_directory(self):
-        return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
+        try:
+            return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
+        except:
+            return False 
 
     def create_hgrc(self):
         """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
@@ -92,40 +95,59 @@ class Repo(models.Model):
     
     def get_branches(self):
         u = ui.ui()  # get a ui object
-        r = hg.repository(u, self.repo_directory())
-        b = r.branchtags() # get a repo object for the current directory
-        branches = b.keys()
-        branches.sort()
-        return branches            
+        try:
+            r = hg.repository(u, self.repo_directory())
+            b = r.branchtags() # get a repo object for the current directory
+            branches = b.keys()
+            branches.sort()
+            return branches
+        except:
+            return []
+        
     
     def get_changeset_number(self, changeset='tip'):
         u = ui.ui()
-        repository = hg.repository(u, self.repo_directory())
-        changeset = repository.changectx(changeset).rev()
-        return changeset
+        try:
+            repository = hg.repository(u, self.repo_directory())
+            changeset = repository.changectx(changeset).rev()
+            return changeset
+        except:
+            return []
         
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        changeset = repository.changectx(changeset) # get a context object for the "tip" revision
-        return changeset
+        try:
+            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            changeset = repository.changectx(changeset) # get a context object for the "tip" revision
+            return changeset
+        except:
+            return []
         
     def get_previous_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        changesets = repository.changectx(changeset).parents() # get a context object for the "tip" revision
-        return [str(changeset) for changeset in changesets if changeset.node() != nullid]
+        try:
+            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            changesets = repository.changectx(changeset).parents() # get a context object for the "tip" revision
+            return [str(changeset) for changeset in changesets if changeset.node() != nullid]
+        except:
+            return []
         
     def get_next_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
-        repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        changesets = repository.changectx(changeset).children() # get a context object for the "tip" revision
-        return [str(changeset) for changeset in changesets if changeset.node() != nullid]
+        try:
+            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            changesets = repository.changectx(changeset).children() # get a context object for the "tip" revision
+            return [str(changeset) for changeset in changesets if changeset.node() != nullid]
+        except:
+            return []
         
     def get_tags(self):
         u = ui.ui()  # get a ui object
-        r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
-        return r.tags()
+        try:
+            r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            return r.tags()
+        except:
+            return []
         
     class Admin:
         fields = (
@@ -148,5 +170,5 @@ class Repo(models.Model):
 
 
 # Dispatchers
-#dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
-#dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )
+dispatcher.connect( create_repo , signal=signals.post_save, sender=Repo )
+dispatcher.connect( delete_repo , signal=signals.post_delete, sender=Repo )

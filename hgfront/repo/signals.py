@@ -4,20 +4,23 @@ from mercurial import hg, ui
 # Django Libraries
 from django.template import Context, loader
 from django.conf import settings
+from django.utils import simplejson
 # Project Libraries
 
 def create_repo(sender, instance, signal, *args, **kwargs):
     """Create the mercurial repo"""    
     if not bool(os.path.isdir(instance.repo_directory())):
-        #TODO: This is a temporary hack. For some reason instance.creation_method is of type `unicode` while it should be
-        # a normal int. I don't know why it's getting it in unicode though.
-        u = ui.ui()
         creation_method = int(instance.creation_method)
         if creation_method==1:
+            u = ui.ui()
             hg.repository(u, instance.repo_directory() , create=True)
             return True
         elif creation_method==2:
-            hg.clone(u, str(instance.default_path), str(instance.repo_directory()), True)
+            from hgfront.queue.models import Message, Queue
+            q = Queue.objects.get(name='createrepos')
+            msg = Message(message=instance.name_short, queue=q)
+            msg.save()
+            #hg.clone(u, str(instance.default_path), str(instance.repo_directory()), True)
             return True
         else:
             raise ValueError("Invalid Creation Method")
