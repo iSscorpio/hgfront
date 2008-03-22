@@ -1,6 +1,6 @@
 import crypt, random, os, os.path
 
-from freehg.repos.models import Repo
+from hgfront.repo.models import Repo
 from django.contrib.auth.models import User
 
 from django.conf import settings

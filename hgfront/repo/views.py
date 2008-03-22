@@ -114,20 +114,23 @@ def repo_create(request, slug):
     # Lets decide if we show the form or create a repo
     if request.method == "POST":
         # Were saving, so lets create our instance
-        repo = Repo(parent_project=project, repo_created = False, pub_date=datetime.datetime.now())
+        repo = Repo(parent_project=project, repo_created = True, pub_date=datetime.datetime.now())
         form = RepoCreateForm(request.POST, instance=repo)
         # Lets check the form is valid
         if form.is_valid():
             creation_method = int(form.cleaned_data['creation_method'])
             if creation_method==1:
                 u = ui.ui()
-                hg.repository(u, form.repo_directory() , create=True)
+                print repo.repo_directory()
+                hg.repository(u, repo.repo_directory() + form.cleaned_data['name_short'] , create=True)
                 form.save();
             else:
-                q = Queue.objects.get(name='createrepos')
-                clone = json_encode(repo)
+                q = Queue.objects.get(name='repoclone')
+                clone = form.cleaned_data['name_short']
                 msg = Message(message=clone, queue=q)
                 msg.save()
+                form.cleaned_data['repo_created'] = False
+                form.save()
         # Return to the project view    
         return HttpResponseRedirect(reverse('project-detail',
             kwargs={
@@ -171,7 +174,7 @@ Returns HttpResponseForbidden if view is called with a disallowed method.'''
 
 # Queue Methods
 @check_allowed_methods(['POST'])
-def create_queue(request, slug):
+def create_queue(request):
     # test post with
     # curl -i http://localhost:8000/createqueue/ -d name=default
     requested_name = request.POST.get('name', None)
@@ -182,7 +185,7 @@ def create_queue(request, slug):
     return HttpResponse("", mimetype='text/plain')
 
 @check_allowed_methods(['POST', 'DELETE'])
-def delete_queue(request, slug):
+def delete_queue(request):
     # test post with
     # curl -i http://localhost:8000/deletequeue/ -d name=default
     requested_name = request.POST.get('name', None)
@@ -198,7 +201,7 @@ def delete_queue(request, slug):
         return HttpResponseNotFound()
 
 @check_allowed_methods(['POST'])
-def purge_queue(request, slug):
+def purge_queue(request):
     # test post with
     # curl -i http://localhost:8000/purgequeue/ -d name=default
     requested_name = request.POST.get('name', None)
@@ -212,7 +215,7 @@ def purge_queue(request, slug):
         return HttpResponseNotFound()
 
 @check_allowed_methods(['GET'])
-def list_queues(request, slug):
+def list_queues(request):
     # test post with
     # curl -i http://localhost:8000/listqueues/
     result_list = []
@@ -225,7 +228,7 @@ def list_queues(request, slug):
 #
 
 @check_allowed_methods(['GET'])
-def get(request, slug, queue_name, response_type='text'):
+def get(request, queue_name, response_type='text'):
     # test count with
     # curl -i http://localhost:8000/q/default/
     # curl -i http://localhost:8000/q/default/json/
@@ -248,11 +251,13 @@ def get(request, slug, queue_name, response_type='text'):
     else:
         response_data = ''
         if msg:
-            response_data = msg.message
+            u = ui.ui()
+            clone = Repo.objects.get(name_short__exact=msg.message)
+            hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
         return HttpResponse(response_data, mimetype='text/plain')
 
 #@check_allowed_methods(['POST'])
-def clear_expirations(request, slug, queue_name):
+def clear_expirations(request, queue_name):
     # test count with
     # curl -i http://localhost:8000/q/default/clearexpire/
     # @TODO: This should only work with a POST as the following code changes data
@@ -263,7 +268,7 @@ def clear_expirations(request, slug, queue_name):
         return HttpResponseNotFound()
 
 @check_allowed_methods(['GET'])
-def count(request, slug, queue_name, response_type='text'):
+def count(request, queue_name, response_type='text'):
     # test count with
     # curl -i http://localhost:8000/q/default/count/
     # curl -i http://localhost:8000/q/default/count/json/
@@ -279,7 +284,7 @@ def count(request, slug, queue_name, response_type='text'):
         return HttpResponseNotFound()
 
 @check_allowed_methods(['POST', 'DELETE'])
-def delete(request, slug, queue_name):
+def delete(request, queue_name):
     # test post with
     # curl -i http://localhost:8000/q/default/delete/ -d message_id=1
     #print "deleting: %s" % message_id
@@ -295,7 +300,7 @@ def delete(request, slug, queue_name):
         return HttpResponseNotFound()
 
 @check_allowed_methods(['POST'])
-def put(request, slug, queue_name):
+def put(request, queue_name):
     # test post with
     # curl -i http://localhost:8000/q/default/put/ -d message=hello
     try:
