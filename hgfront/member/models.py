@@ -16,7 +16,7 @@ class Member(models.Model):
     member_bio = models.TextField()
     
     def __unicode__(self):
-        return self.member_user.username
+        return self.user.username
     
     @permalink
     def get_absolute_url(self):
@@ -24,4 +24,4 @@ class Member(models.Model):
         return ('member-home', (), {})
     
     class Admin:
-        pass
+        list_display = ('user', 'member_displayname',)

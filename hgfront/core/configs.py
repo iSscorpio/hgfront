@@ -21,7 +21,8 @@ class RepoOptions(config.Group):
     """
     Repo options
     """
-    default_style = config.StringValue("Default style for repositories", choices=AVAILABLE_STYLES) 
+    default_style = config.StringValue("Default style for repositories", choices=AVAILABLE_STYLES)
+    htpasswd_file = config.StringValue("Location of htpasswdfile")
 
 class IssueOptions(config.Group):
     """

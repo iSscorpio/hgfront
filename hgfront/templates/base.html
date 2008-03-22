@@ -20,7 +20,7 @@
         <div class="span-24" id="toolbar">
             <span class="userbar">
                 {% if hgf_logged_in_user %}
-                    {{hgf_logged_in_user}} (
+                    <a href="{% url member-home %}" class="member-username">{{hgf_logged_in_user}}</a> (
 						<a href="{% url member-logout %}">Logout</a>
 						{% if user.is_staff %} | <a href="/admin/">Admin</a> {% endif %}
 						)

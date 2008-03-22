@@ -109,8 +109,6 @@ APPEND_SLASH=False
 
 LOGIN_URL = '/login/'
 
-HTPASSWD_FILE = '/path/to/htpasswd'
-
 REMOVE_WWW = True
 
 AUTH_PROFILE_MODULE = "hgfront.member.models.Member"

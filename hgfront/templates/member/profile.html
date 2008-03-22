@@ -8,6 +8,14 @@
 
 {% block main_content %}
 
+	<dl>
+		<dt>Biography</dt>
+		<dd>{{member.member_bio}}</dd>
+		<dt>Homepage</dt>
+		<dd><a href="{{member.member_homepage}}">{{member.member_homepage}}</a></dd>
+	</dl>
+
+
     <h3>Project that belong to {{user}}</h3>
 	<table>
 		<thead>

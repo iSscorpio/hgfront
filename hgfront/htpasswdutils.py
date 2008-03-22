@@ -44,7 +44,8 @@ def update_password(username, password):
     salt = random.choice(alphabeta)+random.choice(alphabeta)
     crypted = crypt.crypt(password, salt)
 
-    db = Htpasswd(settings.HTPASSWD_FILE, "c")
+    #db = Htpasswd(settings.HTPASSWD_FILE, "c")
+    db = Htpasswd(Repo.repo_options.htpasswd_file, "c")
     db[str(username)] = crypted+":hguser"
     db.close()
 
