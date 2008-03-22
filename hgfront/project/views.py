@@ -24,13 +24,13 @@ CACHE_EXPIRES = 5 * 60 # 5 minutes
 def get_project_list(request):
     projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
     project_news = ProjectNews.objects.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
-    user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
+    #user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
     
     return render_to_response('project/project_list.html',
         {
             'projects': projects,
             'project_news': project_news,
-            'user_can_request_to_join':user_can_request_to_join
+            #'user_can_request_to_join':user_can_request_to_join
         }, context_instance=RequestContext(request)
     )
 

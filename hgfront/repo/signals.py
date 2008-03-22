@@ -4,7 +4,7 @@ from mercurial import hg, ui
 # Django Libraries
 from django.template import Context, loader
 from django.conf import settings
-from django.utils import simplejson
+from hgfront.core.json_encode import json_encode
 # Project Libraries
 
 def create_repo(sender, instance, signal, *args, **kwargs):
@@ -16,9 +16,11 @@ def create_repo(sender, instance, signal, *args, **kwargs):
             hg.repository(u, instance.repo_directory() , create=True)
             return True
         elif creation_method==2:
-            from hgfront.queue.models import Message, Queue
             q = Queue.objects.get(name='createrepos')
-            msg = Message(message=instance.name_short, queue=q)
+            
+            clone = json_encode(instance)
+            
+            msg = Message(message=clone, queue=q)
             msg.save()
             #hg.clone(u, str(instance.default_path), str(instance.repo_directory()), True)
             return True

@@ -12,13 +12,12 @@ from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.utils import simplejson
+from hgfront.core.json_encode import json_encode
 # Project Libraries
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
-from hgfront.repo.models import Repo
+from hgfront.repo.models import *
 from hgfront.project.decorators import check_project_permissions
-from hgfront.queue.models import Message, Queue
 
 @check_project_permissions('view_repos')
 def repo_list(request, slug):
@@ -115,11 +114,20 @@ def repo_create(request, slug):
     # Lets decide if we show the form or create a repo
     if request.method == "POST":
         # Were saving, so lets create our instance
-        repo = Repo(parent_project=project, pub_date=datetime.datetime.now())
+        repo = Repo(parent_project=project, repo_created = False, pub_date=datetime.datetime.now())
         form = RepoCreateForm(request.POST, instance=repo)
         # Lets check the form is valid
         if form.is_valid():
-            form.save();
+            creation_method = int(form.cleaned_data['creation_method'])
+            if creation_method==1:
+                u = ui.ui()
+                hg.repository(u, form.repo_directory() , create=True)
+                form.save();
+            else:
+                q = Queue.objects.get(name='createrepos')
+                clone = json_encode(repo)
+                msg = Message(message=clone, queue=q)
+                msg.save()
         # Return to the project view    
         return HttpResponseRedirect(reverse('project-detail',
             kwargs={
@@ -145,9 +153,155 @@ def repo_manage(request, slug, repo_name):
     else:
         return HttpResponse('Failed')
     
-def repo_action(request, slug, repo_name, action):
-    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
-    u = ui.ui()
-    r = hg.repository(u, repo.repo_directory())
-    return HttpResponse('Foo Bar')
-        
+# Queue stuff
+def check_allowed_methods(methods=['GET']):
+    '''Convenient decorator that verifies that a view is being called with 
+an allowed set of request methods and no others.
+Returns HttpResponseForbidden if view is called with a disallowed method.'''
+    def _decorator(view_func):
+        def _wrapper(request, *args, **kwargs):
+            if request.method in methods:
+                return view_func(request, *args, **kwargs)
+            else:
+                return HttpResponseForbidden()
+        _wrapper.__doc__ = view_func.__doc__
+        _wrapper.__dict__ = view_func.__dict__
+        return _wrapper
+    return _decorator
+
+# Queue Methods
+@check_allowed_methods(['POST'])
+def create_queue(request, slug):
+    # test post with
+    # curl -i http://localhost:8000/createqueue/ -d name=default
+    requested_name = request.POST.get('name', None)
+    if requested_name is None:
+        return HttpResponseForbidden()
+    q = Queue(name=requested_name)
+    q.save()
+    return HttpResponse("", mimetype='text/plain')
+
+@check_allowed_methods(['POST', 'DELETE'])
+def delete_queue(request, slug):
+    # test post with
+    # curl -i http://localhost:8000/deletequeue/ -d name=default
+    requested_name = request.POST.get('name', None)
+    if requested_name is None:
+        return HttpResponseForbidden()
+    try:
+        q = Queue.objects.get(name=requested_name)
+        if q.message_set.count() > 0:
+            return HttpResponseNotAllowed()
+        q.delete()
+        return HttpResponse("", mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+
+@check_allowed_methods(['POST'])
+def purge_queue(request, slug):
+    # test post with
+    # curl -i http://localhost:8000/purgequeue/ -d name=default
+    requested_name = request.POST.get('name', None)
+    if requested_name is None:
+        return HttpResponseForbidden()
+    try:
+        q = Queue.objects.get(name=requested_name)
+        q.message_set.all().delete()
+        return HttpResponse("", mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+
+@check_allowed_methods(['GET'])
+def list_queues(request, slug):
+    # test post with
+    # curl -i http://localhost:8000/listqueues/
+    result_list = []
+    for queue in Queue.objects.all():
+        result_list.append(queue.name)
+    return HttpResponse(simplejson.dumps(result_list), mimetype='application/json')
+
+#
+# Message methods - all of these will be operating on messages against a queue...
+#
+
+@check_allowed_methods(['GET'])
+def get(request, slug, queue_name, response_type='text'):
+    # test count with
+    # curl -i http://localhost:8000/q/default/
+    # curl -i http://localhost:8000/q/default/json/
+    
+    # print "GET queue_name is %s" % queue_name
+    q = None
+    # pre-emptive queue name checking...
+    try:
+        q = Queue.objects.get(name=queue_name)
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+    #
+    msg = q.message_set.pop()
+    if response_type == 'json':
+        msg_dict = {}
+        if msg:
+            msg_dict['message'] = msg.message
+            msg_dict['id'] = msg.id
+        return HttpResponse(simplejson.dumps(msg_dict), mimetype='application/json')
+    else:
+        response_data = ''
+        if msg:
+            response_data = msg.message
+        return HttpResponse(response_data, mimetype='text/plain')
+
+#@check_allowed_methods(['POST'])
+def clear_expirations(request, slug, queue_name):
+    # test count with
+    # curl -i http://localhost:8000/q/default/clearexpire/
+    # @TODO: This should only work with a POST as the following code changes data
+    try:
+        Message.objects.clear_expirations(queue_name)
+        return HttpResponse("", mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+
+@check_allowed_methods(['GET'])
+def count(request, slug, queue_name, response_type='text'):
+    # test count with
+    # curl -i http://localhost:8000/q/default/count/
+    # curl -i http://localhost:8000/q/default/count/json/
+    try:
+        q = Queue.objects.get(name=queue_name)
+        num_visible = q.message_set.filter(visible=True).count()
+        if response_type == 'json':
+            msg_dict = {"count":"%s" % num_visible}
+            return HttpResponse(simplejson.dumps(msg_dict), mimetype='application/json')
+        else:
+            return HttpResponse("%s" % num_visible, mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+
+@check_allowed_methods(['POST', 'DELETE'])
+def delete(request, slug, queue_name):
+    # test post with
+    # curl -i http://localhost:8000/q/default/delete/ -d message_id=1
+    #print "deleting: %s" % message_id
+    message_id=request.POST['message_id']
+    try:
+        q = Queue.objects.get(name=queue_name)
+        msg = q.message_set.get(pk=message_id)
+        msg.delete()
+        return HttpResponse("OK", mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
+    except Message.DoesNotExist:
+        return HttpResponseNotFound()
+
+@check_allowed_methods(['POST'])
+def put(request, slug, queue_name):
+    # test post with
+    # curl -i http://localhost:8000/q/default/put/ -d message=hello
+    try:
+        q = Queue.objects.get(name=queue_name)
+        msg = Message(message=request.POST['message'], queue=q)
+        msg.save()
+        return HttpResponse("OK", mimetype='text/plain')
+    except Queue.DoesNotExist:
+        return HttpResponseNotFound()
