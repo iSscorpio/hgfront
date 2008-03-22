@@ -14,3 +14,7 @@ urlpatterns = patterns('hgfront.member.views',
     url(r'^verifyusername/$','member_verifyusername', name='member-verifyusername'),
     url(r'^verifyuseremail/$','member_verifyuseremail', name='member-verifyuseremail'),
 )
+
+# TODO this should be optional
+from hgfront import htpasswdutils
+htpasswdutils.monkeypatch_user_model()
