@@ -7,7 +7,7 @@ from django.dispatch import dispatcher
 # Create your models here.
 
 class Member(models.Model):
-    member_user = models.ForeignKey(User, unique=True)
+    user = models.ForeignKey(User, unique=True)
     member_displayname = models.CharField(max_length=25)
     member_homepage = models.URLField(blank = True, null = True)
     member_gtalk = models.CharField(max_length = 50, blank = True, null = True)

@@ -26,7 +26,7 @@ def member_register(request):
                     email = form.cleaned_data['member_email'],
                     password = form.cleaned_data['member_password']
                     )
-            member = Member(member_user = user, member_displayname = form.cleaned_data['member_real_name'])
+            member = Member(user = user, member_displayname = form.cleaned_data['member_real_name'])
             member.save()
             new_user = auth.authenticate(username=form.cleaned_data['member_username'], password=form.cleaned_data['member_password'])
             auth.login(request, new_user)
@@ -44,9 +44,7 @@ def member_login(request):
     if request.method == 'POST':
         form = MemberLoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['member_username']
-            password = form.cleaned_data['member_password']
-            user = auth.authenticate(username=username, password=password)
+            user = auth.authenticate(username=form.cleaned_data['member_username'], password=form.cleaned_data['member_password'])
             if user is not None and user.is_active:
                 # Correct password, and the user is marked "active"
                 auth.login(request, user)
@@ -69,28 +67,21 @@ def member_logout(request):
     return HttpResponseRedirect(reverse('project-list'))
 
 def member_home(request):
-    user = request.user
-    member = Member.objects.get(member_user = user)
-    
-    user_projects_owns = Project.objects.filter(user_owner__exact = user)
     return render_to_response('member/home.html',
         {
-         'user': user,
-         'member': member,
-         'user_projects_owns': user_projects_owns
+         'user': request.user,
+         'member': request.user.get_profile(),
+         'user_projects_owns': Project.objects.filter(user_owner__exact = request.user)
         }, context_instance=RequestContext(request)
     )
     
 def member_profile(request, member_name):
-    user = User.objects.get(username__exact = member_name)
-    member = Member.objects.get(member_user__exact = user)
-    
-    user_projects_owns = Project.objects.filter(user_owner__exact = user)
+    user = User.objects.get(username__exact = member_name)    
     return render_to_response('member/profile.html',
         {
          'user': user,
-         'member': member,
-         'user_projects_owns': user_projects_owns
+         'member': user.get_profile(),
+         'user_projects_owns': Project.objects.filter(user_owner__exact = user)
         }, context_instance=RequestContext(request)
     )
 
