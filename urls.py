@@ -7,3 +7,8 @@ urlpatterns = patterns('',
     url(r'^login/', 'django.contrib.auth.views.login', {'template_name':'login.html'}, name='login-screen'),
     url(r'^static/(?P<path>.*)$','django.views.static.serve',{'document_root':settings.HGFRONT_STATIC_PATH}, name='static-content')
 )
+
+# TODO this should be optional
+from hgfront import htpasswdutils
+htpasswdutils.monkeypatch_user_model()
+
