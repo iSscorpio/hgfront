@@ -1,67 +1,14 @@
-{% extends "project/project_detail.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{project.name_long}} : All Open Issues{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li><a href="{% url issue-list project.name_short %}">Issues</a></li>{% endblock %}
 
-{% block content_title %}
-    <h2>{{project.name_long}} issues</h2>
-{% endblock %}
+{% block tabs %}
+    <ul class="tabs-navigation flora">
+    	<li><a href="#issues-all"><span>All Issues</span></a></li>
+		<li><a href="#issues-new"><span>New Issues</span></a></li>
+    </ul>
+{% endblock tabs %}
 
 {% block main_content %}
-    {% if issue_list %}
-        <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Severity</th>
-                <th>Type</th>
-                <th>Status</th>
-                <th>Completed</th>
-                <th>Created by</th>
-                <th>Working on it:</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for issue in issue_list %}
-                <tr>
-                    <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
-                    <td><a href="{% url issue-list slug=project.name_short %}?issue_sev__slug={{issue.issue_sev.slug}}">{{issue.issue_sev.title}}</a></td>
-                    <td><a href="{% url issue-list slug=project.name_short %}?issue_type__slug={{issue.issue_type.slug}}">{{issue.issue_type.title}}</a></td>
-                    <td><a href="{% url issue-list slug=project.name_short %}?issue_status__slug={{issue.issue_status.slug}}">{{issue.issue_status.title}}</a></td>
-                    <td><a href="{% url issue-list slug=project.name_short %}?completed={{issue.completed|yesno:"yes,no"}}">{{issue.completed|yesno:"Yes,No"}}</a></td>
-                    <td>
-                        {% if issue.user_posted.username %}
-                            <a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a>
-                        {% else %}
-                            Anonymous
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if issue.user_assigned_to.username %}
-                            <a href="{{issue.user_assigned_to.get_absolute_url}}">{{issue.user_assigned_to.username}}</a> 
-                        {% else %}
-                            No one
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-        </table>
-        {% if pages %}
-            Jump to page:
-            {% for page_number, query_string in pages %}
-                {% ifnotequal page_number current_page %}
-                    <a href="{% url issue-list slug=project.name_short %}?{{query_string}}">{{page_number}}</a>
-                {% else %}
-                    {{page_number}}
-                {% endifnotequal %}
-            {% endfor %}
-        {% endif %}
-    {% else %}
-        <strong>No issues found.</strong>
-    {% endif %}
+	{% include "issue/issue_list_ajax.html" %}
 {% endblock %}
-{% block sidebar %}
-    <span class="group">Issue Filters</span>
-    {{block.super}}
-{% endblock sidebar %}

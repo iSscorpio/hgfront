@@ -1,56 +1,17 @@
-{% extends "member/member.html" %}
+{% extends "base.html" %}
 {% load core_templatetags %}
 
 {% block title %}{{block.super}} {{user}}'s Profile{% endblock %}
 
-{% block content_title %}{{user}}'s Profile{% endblock %}
-{% block breadcrumbs %}{{block.super}} {{user}}'s Profile{% endblock %}
-
-{% block main_content %}
-
-	<ul id="profile-details-tabs" class="flora">
+{% block tabs %}
+	<ul class="tabs-navigation flora">
 		<li><a href="#profile-details"><span>Details</span></a></li>
 		<li><a href="#profile-projects"><span>Projects</span></a></li>
 		<li><a href="#profile-issues"><span>Issues</span></a></li>
 		<li><a href="#profile-actions"><span>Actions</span></a></li>
 	</ul>
+{% endblock tabs %}
 
-	<div id="profile-details">
-		<dl>
-			<dt>Biography</dt>
-			<dd>{{member.member_bio}}</dd>
-			<dt>Homepage</dt>
-			<dd><a href="{{member.member_homepage}}">{{member.member_homepage}}</a></dd>
-		</dl>
-	</div>
-	
-	<div id="profile-projects">
-		<h3>Project that belong to {{user}}</h3>
-		<table>
-			<thead>
-				<tr>
-					<th>Project Name</th>
-					<th># Repos</th>
-					<th># Members</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for project in user_projects_owns %}
-					<tr>
-						<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
-						<td>{{project.num_repos}}</td>
-						<td>{{project.members.count}}</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-	
-	<div id="profile-issues">
-		<h3>Issues assigned to {{user}}</h3>
-	</div>
-	
-	<div id="profile-actions">
-		
-	</div>
+{% block main_content %}
+	{% include "member/profile_ajax.html" %}
 {% endblock %}

@@ -70,7 +70,12 @@ def issue_list(request, slug):
             new_query_dict['page'] = page_number
             pages.append((page_number, new_query_dict.urlencode()))
     
-    return render_to_response('issue/issue_list.html',
+    if request.is_ajax():
+        template = 'issue/issue_list_ajax.html'
+    else:
+        template = 'issue/issue_list.html'
+    
+    return render_to_response(template,
         {
             'project':project,
             'issue_list':issues,
@@ -166,7 +171,12 @@ def issue_edit(request, slug, issue_id):
                 return HttpResponseRedirect(new_issue.get_absolute_url())
     else:
         form = IssueEditForm(instance=issue)
-    return render_to_response('issue/issue_edit.html',
+        
+    if request.is_ajax():
+        template = 'issue/issue_edit_ajax.html'
+    else:
+        template = 'issue/issue_edit.html'
+    return render_to_response(template,
         {
             'form':form,
             'issue':issue,

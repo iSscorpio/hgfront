@@ -55,7 +55,13 @@ def get_project_details(request, slug):
     
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
     user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
-    return render_to_response('project/project_detail.html',
+    
+    if request.is_ajax():
+        template = 'project/project_detail_ajax.html'
+    else:
+        template = 'project/project_detail.html'
+    
+    return render_to_response(template,
         {
             'project': project,
             'permissions':permissions,
