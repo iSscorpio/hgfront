@@ -74,7 +74,7 @@ $(document).ready(function(){
 	
 //	$.ui.history("enable");
 	
-	$('#project-details-tabs, #repo-details-tabs').tabs({ fx: { opacity: 'toggle' } });
+	$('#project-details-tabs, #repo-details-tabs, #profile-details-tabs').tabs({ fx: { opacity: 'toggle' } });
 	
 	$('.link-create-issue').click(function(){
 		link = $(this)
