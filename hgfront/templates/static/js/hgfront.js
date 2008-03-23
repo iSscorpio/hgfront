@@ -22,7 +22,7 @@ $(document).ready(function(){
 //	$.ui.history("enable");
 	
 	$('#project-details-tabs, #repo-details-tabs, #profile-details-tabs').tabs({ fx: { opacity: 'toggle' } });
-	
+/*	
 	$('.home').click(function(){
 		hgfront.ajaxlink($(this).attr('href'), '#content')
 		return false;
@@ -32,8 +32,8 @@ $(document).ready(function(){
 		hgfront.ajaxlink($(this).attr('href'), '#content')
 		return false;
 	});
-	
-/*	$('.link-create-issue').click(function(){
+*/	
+	$('.link-create-issue').click(function(){
 		hgfront.ajaxlink($(this).attr('href'), '.issues-content')
 		return false;
 	});
@@ -43,5 +43,5 @@ $(document).ready(function(){
 		return false;
 
 	});
-*/
+
 });
