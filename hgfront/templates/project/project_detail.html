@@ -3,7 +3,7 @@
 
 {% block title %}{{block.super}} Project details for {{project.name_long}} ({{project.name_short}}){% endblock %}
 
-{% block content_title %}Project Details{% endblock %}
+{% block content_title %}{{project.name_long}}{% endblock %}
 {% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{{project.get_absolute_url}}">{{project.name_long}}</a></li>{% endblock %}
 
 {% block main_content %}
