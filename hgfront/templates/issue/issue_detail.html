@@ -1,10 +1,17 @@
-{% extends "issue/issue_list.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{project.name_long}} Issue : {{issue.title}}{% endblock title %}
 {% block breadcrumbs %}{{block.super}}<li><a href="{% url issue-detail slug=project.name_short, issue_id=issue.id %}">{{issue.title}}</a></li>{% endblock %}
 
-{% block content_title %}
-    {{issue.title}}
-{% endblock content_title %}
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#issue-details"><span>Details</span></a></li>
+		<li><a href="#issue-comments"><span>Comments</span></a></li>
+		<li><a href="#issue-actions"><span>Actions</span></a></li>
+	</ul>
+{% endblock tabs %}
 
-{% include "issue/issue_detail_ajax.html" %}
+
+{% block main_content %}
+	{% include "issue/issue_detail_ajax.html" %}
+{% endblock main_content %}

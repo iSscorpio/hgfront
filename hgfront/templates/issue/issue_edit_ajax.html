@@ -1,0 +1,9 @@
+{% block main_content %}
+	<div id="issue-edit">
+		{{fail}}
+	    <form action="{% url issue-edit slug=project.name_short,issue_id=issue.id %}" method="post">
+            <table>{{form.as_table}}</table>
+            <input type="submit">
+        </form>	
+	</div>
+{% endblock %}

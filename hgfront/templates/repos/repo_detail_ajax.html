@@ -1,0 +1,70 @@
+{% block main_content %}
+
+	<div id="repo-changeset">
+		<h3>Changeset</h3>
+		<dl>
+		    <dt>Changeset ID</dt>
+		    <dd>
+		        {% ifequal changeset_number -1 %}
+		            No Changesets (please add and commit files).
+		        {% else %}
+		            {{changeset_number}} - {{changeset_id}}
+		        {% endifequal %}
+		    </dd>
+		    {%if changeset_parents %}
+		        <dt>Changeset Parents</dt>
+		        {% for changeset in changeset_parents %}
+		            <dd>
+		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+		            </dd>
+		        {% endfor %}
+				</dt>
+		    {%endif%}
+		    {%if changeset_children %}
+		        <dt>Changeset Children</td>
+		        {% for changeset in changeset_children %}
+		            <dd>
+		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+		            </dd>
+		        {% endfor %}
+		        </dt>
+		    {%endif%}
+		    <dt>Changeset Author</dt>
+		    <dd>{{changeset_user}}</dd>
+		    <dt>Changeset Notes</dt>
+		    <dd>{% autoescape on %}{{changeset_notes}}{% endautoescape %}</dd>
+		</dl>
+	</div>
+	
+	<div id="repo-manifest">
+		<h3>Manifest</h3>
+	   	<ul>
+	    	{% for file in changeset_files %}
+	        	<li>{{file}}</li>
+		    {% endfor %}
+		 </ul>
+	</div>
+
+	<div id="repo-branches">
+    	<h3>{{repo.name_long}} Branches</h3>
+		<ul>
+    		{% for branch in changeset_branches %}
+        		<li>{{branch}}</li>
+    		{% endfor %}
+		</ul>
+	</div>
+	
+	<div id="repo-tags">
+	    <h3>{{repo.name_long}} Tags</h3>
+		<ul>
+	    	{% for tag in changeset_tags %}
+	        	<li>{{tag}}</li>
+	    	{% endfor %}
+		</ul>
+	</div>
+	
+	<div id="repo-actions">
+		
+	</div>
+
+{% endblock %}

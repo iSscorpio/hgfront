@@ -6,7 +6,7 @@ hgfront.options = {
 }
 
 hgfront.ajaxlink = function(url, target) {
-	$(target).html('Loading');
+	$(target).html('<div class="loading">Loading...</div>');
 	
 	$.ajax({
 		url: url,
@@ -17,31 +17,11 @@ hgfront.ajaxlink = function(url, target) {
 	});
 }
 
-$(document).ready(function(){
+$(document).ready(function(){	
+	$('.tabs-navigation').tabs({ fx: { opacity: 'toggle' } });
 	
-//	$.ui.history("enable");
-	
-	$('#project-details-tabs, #repo-details-tabs, #profile-details-tabs').tabs({ fx: { opacity: 'toggle' } });
-/*	
-	$('.home').click(function(){
-		hgfront.ajaxlink($(this).attr('href'), '#content')
-		return false;
-	});
-
-	$('.ui-tabs-panel a').click(function(){
-		hgfront.ajaxlink($(this).attr('href'), '#content')
-		return false;
-	});
-*/	
 	$('.link-create-issue').click(function(){
 		hgfront.ajaxlink($(this).attr('href'), '.issues-content')
 		return false;
 	});
-	
-	$('.issues-content a').click(function(){
-		hgfront.ajaxlink($(this).attr('href'), '.issues-content')
-		return false;
-
-	});
-
 });
