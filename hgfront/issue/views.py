@@ -115,7 +115,13 @@ def issue_create(request, slug):
             return HttpResponseRedirect(issue.get_absolute_url())
     else:
         form = IssueCreateForm()
-    return render_to_response('issue/issue_create.html', 
+        
+    if request.is_ajax():
+        template = 'issue/issue_create_ajax.html'
+    else:
+        template = 'issue/issue_create.html'
+    
+    return render_to_response(template, 
         {
             'form':form, 
             'project':project, 

@@ -9,10 +9,12 @@
 {% block main_content %}
 
 	<ul id="project-details-tabs" class="flora">
-		<li><a href="#project-details"><span>Project Details</span></a></li>
-		<li><a href="#project-repositories"><span>Project Repositories</span></a></li>
-		<li><a href="#project-issues"><span>Project Issues</span></a></li>
-		<li><a href="#project-members"><span>Project Members</span></a></li>
+		<li><a href="#project-details"><span>Details</span></a></li>
+		<li><a href="#project-repositories"><span>Repositories</span></a></li>
+		<li><a href="#project-issues"><span>Issues</span></a></li>
+		<li><a href="#project-members"><span>Members</span></a></li>
+		<li><a href="#project-backups"><span>Backups</span></a></li>
+		<li><a href="#project-actions"><span>Actions</span></a></li>
 	</ul>
 
 	<div id="project-details">
@@ -28,6 +30,10 @@
 	</div>
 	
 	<div id="project-repositories">
+		{% if permissions.add_repos %} 
+        	<a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a>
+        {% endif %}
+ 
 		{% with project.repo_set.select_related as repos %}
         	{% if repos %}
 				<h2>Repositories {{project.name_long}}</h2>
@@ -56,6 +62,10 @@
 	</div>
 	
 	<div id="project-issues">
+		{% if permissions.add_issues %} 
+        	<a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a>
+        {% endif %}		
+		<div class="issues-content">
 		{% if permissions.view_issues %}
         	{% if issues %}
             	<table>
@@ -84,6 +94,7 @@
         {% else %}
             <h4>You can't view the issues, man!</h4>
         {% endif %}	
+		</div>
 	</div>
     
 	<div id="project-members">
@@ -102,45 +113,8 @@
 	            <input type="submit" value="Join" />
 	        </form>
     	{% endif %}
-	</div>
-    
-	<div id="project-backups">
-	    {% if backups %}
-	        <table>
-	            <thead>
-	                <caption>Backups of {{project.name_long}}</caption>
-	                <tr>
-	                    <th>Creation Date</th>
-	                    <th>Format</th>
-	                </tr>
-	            </thead>
-	            <tbody>
-	                {% for backup in backups %}
-	                    <tr>
-	                        <td>{{backup.created}}</td>
-	                        <td>{{backup.format}}</td>
-	                     </tr>
-	                 {% endfor %}
-	             </tbody>
-	         </table>
-	     {% endif %}
-    </div>
-{% endblock %}
-
-{% block sidebar %}
-	{% menubox project.name_long %}
-        <ul>
-            {% if permissions.add_repos %} 
-                <li><a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a></li>
-            {% endif %}
-            {% if permissions.add_issues %} 
-                <li><a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a></li>
-            {% endif %}
-            {% if permissions.add_repos %} 
-                <li><a href="{% url create-backup project.name_short %}" class="link-create-backup">Backup Project</a></li>
-            {% endif %}
-        </ul>
-    {% with project.aspiring_members as aspiring_members %}
+		
+		{% with project.aspiring_members as aspiring_members %}
         {% if permissions.add_members and aspiring_members %}
             <span class="group">Join requests</span>
             <p>These people want to join {{project.name_long}}!</p>
@@ -164,6 +138,7 @@
             </ul>
         {% endif %}
     {% endwith %}
+	
     {% with project.invited_members as invited_members %}
         {% if permissions.add_members and invited_members %}
             <span class="group">Invited users</span>
@@ -175,5 +150,39 @@
             </ul>
         {% endif %}
 		{% endwith %}
-	{% endmenubox %}
+	</div>
+    
+	<div id="project-backups">
+        {% if permissions.add_repos %} 
+        	<a href="{% url create-backup project.name_short %}" class="link-create-backup">Backup Project</a>
+        {% endif %}
+
+	    {% if backups %}
+	        <table>
+	            <thead>
+	                <caption>Backups of {{project.name_long}}</caption>
+	                <tr>
+	                    <th>Creation Date</th>
+	                    <th>Format</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                {% for backup in backups %}
+	                    <tr>
+	                        <td>{{backup.created}}</td>
+	                        <td>{{backup.format}}</td>
+	                     </tr>
+	                 {% endfor %}
+	             </tbody>
+	         </table>
+	     {% endif %}
+    </div>
+	
+	<div id="project-actions">
+
+	</div>
+{% endblock %}
+
+{% block sidebar %}
+        
 {% endblock %}

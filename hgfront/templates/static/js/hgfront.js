@@ -71,5 +71,24 @@ $(function () {
 });
 
 $(document).ready(function(){
-	$('#project-details-tabs, #repo-details-tabs').tabs();
+	
+//	$.ui.history("enable");
+	
+	$('#project-details-tabs, #repo-details-tabs').tabs({ fx: { opacity: 'toggle' } });
+	
+	$('.link-create-issue').click(function(){
+		$.ajax({
+			url: $('.link-create-issue').attr('href'),
+			success: function(html) {
+				$('.issues-content').append(html);
+//				$.ui.history("add");
+				
+			}
+		});
+		return false;
+	});
+	
+
+	
+	
 });
