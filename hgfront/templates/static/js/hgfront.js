@@ -69,3 +69,7 @@ $(function () {
     });
   });
 });
+
+$(document).ready(function(){
+	$('#project-details-tabs, #repo-details-tabs').tabs();
+});

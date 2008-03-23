@@ -8,113 +8,123 @@
 
 {% block main_content %}
 
-    <h3>Project Details</h3>
-    <dl id="project-details">
-        <dt>Project Name</dt>
-        <dd>{{project.name_long}}</dd>
-        <dt>Project Owner</dt>
-        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
-        <dt>Project Description</dt>
-        <dd>{{project.description_long}}</dd>
-    </dl>
-    
-    {% with project.members as members %}
-        <dl id="project-members">
-            <dt>Project Members</dt>
-            {% for member in members %}
-                <dd><a href="{{member.get_absolute_url}}">{{member.username}}</a></dd>
-            {% endfor %}
-        </dl>
-    {% endwith %}
-    
-    {% if user_can_request_to_join %} 
-        <form method="post" action="{% url project-join-project slug=project.name_short %}">
-            If you want to join this project, click on this button!
-            <input type="submit" value="Join" />
-        </form>
-    {% endif %}
-    
-    {% with project.repo_set.select_related as repos %}
-        {% if repos %}
-			<h2>Repositories {{project.name_long}}</h2>
-			<ul>
-				{% for repo in repos %}
-				 {% if repo.repo_created %}
-					<li class="bubbleInfo">
-						<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a>
-						<div class="popup">
-							<div class="popup-content">
-								<dl>
-									<dt>Last Changeset ID</dt>
-									<dd>
-										 {% ifequal repo.get_changeset_number -1 %}
-	                            	        No Changesets (please add and commit files).
-    	                            	{% else %}
-	                                   		{{repo.get_changeset_number}} - {{repo.get_changeset}}
-	    	                            {% endifequal %}
-									</dd>
-									<dt>Actions</dt>
-									<dd><a href="{{repo.get_absolute_url}}" class="link-show-repo">Open</a></dd>
-									<dd><a href="{% url repo-action %}/fetch/" class="link-update-merge-repo">Fetch</a></dd>
-								</dl>
-							</div>
-						</div>
-					</li>
-				{% endif %}
-	            {% endfor %}
-			</ul>
-        {% endif %}
-    {% endwith %}
-	    
-    {% if permissions.view_issues %}
-        {% if issues %}
-            <table>
-                <thead>
-                    <caption>Recent Issues for {{project.name_long}}</caption>
-                    <tr>
-                        <th>Title</th>
-                        <th>Created by</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for issue in issues %}
-                        <tr>
-                            <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
-                            <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <a href="{% url issue-list project.name_short %}">view all issues for this project</a><br/>
-            <a href="{% url issue-list project.name_short %}?completed=no">view live issues for this project</a><br/>
-            <a href="{% url issue-list project.name_short %}?completed=yes">view completed issues for this project</a>
-        {% else %}
-            <h4>This project has no issues, yay!</h4>
-        {% endif %}
+	<ul id="project-details-tabs" class="flora">
+		<li><a href="#project-details"><span>Project Details</span></a></li>
+		<li><a href="#project-repositories"><span>Project Repositories</span></a></li>
+		<li><a href="#project-issues"><span>Project Issues</span></a></li>
+		<li><a href="#project-members"><span>Project Members</span></a></li>
+	</ul>
+
+	<div id="project-details">
+		<h3>Project Details</h3>
+	    <dl id="project-details">
+    	    <dt>Project Name</dt>
+	        <dd>{{project.name_long}}</dd>
+	        <dt>Project Owner</dt>
+	        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
+	        <dt>Project Description</dt>
+	        <dd>{{project.description_long}}</dd>
+	    </dl>	
+	</div>
+	
+	<div id="project-repositories">
+		{% with project.repo_set.select_related as repos %}
+        	{% if repos %}
+				<h2>Repositories {{project.name_long}}</h2>
+				<ul>
+					{% for repo in repos %}
+				 		{% if repo.repo_created %}
+							<li>
+								<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a>
+								<div>
+									<dl>
+										<dt>Last Changeset ID</dt>
+										<dd>
+									 		{% ifequal repo.get_changeset_number -1 %}
+	                                    		No Changesets (please add and commit files).
+    	                           			{% else %}
+	                                  				{{repo.get_changeset_number}} - {{repo.get_changeset}}
+	    	                           		{% endifequal %}
+										</dd>
+								</div>
+							</li>
+						{% endif %}
+	            	{% endfor %}
+				</ul>
+        	{% endif %}
+    	{% endwith %}
+	</div>
+	
+	<div id="project-issues">
+		{% if permissions.view_issues %}
+        	{% if issues %}
+            	<table>
+                	<thead>
+                    	<caption>Recent Issues for {{project.name_long}}</caption>
+	                    <tr>
+    	                    <th>Title</th>
+	                        <th>Created by</th>
+    	                </tr>
+	                </thead>
+    	            <tbody>
+        	            {% for issue in issues %}
+	                        <tr>
+    	                        <td><a href="{{issue.get_absolute_url}}">{{issue.title}}</a></td>
+	                            <td><a href="{{issue.user_posted.get_absolute_url}}">{{issue.user_posted.username}}</a></td>
+	                        </tr>
+	                    {% endfor %}
+	                </tbody>
+	            </table>
+	            <a href="{% url issue-list project.name_short %}">view all issues for this project</a><br/>
+    	        <a href="{% url issue-list project.name_short %}?completed=no">view live issues for this project</a><br/>
+	            <a href="{% url issue-list project.name_short %}?completed=yes">view completed issues for this project</a>
+	        {% else %}
+    	        <h4>This project has no issues, yay!</h4>
+	        {% endif %}
         {% else %}
             <h4>You can't view the issues, man!</h4>
-        {% endif %}
-        
-    {% if backups %}
-        <table>
-            <thead>
-                <caption>Backups of {{project.name_long}}</caption>
-                <tr>
-                    <th>Creation Date</th>
-                    <th>Format</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for backup in backups %}
-                    <tr>
-                        <td>{{backup.created}}</td>
-                        <td>{{backup.format}}</td>
-                     </tr>
-                 {% endfor %}
-             </tbody>
-         </table>
-     {% endif %}
+        {% endif %}	
+	</div>
     
+	<div id="project-members">
+	    {% with project.members as members %}
+    	    <dl id="project-members">
+        	    <dt>Project Members</dt>
+            	{% for member in members %}
+                	<dd><a href="{{member.get_absolute_url}}">{{member.username}}</a></dd>
+	            {% endfor %}
+    	    </dl>
+	    {% endwith %}
+    
+	    {% if user_can_request_to_join %} 
+	        <form method="post" action="{% url project-join-project slug=project.name_short %}">
+	            If you want to join this project, click on this button!
+	            <input type="submit" value="Join" />
+	        </form>
+    	{% endif %}
+	</div>
+    
+	<div id="project-backups">
+	    {% if backups %}
+	        <table>
+	            <thead>
+	                <caption>Backups of {{project.name_long}}</caption>
+	                <tr>
+	                    <th>Creation Date</th>
+	                    <th>Format</th>
+	                </tr>
+	            </thead>
+	            <tbody>
+	                {% for backup in backups %}
+	                    <tr>
+	                        <td>{{backup.created}}</td>
+	                        <td>{{backup.format}}</td>
+	                     </tr>
+	                 {% endfor %}
+	             </tbody>
+	         </table>
+	     {% endif %}
+    </div>
 {% endblock %}
 
 {% block sidebar %}
