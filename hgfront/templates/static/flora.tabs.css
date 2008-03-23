@@ -86,7 +86,7 @@
     color: #000;
 }
 .ui-tabs-panel {
-    border: 1px solid #519e2d;
+    border: 1px solid #638fff;
     padding: 10px;
     background: #fff; /* declare background color for container to avoid distorted fonts in IE while fading */
 }
