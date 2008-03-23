@@ -1,53 +1,12 @@
 {% extends "base.html" %}
 {% load core_templatetags %}
 
-{% block title %}{{block.super}} All Projects{% endblock %}
+{% block title %}{{block.super}} {{view_title}}{% endblock %}
 
-{% block content_title %}<h2>All Projects on {{hgf_site_name}}</h2>{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{% url project-list %}">Projects</a></li>{% endblock %}
+{% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{% url project-list %}">{{view_title}}</a></li>{% endblock %}
 
 {% block main_content %}
-
-    {% if project_news %}
-        <h2>Latest News</h2>
-        <dl>
-            {% for item in project_news %}
-                <dt>{{item.parent_project}}</dt>
-                <dd class="news-item-title">{{item.news_title}}</dd>
-                <dd class="news-item-pub-date">{{item.pub_date}}</dd>
-                <dd class="news-item-body">{{item.news_body}}</dd>
-             {% endfor %}
-        </dl>
-    {% endif %}
-
-
-	{% if projects %}
-	<ul>
-		{% for project in projects %}
-				<li class="bubbleInfo">
-					<a class="trigger" href="{{project.get_absolute_url}}">{{project.name_long}}</a>
-					<div class="popup">
-						<div class="popup-content">
-							<dl>
-								<dt>Project Description</dt>
-								<dd>{{project.description_short|truncatewords_html:10}}</dd>
-								<dt>Project Owner</dt>
-								<dd><a href="{% url member-profile %}/{{project.user_owner}}/">{{project.user_owner}}</a></dd>
-								<dt>Creation Date</dt>
-								<dd>{{project.pub_date|date:"d M Y"}}</dd>
-							</dl>
-							<a class="link-open-project" href="{{project.get_absolute_url}}">Open Project</a>
-							{% if user_can_request_to_join %}
-								<a class="link-join-project" href="{% url project-join-project slug=project.name_short %}">Join Project</a>
-	    					{% endif %}
-						</div>
- 	 				</div>
-				</li>
-		{% endfor %}
-	</ul>
-	{% else %}
-		<strong>There are currently no projects on the system.</strong>
-	{% endif %}
+	{% include "project/project_list_ajax.html" %}
 {% endblock %}
 
 {% block sidebar %}

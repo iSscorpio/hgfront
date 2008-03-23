@@ -48,7 +48,7 @@
         <div class="span-24" id="breadcrumbs">
             <ul>
                 {% block breadcrumbs %}
-                    <li class="home"><a href="{% url project-list %}">Home</a></li>            
+                    <li><a class="home" href="{% url project-list %}">Home</a></li>            
                 {% endblock breadcrumbs %}
             </ul>
         </div>
@@ -62,7 +62,6 @@
         {% endif %}
         
         <div class="span-16" id="content">
-            <h2>{% block content_title %}Content title{% endblock content_title %}</h2>
             {% block main_content %}{% endblock main_content %}
         </div>
         

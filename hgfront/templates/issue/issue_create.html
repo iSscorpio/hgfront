@@ -2,13 +2,6 @@
 
 {% block title %}{{project.name_long}} : Create New Issue{% endblock %}
 {% block breadcrumbs %}{{block.super}}<li><a href="{% url issue-create slug=project.name_short %}">New Issue</a></li>{% endblock %}
-
 {% block content_title %}Create New Issue{% endblock %}
 
-{% block main_content %}
-    {{fail}}
-        <form action="{% url issue-create slug=project.name_short %}" method="post">
-            <table>{{form.as_table}}</table>
-            <input type="submit">
-        </form>
-{% endblock %}
+{% include "issue/issue_create_ajax.html" %}

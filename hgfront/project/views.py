@@ -26,8 +26,14 @@ def get_project_list(request):
     project_news = ProjectNews.objects.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
     #user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
     
-    return render_to_response('project/project_list.html',
+    if request.is_ajax():
+        template = 'project/project_list_ajax.html'
+    else:
+        template = 'project/project_list.html'
+    
+    return render_to_response(template,
         {
+            'view_title': "All Projects",
             'projects': projects,
             'project_news': project_news,
             #'user_can_request_to_join':user_can_request_to_join
