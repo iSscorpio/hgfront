@@ -77,12 +77,27 @@ $(document).ready(function(){
 	$('#project-details-tabs, #repo-details-tabs').tabs({ fx: { opacity: 'toggle' } });
 	
 	$('.link-create-issue').click(function(){
+		link = $(this)
+		$('.issues-content').html('')
+
 		$.ajax({
 			url: $('.link-create-issue').attr('href'),
 			success: function(html) {
 				$('.issues-content').append(html);
 //				$.ui.history("add");
 				
+			}
+		});
+		return false;
+	});
+	
+	$('.issues-content a').click(function(){
+		link = $(this)
+		$('.issues-content').html('')
+		$.ajax({
+			url: link.attr('href'),
+			success: function(html) {
+				$('.issues-content').append(html);
 			}
 		});
 		return false;

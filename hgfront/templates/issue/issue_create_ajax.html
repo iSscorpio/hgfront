@@ -1,7 +1,3 @@
-{% block title %}{{project.name_long}} : Create New Issue{% endblock %}
-
-{% block content_title %}Create New Issue{% endblock %}
-
 {% block main_content %}
     {{fail}}
         <form action="{% url issue-create slug=project.name_short %}" method="post">

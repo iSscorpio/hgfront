@@ -1,0 +1,12 @@
+{% block main_content %}
+    <p>{{issue.body}}</p>
+    Author:{{issue.user_posted.username}}<br />
+    Severity:{{issue.issue_sev.title}}<br />
+    Type:{{issue.issue_type.title}}<br />
+    Status:{{issue.issue_status.title}}<br />
+    {% if permissions.edit_issues %}<a href="{% url issue-edit slug=project.name_short, issue_id=issue.id %}">Edit this issue</a>{% endif %}
+    <form method="post" action="{% url issue-edit slug=project.name_short, issue_id=issue.id %}">
+        <input type="hidden" name="toggling_completed" value="1" />
+        <input type="submit" value="{{issue.completed|yesno:"Re-open,Mark as completed"}}" />
+    </form>
+{% endblock main_content %}

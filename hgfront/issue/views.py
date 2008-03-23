@@ -86,7 +86,13 @@ def issue_detail(request, slug, issue_id):
     """Returns the details of the issue identified by `issue_id`"""
     project = get_object_or_404(Project.objects.select_related(), name_short = slug)
     issue = get_object_or_404(Issue.objects.select_related(), id = issue_id)
-    return render_to_response('issue/issue_detail.html',
+    
+    if request.is_ajax():
+        template = 'issue/issue_detail_ajax.html'
+    else:
+        template = 'issue/issue_detail.html'
+    
+    return render_to_response(template,
         {
             'project':project,
             'issue':issue,
