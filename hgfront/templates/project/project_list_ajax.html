@@ -13,13 +13,26 @@
 {% block main_content %}
 	<div id="project-list">
 		{% if projects %}
-			<ul>
+			<table>
+				<thead>
+					<tr>
+						<th>Project Name</th>
+						<th>Project Description</th>
+						<th>Project Active Since</th>
+						<th>Number of Repositories</th>
+					</tr>
+				</thead>
+				<tbody>
 				{% for project in projects %}
-					<li>
-						<a href="{{project.get_absolute_url}}"><span>{{project.name_long}}</span></a>
-					</li>
+					<tr>
+						<td><a href="{{project.get_absolute_url}}"><span>{{project.name_long}}</span></a></td>
+						<td>{{project.description_short}}</td>
+						<td>{{project.pub_date|date:"D d M Y"}}</td>
+						<td>{{project.num_repos}}</td>
+					</tr>
 				{% endfor %}
-			</ul>
+				</tbody>
+			</table>
 		{% else %}
 			<strong>There are currently no projects on the system.</strong>
 		{% endif %}

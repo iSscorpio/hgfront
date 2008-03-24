@@ -22,7 +22,9 @@
 	        <dt>Project Owner</dt>
 	        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
 	        <dt>Project Description</dt>
-	        <dd>{{project.description_long}}</dd>
+	        <dd>{{project.description_long}}</dd>			
+	        <dt>Project Active Since</dt>
+	        <dd>{{project.pub_date|date:"D d M Y H:m"}}</dd>
 	    </dl>	
 	</div>
 	
@@ -166,7 +168,7 @@
 	            <tbody>
 	                {% for backup in backups %}
 	                    <tr>
-	                        <td>{{backup.created}}</td>
+	                        <td>{{backup.created|date:"D d M Y H:m"}}</td>
 	                        <td>{{backup.format}}</td>
 	                     </tr>
 	                 {% endfor %}

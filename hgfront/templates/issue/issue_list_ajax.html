@@ -1,3 +1,11 @@
+{% block tabs %}
+    <ul class="tabs-navigation flora">
+    	<li><a href="#issues-all"><span>All Issues</span></a></li>
+		<li><a href="#issues-new"><span>New Issues</span></a></li>
+		<li><a><span>Create Issue</span></a></li>
+    </ul>
+{% endblock tabs %}
+
 {% block main_content %}
 	<div id="issues-all">
     {% if issue_list %}

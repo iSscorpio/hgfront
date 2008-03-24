@@ -2,13 +2,6 @@
 
 {% block title %}{{project.name_long}} : All Open Issues{% endblock %}
 
-{% block tabs %}
-    <ul class="tabs-navigation flora">
-    	<li><a href="#issues-all"><span>All Issues</span></a></li>
-		<li><a href="#issues-new"><span>New Issues</span></a></li>
-    </ul>
-{% endblock tabs %}
-
 {% block main_content %}
 	{% include "issue/issue_list_ajax.html" %}
 {% endblock %}
