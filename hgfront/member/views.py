@@ -34,9 +34,14 @@ def member_register(request):
             
     else:
         form = MemberRegisterForm()
-    return render_to_response('member/member_register.html',
+        
+    if request.is_ajax():
+        template = 'member/register_ajax.html'
+    else:
+        template = 'member/register.html'
+    return render_to_response(template,
         {
-            'form':form
+            'form':form.as_table()
         }, context_instance=RequestContext(request)
     )
     

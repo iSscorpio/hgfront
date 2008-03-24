@@ -5,15 +5,6 @@
 
 {% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{% url project-list %}">{{view_title}}</a></li>{% endblock %}
 
-{% block tabs %}
-
-	<ul class="tabs-navigation flora">
-		<li><a href="#project-list"><span>Project List</span></a></li>
-		<li><a href="#project-list-news"><span>Project News</span></a></li>
-	</ul>
-
-{% endblock tabs %}
-
 {% block main_content %}
 	{% include "project/project_list_ajax.html" %}
 {% endblock %}

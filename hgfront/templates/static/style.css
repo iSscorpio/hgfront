@@ -1,6 +1,18 @@
+/*
+ * Global Style Constands
+ * 
+ * Colours:
+ * 	Main Background: #B1B18B
+ * 	Inside Background: #668099
+ * 	Border Colour: #AFAFCA
+ * 	Font Color: #fff
+ */
+
+
 /* Global Styles */
 body {
-    background: url('images/bg1.png') repeat-x;
+    background: #B1B18B;
+	font: 90% Verdana,Helvetica,Arial,sans-serif;
 }
 
 /* Global Lists */
@@ -31,53 +43,63 @@ a {
 
 /* Main Layout */
 div#header {
-
+	background: #668099;
+	padding:10px;
 }
 
-div#header h1 {
-    font-size: 3em;
+div#header div#sitename h1 {
+	color: #000;
+	font-size: 2em;
 }
 
+div#header div#logo {
+	background: url('images/mercurial-logo.png') no-repeat top left;
+	height: 100px;
+}
 
 /* Navigation */
-ul.toolbar-buttons {
-    float:right;
+div#navigation {
+	background: #668099;
+	padding:10px 10px 0 10px;
+	border-bottom: 5px solid #AFAFCA;
 }
 
-ul.toolbar-buttons li {
+div#navigation ul {
+	list-style:none;
+}
+
+div#navigation ul li {
     float:left;
     border:0;
     margin-right:10px;
 }
 
-ul.toolbar-buttons li a {
+div#navigation ul li a {
+	color:#fff;
+	font-weight:bold;
     font-size: 1.3em;
 }
 
+div#navigation ul li a:hover {
+	border-bottom: 2px solid #fff;
+}
+
 /* Breadcrumbs */
-div#breadcrumbs {
-    clear:both;
-    border-bottom: 3px dotted #ccc;
+div#message {
+    background: #668099;
+	padding:10px;
 }
 
-div#breadcrumbs ul li {
-    float:left;
-    border:0;
-    margin-right:20px;
-    padding-left:20px;
-    background: url('images/breadcrumb.png') no-repeat;
+div#message ul {
+	border: 2px solid #f00;
+	padding: 10px;
+	background: #fcc;
 }
 
-div#breadcrumbs ul li.home {
-    background: url('images/home.png') no-repeat;
-}
-
-div#breadcrumbs ul li.project {
-    background: url('images/projects/project.png') no-repeat;
-}
-
-div#breadcrumbs ul li.project-add {
-    background: url('images/projects/add.png') no-repeat;
+/* Main Area */
+div#main-area {
+	padding:10px;
+	background: #668099;
 }
 
 /* Links */

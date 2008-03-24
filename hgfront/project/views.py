@@ -100,14 +100,23 @@ def create_project_form(request):
             )
             project.save()
             request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
-            return HttpResponse(
-                                "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
-                    , mimetype="application/json")
+            if request.is_ajax():
+                return HttpResponse(
+                                    "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
+                                    , mimetype="application/json")
+            else:
+                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': form.cleaned_data['name_short']}))
         #return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
     else:
         form = NewProjectForm()
         is_auth = request.user.is_authenticated()
-        return render_to_response('project/project_create.html',
+        
+        if request.is_ajax():
+            template ='project/project_create_ajax.html'
+        else:
+            template = 'project/project_create.html'
+        
+        return render_to_response(template,
             {
                 'form':form.as_table(),
                 'is_auth': is_auth

@@ -1,3 +1,15 @@
+{% block tabs %}
+
+	<ul class="tabs-navigation flora">
+		<li><a href="#project-list"><span>Project List</span></a></li>
+		<li><a href="#project-list-news"><span>Project News</span></a></li>
+		{% if hgf_logged_in_user %}
+			<li><a href="{% url project-create project.name_short %}"><span>Create New Project</span></a></li>
+		{% endif %}
+	</ul>
+
+{% endblock tabs %}
+
 {% block main_content %}
 	<div id="project-list">
 		{% if projects %}

@@ -1,3 +1,16 @@
+{% block tabs %}
+	<div><a href="{% url project-detail slug=project.name_short %}">&laquo; Back to {{project.name_long}}</a></div>
+
+	<ul class="tabs-navigation flora">
+		<li><a href="#repo-changeset"><span>Changeset</span></a></li>
+		<li><a href="#repo-manifest"><span>Manifest</span></a></li>
+		<li><a href="#repo-branches"><span>Branches</span></a></li>
+		<li><a href="#repo-tags"><span>Tags</span></a></li>
+		<li><a href="#repo-actions"><span>Actions</span></a></li>
+	</ul>
+{% endblock tabs %}
+
+
 {% block main_content %}
 
 	<div id="repo-changeset">

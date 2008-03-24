@@ -36,8 +36,9 @@ def repo_list(request, slug):
 
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset='tip'):
-    repo = Repo.objects.get(name_short__exact=repo_name)
     project = Project.objects.get(name_short__exact=slug)
+    repo = Repo.objects.get(name_short__exact=repo_name, parent_project__exact = project)
+    
     
     try:
         changeset_tags = repo.get_tags()

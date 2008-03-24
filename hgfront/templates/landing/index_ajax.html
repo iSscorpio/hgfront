@@ -1,0 +1,17 @@
+{% block main_content %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#home"><span>Home</span></a></li>
+		<li><a href="#all-projects"><span>All Projects</span></a></li>
+	</ul>
+
+	<div id="home">
+		{% for project in latest_projects %}
+			{{project}}
+		{% endfor %} 
+	</div>
+	
+	<div id="all-projects">
+		{% include "project/project_list_ajax.html" %}
+	</div>
+	
+{% endblock main_content %}

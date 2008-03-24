@@ -21,38 +21,33 @@
 
 <body>
     <div class="container">
-    
-        <div class="span-24" id="toolbar">
-            <span class="userbar">
-                {% if hgf_logged_in_user %}
-                    <a href="{% url member-home %}" class="member-username">{{hgf_logged_in_user}}</a> (
-						<a href="{% url member-logout %}">Logout</a>
-						{% if user.is_staff %} | <a href="/admin/">Admin</a> {% endif %}
-						)
-                {% else %}
-                    <a href="{% url member-login %}">Login</a> / <a href="{% url member-register %}" class="link-create-user">Register</a>
-                {% endif %}
-            </span>
-            
-            <ul class="toolbar-buttons">
-                <li><a href="{% url project-create project.name_short %}" class="link-create-project">Create New Project</a></li>
-            </ul>
-            <br style="clear:both;" />
-        </div>
+    	
+		<!-- Header -->
+		<div class="span-24" id="header">
+			<div class="span-3" id="logo"></div>
+			<div class="span-12 last" id="sitename">
+				<h1>{{hgf_site_name}}</h1>
+			</div>
+		</div>
+		<!-- /Header -->
+		
+		<!-- Primary Navigation -->
+		<div class="span-24" id="navigation">
+			<ul id="primary-navigation">
+				<li><a href="{% url project-list %}"><span>Home</span></a></li>
+				{% if hgf_logged_in_user %}
+					<li><a href="{% url member-logout %}"><span>Logout</span></a></li>
+				{% else %}
+					<li><a href="{% url member-login %}"><span>Login</span></a></li>
+					<li><a href="{% url member-register %}"><span>Register</span></a></li>
+				{% endif %}
+				{% if user.is_staff %}
+					<li><a href="/admin/"><span>Admin</span></a></li>
+				{% endif %}
+			</ul>
+			<br style="clear:both;" />
+		</div>
 
-    
-        <div class="span-24" id="header">
-                <h1>{{hgf_site_name}}</h1>
-        </div>
-        
-        <div class="span-24" id="breadcrumbs">
-            <ul>
-                {% block breadcrumbs %}
-                    <li><a class="home" href="{% url project-list %}">Home</a></li>            
-                {% endblock breadcrumbs %}
-            </ul>
-        </div>
-        
         {% if messages %}
             {% for message in messages %}
                 <div class="span-24" id="message">
@@ -61,7 +56,7 @@
             {% endfor %}
         {% endif %}
         
-		<div class="span-16" id="main-area">
+		<div class="span-24" id="main-area">
 			<div class="span-24" id="tabs">
 				{% block tabs %}{% endblock tabs %}
 			</div>
@@ -70,16 +65,9 @@
 	            {% block main_content %}{% endblock main_content %}
 	        </div>
         </div>
-		
-        <div class="span-8 last" id="sidebar">
-             {% include "elements/search_form.html" %}
-			 {% block sidebar %}
-				{% include "elements/side_stats.html" %}
-			 {% endblock sidebar %}
-        </div>
-        
+		        
         <div class="span-24" id="footer">
-                {% block footer %}{% endblock footer %}
+        	{% block footer %}{% endblock footer %}
         </div>
         
     </div>

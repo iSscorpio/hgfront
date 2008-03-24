@@ -1,0 +1,59 @@
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#registration-form"><span>Register</span></a></li>
+	</ul>
+{% endblock tabs %}
+
+{% block main_content %}
+<script type="text/javascript" src="/static/js/jquery.pstrength.js"></script>
+<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#member-register').validate({
+			debug: false,
+			rules: {
+				member_username : {
+					required: true,
+					minlength: 4,
+					maxlength: 25,
+					remote: "{% url member-verifyusername %}"
+				},
+				member_email : {
+					required: true,
+					email: true,
+					remote: "{% url member-verifyuseremail %}"
+				},
+				member_password : {
+					required: true
+				},
+				member_verify_password : {
+					required: true,
+					equalTo: "#id_member_password"
+				},
+				member_real_name : {
+					required: true
+				}
+			},
+			messages : {
+				member_username: {
+					required: "Enter a username",
+					minlength: jQuery.format("Enter at least {0} characters"),
+					remote: jQuery.format("{0} is already in use")
+				},
+				member_email: {
+					required: "Enter a valid email",
+					remote: jQuery.format("{0} is already in use")
+				}
+			}
+		});
+		$('#id_member_password').pstrength();
+	});
+</script>
+
+<div class="registration-form">
+	<form id="member-register" action="{% url member-register %}" method="POST">
+		<table>{{form}}</table>
+  		<input type="submit" value="Register">
+	</form>
+</div>
+{% endblock %}
