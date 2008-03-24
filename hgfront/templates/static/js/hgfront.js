@@ -24,6 +24,11 @@ hgfront.jsactivate = function(){
 		
 		$('.tabs-navigation').tabs({ fx: { opacity: 'toggle' } });
 		
+		$('.link-create-repo').click(function(){
+			hgfront.ajaxlink($(this).attr('href'), $(this).parent().parent())
+			return false;
+		});
+		
 /*
 		$('.link-create-issue').click(function(){
 			hgfront.ajaxlink($(this).attr('href'), '.issues-content')

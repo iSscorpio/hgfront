@@ -54,15 +54,24 @@ def member_login(request):
                 # Correct password, and the user is marked "active"
                 auth.login(request, user)
                 # Redirect to a success page.
-                return HttpResponseRedirect(reverse('member-home'))
+                try:
+                    member = Member.objects.get(user=user)
+                except:
+                    return HttpResponseRedirect(reverse('project-list'))
+                return HttpResponseRedirect(reverse('member-home'))                    
             else:
                 # Show an error page
                 return HttpResponseRedirect(reverse('member-login'))
     else:
         form = MemberLoginForm()
-    return render_to_response('member/login.html',
+        
+    if request.is_ajax():
+        template = 'member/login_ajax.html'
+    else:
+        template = 'member/login.html'
+    return render_to_response(template,
         {
-         'form': form
+         'form': form.as_table()
         }, context_instance=RequestContext(request)
     )
     

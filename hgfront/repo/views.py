@@ -12,6 +12,7 @@ from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
+from django.utils import simplejson
 from hgfront.core.json_encode import json_encode
 # Project Libraries
 from hgfront.project.models import Project
@@ -115,7 +116,11 @@ def repo_create(request, slug):
     # Lets decide if we show the form or create a repo
     if request.method == "POST":
         # Were saving, so lets create our instance
-        repo = Repo(parent_project=project, repo_created = True, pub_date=datetime.datetime.now())
+        repo = Repo(
+                    parent_project=project,
+                    repo_created = True,
+                    pub_date=datetime.datetime.now()
+                )
         form = RepoCreateForm(request.POST, instance=repo)
         # Lets check the form is valid
         if form.is_valid():
@@ -125,26 +130,39 @@ def repo_create(request, slug):
                 u = ui.ui()
                 print repo.repo_directory()
                 hg.repository(u, repo.repo_directory() + form.cleaned_data['name_short'] , create=True)
+                form.cleaned_data['repo_created'] = True
                 form.save();
             else:
                 # We pass off to a queue event
+                msg_string = {}
+                
+                msg_string['repo_name'] = form.cleaned_data['name_short']
+                msg_string['project_name'] = str(form.cleaned_data['parent_project'].name_short)
+                
                 q = Queue.objects.get(name='repoclone')
-                clone = form.cleaned_data['name_short']
+                clone = simplejson.dumps(msg_string)
                 msg = Message(message=clone, queue=q)
                 msg.save()
                 # Save the repo, save the world!
                 form.cleaned_data['repo_created'] = False
                 form.save()
-        # Return to the project view    
-        return HttpResponseRedirect(reverse('project-detail',
-            kwargs={
-                'slug': slug,
-                'repo_name':form.cleaned_data['name_short']
-            })
-        )
+        # Return to the project view
+        
+        if request.is_ajax():
+            return HttpResponse(
+                                "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':slug}) + "', 'project': " + json_encode(project) + "}"
+                                , mimetype="application/json")
+        else:
+            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+            
     else:
         form = RepoCreateForm()
-    return render_to_response('repos/repo_create.html',
+        
+    if request.is_ajax():
+        template = 'repos/repo_create_ajax.html'
+    else:
+        template = 'repos/repo_create.html'
+    return render_to_response(template,
         {
             'form':form.as_table(),
             'project':project,
@@ -246,21 +264,18 @@ def get(request, queue_name, response_type='text'):
         return HttpResponseNotFound()
     #
     msg = q.message_set.pop()
-    if response_type == 'json':
-        msg_dict = {}
-        if msg:
-            msg_dict['message'] = msg.message
-            msg_dict['id'] = msg.id
-        return HttpResponse(simplejson.dumps(msg_dict), mimetype='application/json')
-    else:
-        response_data = ''
-        if msg:
-            u = ui.ui()
-            clone = Repo.objects.get(name_short__exact=msg.message)
-            clone.repo_created = True
-            clone.save()
-            hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
-        return HttpResponse(response_data, mimetype='text/plain')
+    if msg:
+        u = ui.ui()
+        repo = simplejson.loads(msg.message)
+        message_id = msg.id
+        project = Project.objects.get(name_short__exact = repo['project_name'])
+        clone = Repo.objects.get(name_short__exact=repo['repo_name'], parent_project__exact=project)
+        clone.repo_created = True
+        clone.save()
+        hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
+        message = Message.objects.get(id=message_id, queue_id = q.id)
+        
+    return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
 
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):

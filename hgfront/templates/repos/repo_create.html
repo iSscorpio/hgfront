@@ -6,9 +6,5 @@
 {% block content_title %}Create New Repository{% endblock %}
 
 {% block main_content %}
-	{{fail}}
-    <form action="{% url repo-create project.name_short %}" method="post">
-        <table>{{form}}</table>
-        <input type="submit">
-    </form>
+	{% include "repos/repo_create_ajax.html" %}
 {% endblock %}

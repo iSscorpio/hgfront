@@ -1,0 +1,18 @@
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#login"><span>Login</span></a></li>
+	</ul>
+{% endblock tabs %}
+
+{% block main_content %}
+<div id="login">
+	<form method="POST" action="{% if next %}?next={{ next }}{% endif %}">
+		<table>{{form}}</table>
+		<input type="submit" value="Log in">
+	      
+		 <p>
+		 	Forgotten your password? You can <a href="{% url auth_password_reset %}">reset it</a> if you're really stumped.
+		 </p>
+	</form>
+</div>
+{% endblock %}
