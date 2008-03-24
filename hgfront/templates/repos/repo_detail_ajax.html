@@ -52,8 +52,9 @@
 	<div id="repo-manifest">
 		<h3>Manifest</h3>
 	   	<ul>
+	   		{% load core_templatetags %}
 	    	{% for file in changeset_files %}
-	        	<li>{{file}}</li>
+	        	<li class="{{file|filetype}}">{{file}}</li>
 		    {% endfor %}
 		 </ul>
 	</div>

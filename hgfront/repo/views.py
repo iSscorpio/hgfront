@@ -332,3 +332,4 @@ def put(request, queue_name):
         return HttpResponse("OK", mimetype='text/plain')
     except Queue.DoesNotExist:
         return HttpResponseNotFound()
+    

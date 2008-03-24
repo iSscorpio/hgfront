@@ -180,3 +180,29 @@ label {
 .popup-content {
 	padding: 20px 10px;
 }
+
+
+/* Filetypes */
+.html {
+	padding-left: 20px;
+	background: url('images/files/html.png') no-repeat left center;
+}
+
+.css {
+	padding-left: 20px;
+	background: url('images/files/css.png') no-repeat left center;
+}
+
+.png, .gif, .jpeg {
+	padding-left: 20px;
+	background: url('images/files/image.png') no-repeat left center;
+}
+
+.python {
+	padding-left: 20px;
+	background: url('images/files/python.png') no-repeat left center;
+}
+.javascript {
+	padding-left: 20px;
+	background: url('images/files/javascript.png') no-repeat left center;
+}

@@ -24,3 +24,14 @@ class MenuboxNode(Node):
         title = self.title.resolve(context)
         output = self.nodelist.render(context)
         return '''<div class="box"><div class="box-outer"><div class="box-inner"><h2>%s</h2>%s</div></div></div>''' % (title, output)
+
+
+def filetype(value):
+    file_type = "default"
+    if value.endswith('py'): file_type = "python"
+    if value.endswith('html'): file_type = "html"
+    if value.endswith('js'): file_type = "javascript"
+    if value.endswith('png'): file_type = "png"
+    if value.endswith('css'): file_type = "css"   
+    return file_type
+register.filter('filetype', filetype)
