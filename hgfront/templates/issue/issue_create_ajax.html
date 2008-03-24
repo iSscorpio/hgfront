@@ -1,4 +1,6 @@
 {% block tabs %}
+	<div><a href="{% url project-detail slug=project.name_short %}">&laquo; Back to {{project.name_long}}</a></div>
+
 	<ul class="tabs-navigation flora">
 		<li><a href="#create-issue"><span>Create Issue</span></a></li>
 	</ul>
