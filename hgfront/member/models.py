@@ -4,6 +4,8 @@ from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
 
+from hgfront.project.models import Project
+
 # Create your models here.
 
 class Member(models.Model):
@@ -25,3 +27,7 @@ class Member(models.Model):
     
     class Admin:
         list_display = ('user', 'member_displayname',)
+        
+class FavoriteProjects(models.Model):
+    member = models.ForeignKey(Member)
+    project = models.ForeignKey(Project)
