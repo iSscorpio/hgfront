@@ -1,48 +1,13 @@
-{% extends "project/project_list.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{block.super}} Create New Project{% endblock %}
 
-{% block content_title %}Create New Project{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li class="project-add">&raquo; <a href="{% url project-create %}">New project</a></li>{% endblock %}
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#project-create"><span>Create New Project</span></a></li>
+	</ul>
+{% endblock tabs %}
 
 {% block main_content %}
-	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$('#project-create-step-1').validate({
-				rules : {
-					name_short : {
-						required: true,
-						minlength: 4,
-						maxlength: 25,
-						remote: '/p/verifyprojectshortname/'
-					}
-				},
-				messages : {
-					name_short : {
-						required: 'A short name for project is required.',
-						minlength: jQuery.format("Enter at least {0} characters"),
-						remote: jQuery.format("{0} is already in use")
-					}
-				}
-			});
-		});
-	</script>
-
-
-	{{fail}}
-    <form id="project-create-step-1" action="{% url project-create %}" method="post">
-        <ul>
-            <li>
-                {{form.name_short.errors}}
-                <label for="name_short">Project Short Name</label>
-                {{form.name_short}}
-                <div class="field-description">
-                    Please enter the short name of your project.  This is the unique name of your project
-                    and cannot be changed, so please choose carefully.
-                </div>
-            </li>
-        </ul>
-        <input type="submit" />
-    </form>
+	{% include "project/project_create_ajax.html" %}
 {% endblock %}

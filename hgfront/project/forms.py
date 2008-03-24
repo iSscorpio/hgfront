@@ -15,6 +15,10 @@ available_styles = (
 
 class NewProjectForm(forms.Form):
     name_short = forms.CharField(max_length=50)
+    name_long=forms.CharField(max_length=255)
+    description_short=forms.CharField(max_length=255)
+    description_long=forms.CharField(widget=forms.widgets.Textarea())
+    hgweb_style=forms.ChoiceField(choices=available_styles)
     
     def clean_name_short(self):
         name_short = self.cleaned_data.get('name_short', '')
@@ -29,10 +33,7 @@ class NewProjectForm(forms.Form):
     
 class NewProjectStep2(forms.Form):
     name_short=forms.CharField(max_length=50)
-    name_long=forms.CharField(max_length=255)
-    description_short=forms.CharField(max_length=255)
-    description_long=forms.CharField(widget=forms.widgets.Textarea())
-    hgweb_style=forms.ChoiceField(choices=available_styles)
+
 
 
 class JoinRequestForm(forms.Form):

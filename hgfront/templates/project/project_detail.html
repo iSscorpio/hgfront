@@ -6,16 +6,18 @@
 {% block content_title %}{{project.name_long}}{% endblock %}
 {% block breadcrumbs %}{{block.super}}<li class="project">&raquo; <a href="{{project.get_absolute_url}}">{{project.name_long}}</a></li>{% endblock %}
 
-{% block tabs %}
-	<ul class="tabs-navigation flora">
-		<li><a href="#project-details"><span>Details</span></a></li>
-		<li><a href="#project-repositories"><span>Repositories</span></a></li>
-		<li><a href="#project-issues"><span>Issues</span></a></li>
-		<li><a href="#project-members"><span>Members</span></a></li>
-		<li><a href="#project-backups"><span>Backups</span></a></li>
-		<li><a href="#project-actions"><span>Actions</span></a></li>
-	</ul>
-{% endblock tabs %}
+{% if not request.is_ajax %}
+	{% block tabs %}
+		<ul class="tabs-navigation flora">
+			<li><a href="#project-details"><span>Details</span></a></li>
+			<li><a href="#project-repositories"><span>Repositories</span></a></li>
+			<li><a href="#project-issues"><span>Issues</span></a></li>
+			<li><a href="#project-members"><span>Members</span></a></li>
+			<li><a href="#project-backups"><span>Backups</span></a></li>
+			<li><a href="#project-actions"><span>Actions</span></a></li>
+		</ul>
+	{% endblock tabs %}
+{% endif %}
 
 {% block main_content %}
 	{% include "project/project_detail_ajax.html" %}

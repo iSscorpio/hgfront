@@ -1,0 +1,31 @@
+{% block main_content %}
+	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#project-create-step-1').validate({
+				rules : {
+					name_short : {
+						required: true,
+						minlength: 4,
+						maxlength: 25,
+						remote: '/p/verifyprojectshortname/'
+					}
+				},
+				messages : {
+					name_short : {
+						required: 'A short name for project is required.',
+						minlength: jQuery.format("Enter at least {0} characters"),
+						remote: jQuery.format("{0} is already in use")
+					}
+				}
+			});
+		});
+	</script>
+
+
+	{{fail}}
+    <form id="project-create-form" action="{% url project-create %}" method="post">
+    	<table>{{form}}</table>
+		<input type="submit" />
+    </form>
+{% endblock main_content %}

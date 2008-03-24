@@ -1,4 +1,4 @@
-{% extends "project/project_detail.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{project.name_long}} : Create New Repository{% endblock %}
 {% block breadcrumbs %}{{block.super}}<li><a href="{% url repo-create project.name_short %}">New Repo</a></li>{% endblock %}

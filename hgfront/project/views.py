@@ -11,6 +11,7 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 # Project Libraries
 from hgfront.backup.models import ProjectBackup
+from hgfront.core.json_encode import json_encode
 from hgfront.project.forms import *
 from hgfront.project.models import Project, ProjectPermissionSet, ProjectNews
 from hgfront.project.decorators import check_project_permissions
@@ -86,53 +87,29 @@ def create_project_form(request):
         return HttpResponseRedirect(reverse('site-config'))
     
     if request.method == "POST":
-        if 'name_long' not in request.POST:
-            form = NewProjectForm(request.POST)
-            if form.is_valid():
-                form_data = request.POST.copy()
-                form_data['user_owner'] = request.user.username
-                form_data['pub_date'] = datetime.datetime.now()
-                form2 = NewProjectStep2(form_data)
-                return render_to_response('project/project_create_step_2.html',
-                    {
-                        'form':form2,
-                        'name_short':string.lower(form.cleaned_data['name_short']),
-                        'user_owner':request.user.username
-                    }, context_instance=RequestContext(request)
-                )
-            else:
-                return render_to_response('project/project_create.html',
-                    {
-                        'form':form,
-                    }, context_instance=RequestContext(request)
-                )
-                
-        else:
-            form = NewProjectStep2(request.POST)
-            if form.is_valid():
-                project = Project(
-                    name_short = string.lower(form.cleaned_data['name_short']),
-                    name_long = form.cleaned_data['name_long'],
-                    description_short = form.cleaned_data['description_short'],
-                    description_long = form.cleaned_data['description_long'],
-                    user_owner = request.user,
-                    pub_date = datetime.datetime.now(),
-                    hgweb_style = form.cleaned_data.get('hgweb_style', '')
-                ).save()
-                request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
-                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
-            else:
-                return render_to_response('project/project_create_step_2.html',
-                    {
-                        'form':form,
-                    }, context_instance=RequestContext(request)
-                )
+        form = NewProjectForm(request.POST)
+        if form.is_valid():
+            project = Project(
+                name_short = string.lower(form.cleaned_data['name_short']),
+                name_long = form.cleaned_data['name_long'],
+                description_short = form.cleaned_data['description_short'],
+                description_long = form.cleaned_data['description_long'],
+                user_owner = request.user,
+                pub_date = datetime.datetime.now(),
+                hgweb_style = form.cleaned_data.get('hgweb_style', '')
+            )
+            project.save()
+            request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
+            return HttpResponse(
+                                "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
+                    , mimetype="application/json")
+        #return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
     else:
         form = NewProjectForm()
-        is_auth = bool(request.user.is_authenticated())
+        is_auth = request.user.is_authenticated()
         return render_to_response('project/project_create.html',
             {
-                'form':form,
+                'form':form.as_table(),
                 'is_auth': is_auth
             }, context_instance=RequestContext(request)
         )

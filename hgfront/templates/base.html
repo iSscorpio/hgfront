@@ -61,14 +61,16 @@
             {% endfor %}
         {% endif %}
         
-		<div class="span-24" id="tabs">
-			{% block tabs %}{% endblock tabs %}
-		</div>
-		
-        <div class="span-16" id="content">
-            {% block main_content %}{% endblock main_content %}
+		<div class="span-16" id="main-area">
+			<div class="span-24" id="tabs">
+				{% block tabs %}{% endblock tabs %}
+			</div>
+			
+	        <div class="span-24" id="content">
+	            {% block main_content %}{% endblock main_content %}
+	        </div>
         </div>
-        
+		
         <div class="span-8 last" id="sidebar">
              {% include "elements/search_form.html" %}
 			 {% block sidebar %}
