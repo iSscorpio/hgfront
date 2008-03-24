@@ -1,3 +1,13 @@
+{% block tabs %}
+	<div><a href="{% url project-detail slug=project.name_short %}">&laquo; Back to {{project.name_long}}</a></div>
+
+	<ul class="tabs-navigation flora">
+		<li><a href="#issue-details"><span>Details</span></a></li>
+		<li><a href="#issue-comments"><span>Comments</span></a></li>
+		<li><a href="#issue-actions"><span>Actions</span></a></li>
+	</ul>
+{% endblock tabs %}
+
 {% block main_content %}
 
 	<div id="issue-details">

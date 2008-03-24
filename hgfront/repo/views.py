@@ -273,7 +273,8 @@ def get(request, queue_name, response_type='text'):
         clone.repo_created = True
         clone.save()
         hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
-        message = Message.objects.get(id=message_id, queue_id = q.id)
+        message = Message.objects.get(id=message_id, queue=q.id)
+        message.delete()
         
     return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
 

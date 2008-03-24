@@ -1,7 +1,15 @@
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#create-issue"><span>Create Issue</span></a></li>
+	</ul>
+{% endblock tabs %}
+
 {% block main_content %}
-    {{fail}}
+	<div id="create-issue">
+	    {{fail}}
         <form id="issue-submit" action="{% url issue-create slug=project.name_short %}" method="post">
             <table>{{form.as_table}}</table>
             <input type="submit">
         </form>
+	</div>
 {% endblock %}

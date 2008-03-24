@@ -29,11 +29,13 @@ hgfront.jsactivate = function(){
 			return false;
 		});
 		
-/*
 		$('.link-create-issue').click(function(){
-			hgfront.ajaxlink($(this).attr('href'), '.issues-content')
+			hgfront.ajaxlink($(this).attr('href'), $(this).parent().parent())
 			return false;
 		});	
+		
+		
+/*
 		
 		$('#project-list a').click(function(){
 			hgfront.ajaxlink($(this).attr('href'), '#main-area')
