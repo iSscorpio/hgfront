@@ -183,6 +183,10 @@ label {
 
 
 /* Filetypes */
+.default {
+	padding-left: 20px;
+	background: url('images/files/default.png') no-repeat left center;
+}
 .html {
 	padding-left: 20px;
 	background: url('images/files/html.png') no-repeat left center;
