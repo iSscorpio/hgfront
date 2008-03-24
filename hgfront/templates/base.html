@@ -27,26 +27,22 @@
 			<div class="span-3" id="logo"></div>
 			<div class="span-12 last" id="sitename">
 				<h1>{{hgf_site_name}}</h1>
+				<ul id="primary-navigation">
+					<li><a href="{% url project-list %}"><span>Home</span></a></li>
+					{% if hgf_logged_in_user %}
+						<li><a href="{% url member-logout %}"><span>Logout</span></a></li>
+					{% else %}
+						<li><a href="{% url member-login %}"><span>Login</span></a></li>
+						<li><a href="{% url member-register %}"><span>Register</span></a></li>
+					{% endif %}
+					{% if user.is_staff %}
+						<li><a href="/admin/"><span>Admin</span></a></li>
+					{% endif %}
+				</ul>
+				<br style="clear:both;" />
 			</div>
 		</div>
 		<!-- /Header -->
-		
-		<!-- Primary Navigation -->
-		<div class="span-24" id="navigation">
-			<ul id="primary-navigation">
-				<li><a href="{% url project-list %}"><span>Home</span></a></li>
-				{% if hgf_logged_in_user %}
-					<li><a href="{% url member-logout %}"><span>Logout</span></a></li>
-				{% else %}
-					<li><a href="{% url member-login %}"><span>Login</span></a></li>
-					<li><a href="{% url member-register %}"><span>Register</span></a></li>
-				{% endif %}
-				{% if user.is_staff %}
-					<li><a href="/admin/"><span>Admin</span></a></li>
-				{% endif %}
-			</ul>
-			<br style="clear:both;" />
-		</div>
 
         {% if messages %}
             {% for message in messages %}

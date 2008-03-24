@@ -48,8 +48,9 @@ div#header {
 }
 
 div#header div#sitename h1 {
-	color: #000;
+	color: #fff;
 	font-size: 2em;
+	padding-top: 25px;
 }
 
 div#header div#logo {
@@ -58,29 +59,24 @@ div#header div#logo {
 }
 
 /* Navigation */
-div#navigation {
-	background: #668099;
-	padding:10px 10px 0 10px;
-	border-bottom: 5px solid #AFAFCA;
-}
 
-div#navigation ul {
+div#header ul {
 	list-style:none;
 }
 
-div#navigation ul li {
+div#header ul li {
     float:left;
     border:0;
     margin-right:10px;
 }
 
-div#navigation ul li a {
+div#header ul li a {
 	color:#fff;
 	font-weight:bold;
-    font-size: 1.3em;
+    font-size: 1.1em;
 }
 
-div#navigation ul li a:hover {
+div#header ul li a:hover {
 	border-bottom: 2px solid #fff;
 }
 
