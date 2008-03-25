@@ -78,7 +78,12 @@
 	</div>
 	
 	<div id="repo-actions">
-		
+		<ul>
+			<li><a href="{% url repo-update %}"><span>Update</span></a></li>
+			<li><a href="{% url repo-merge %}"><span>Merge</span></a></li>
+			<li><a href="{% url repo-fork %}"><span>Clone</span></a></li>
+			<li><a href="{% url repo-update %}"><span>Fetch & Merge</span></a></li>
+		</ul>
 	</div>
 
 {% endblock %}

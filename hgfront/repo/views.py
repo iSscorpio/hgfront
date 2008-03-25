@@ -177,6 +177,24 @@ def repo_manage(request, slug, repo_name):
         return HttpResponse('Created')
     else:
         return HttpResponse('Failed')
+
+def repo_update(request, slug, repo_name):
+    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    u = ui.ui()
+    location = hg.repository(u, repo.repo_directory())
+    response = "false"
+    if hg.update(location, 'tip'):
+        response = "true"
+    return HttpResponse(response)
+
+def repo_merge(request, slug, repo_name):
+    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    u = ui.ui()
+    location = hg.repository(u, repo.repo_directory())
+    response = "false"
+    if hg.merge(location, 'tip'):
+        response = "true"
+    return HttpResponse(response)
     
 # Queue stuff
 def check_allowed_methods(methods=['GET']):
