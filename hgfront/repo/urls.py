@@ -7,6 +7,7 @@ from django.conf.urls.defaults import *
 
 urlpatterns = patterns('hgfront.repo.views',
     url('^$','repo_list', name='repo-list'),
+    url('^create/$','repo_create', name='repo-create'),
     url(r'^q/createqueue/$', 'create_queue'), #post 'name' of queue
     url(r'^q/deletequeue/$', 'delete_queue'), #post 'name' of queue
     url(r'^q/purgequeue/$', 'purge_queue'),   #post 'name' of queue
@@ -21,7 +22,6 @@ urlpatterns = patterns('hgfront.repo.views',
     url('^(?P<repo_name>[-\w]+)/$', 'view_changeset', name='view-tip'),
     url('^(?P<repo_name>[-\w]+)/changeset/(?P<changeset>[-\w]+)/$', 'view_changeset', name='view-changeset'),
     url('^(?P<repo_name>[-\w]+)/manage/$', 'repo_manage', name='repo-manage'),
-    url('^(?P<repo_name>[-\w]+)/create/$','repo_create', name='repo-create'),
     url('^(?P<repo_name>[-\w]+)/update/$','repo_update', name='repo-update'),
     url('^(?P<repo_name>[-\w]+)/merge/$','repo_merge', name='repo-merge'),
 )

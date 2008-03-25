@@ -24,7 +24,7 @@
 	        <dt>Project Description</dt>
 	        <dd>{{project.description_long}}</dd>			
 	        <dt>Project Active Since</dt>
-	        <dd>{{project.pub_date|date:"D d M Y H:m"}}</dd>
+	        <dd>{{project.pub_date|date:"D d M Y H:i"}}</dd>
 	    </dl>	
 	</div>
 	
@@ -168,7 +168,7 @@
 	            <tbody>
 	                {% for backup in backups %}
 	                    <tr>
-	                        <td>{{backup.created|date:"D d M Y H:m"}}</td>
+	                        <td>{{backup.created|date:"D d M Y H:i"}}</td>
 	                        <td>{{backup.format}}</td>
 	                     </tr>
 	                 {% endfor %}
