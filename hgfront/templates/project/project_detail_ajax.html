@@ -15,11 +15,9 @@
 {% block main_content %}
 
 	<div id="project-details">
-		<h3>Project Details</h3>
+		<h3>Project: {{project.name_long}}</h3>
 	    <dl id="project-details">
-    	    <dt>Project Name</dt>
-	        <dd>{{project.name_long}}</dd>
-	        <dt>Project Owner</dt>
+	        <dt><strong>Local</strong> Project Manager</dt>
 	        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
 	        <dt>Project Description</dt>
 	        <dd>{{project.description_long}}</dd>			
@@ -30,12 +28,11 @@
 	
 	<div id="project-repositories">
 		{% if permissions.add_repos %} 
-        	<a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a>
+        	<p><a href="{% url repo-create project.name_short %}" class="link-create-repo">Create New Repo</a></p>
         {% endif %}
  
 		{% with project.repo_set.select_related as repos %}
         	{% if repos %}
-				<h2>Repositories {{project.name_long}}</h2>
 				<ul>
 					{% for repo in repos %}
 				 		{% if repo.repo_created %}

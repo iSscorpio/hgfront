@@ -12,13 +12,10 @@ urlpatterns = patterns('hgfront.repo.views',
     url(r'^q/deletequeue/$', 'delete_queue'), #post 'name' of queue
     url(r'^q/purgequeue/$', 'purge_queue'),   #post 'name' of queue
     url(r'^q/listqueues/$', 'list_queues'),
-    url(r'^q/(?P<queue_name>\w+)/put/$', 'put'),
     url(r'^q/(?P<queue_name>\w+)/clearexpire/$', 'clear_expirations'),
     url(r'^q/(?P<queue_name>\w+)/count/json/$', 'count', {"response_type":"json"}),
     url(r'^q/(?P<queue_name>\w+)/count/$', 'count', {"response_type":"text"}),
-    url(r'^q/(?P<queue_name>\w+)/delete/$', 'delete'), #post 'message_id' of msg
-    url(r'^q/(?P<queue_name>\w+)/json/$', 'get', {"response_type":"json"}),
-    url(r'^q/(?P<queue_name>\w+)/$', 'get', {"response_type":"text"}),
+    url(r'^q/(?P<queue_name>\w+)/$', 'pop_queue'),
     url('^(?P<repo_name>[-\w]+)/$', 'view_changeset', name='view-tip'),
     url('^(?P<repo_name>[-\w]+)/changeset/(?P<changeset>[-\w]+)/$', 'view_changeset', name='view-changeset'),
     url('^(?P<repo_name>[-\w]+)/manage/$', 'repo_manage', name='repo-manage'),

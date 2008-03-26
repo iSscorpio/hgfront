@@ -30,6 +30,7 @@
 				<ul id="primary-navigation">
 					<li><a href="{% url project-list %}"><span>Home</span></a></li>
 					{% if hgf_logged_in_user %}
+						<li><a href="{% url member-home %}">Your Profile</a>
 						<li><a href="{% url member-logout %}"><span>Logout</span></a></li>
 					{% else %}
 						<li><a href="{% url member-login %}"><span>Login</span></a></li>

@@ -26,22 +26,24 @@ class ProjectManager(models.Manager):
     """
     Manager class for Project.
     """
-    def get_query_set(self, *args, **kwargs):
-        """
-        This custom model manager caches query sets using the arguments passed to get_query_set().
-        If they are fewer than 10 minutes old, they returned from the cache; otherwise,
-        they are returned as a fresh query set and added to the cache.
-        """
-        cache_key = 'objectlist%d%s%s' % (
-            Site.objects.get_current().id, # unique for site
-            ''.join([str(a) for a in args]), # unique for arguments
-            ''.join('%s%s' % (str(k), str(v)) for k, v in kwargs.iteritems())
-        )
-        object_list = cache.get(cache_key)
-        if not object_list:
-            object_list = super(ProjectManager, self).get_query_set(*args, **kwargs)
-            cache.set(cache_key, object_list, CACHE_EXPIRES)
-        return object_list
+    # FIXME: Might be causing issues with decorator & backups, removed for now
+#    def get_query_set(self, *args, **kwargs):
+#        """
+#        This custom model manager caches query sets using the arguments passed to get_query_set().
+#        If they are fewer than 10 minutes old, they returned from the cache; otherwise,
+#        they are returned as a fresh query set and added to the cache.
+#        """
+#        print Site.objects.get_current().id
+#        cache_key = 'objectlist%d%s%s' % (
+#            Site.objects.get_current().id, # unique for site
+#            ''.join([str(a) for a in args]), # unique for arguments
+#            ''.join('%s%s' % (str(k), str(v)) for k, v in kwargs.iteritems())
+#        )
+#        object_list = cache.get(cache_key)
+#        if not object_list:
+#            object_list = super(ProjectManager, self).get_query_set(*args, **kwargs)
+#            cache.set(cache_key, object_list, CACHE_EXPIRES)
+#        return object_list
     def projects_for_user(self, user):
         """
         This returns a list of projects that the user `user` is in and has

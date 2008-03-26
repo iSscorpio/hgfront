@@ -18,6 +18,7 @@ from hgfront.core.json_encode import json_encode
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
 from hgfront.repo.models import *
+from hgfront.repo.decorators import check_allowed_methods
 from hgfront.project.decorators import check_project_permissions
 
 @check_project_permissions('view_repos')
@@ -196,22 +197,6 @@ def repo_merge(request, slug, repo_name):
         response = "true"
     return HttpResponse(response)
     
-# Queue stuff
-def check_allowed_methods(methods=['GET']):
-    '''Convenient decorator that verifies that a view is being called with 
-an allowed set of request methods and no others.
-Returns HttpResponseForbidden if view is called with a disallowed method.'''
-    def _decorator(view_func):
-        def _wrapper(request, *args, **kwargs):
-            if request.method in methods:
-                return view_func(request, *args, **kwargs)
-            else:
-                return HttpResponseForbidden()
-        _wrapper.__doc__ = view_func.__doc__
-        _wrapper.__dict__ = view_func.__dict__
-        return _wrapper
-    return _decorator
-
 # Queue Methods
 @check_allowed_methods(['POST'])
 def create_queue(request):
@@ -268,7 +253,7 @@ def list_queues(request):
 #
 
 @check_allowed_methods(['GET'])
-def get(request, queue_name, response_type='text'):
+def pop_queue(request, queue_name):
     # test count with
     # curl -i http://localhost:8000/q/default/
     # curl -i http://localhost:8000/q/default/json/
@@ -322,32 +307,3 @@ def count(request, queue_name, response_type='text'):
             return HttpResponse("%s" % num_visible, mimetype='text/plain')
     except Queue.DoesNotExist:
         return HttpResponseNotFound()
-
-@check_allowed_methods(['POST', 'DELETE'])
-def delete(request, queue_name):
-    # test post with
-    # curl -i http://localhost:8000/q/default/delete/ -d message_id=1
-    #print "deleting: %s" % message_id
-    message_id=request.POST['message_id']
-    try:
-        q = Queue.objects.get(name=queue_name)
-        msg = q.message_set.get(pk=message_id)
-        msg.delete()
-        return HttpResponse("OK", mimetype='text/plain')
-    except Queue.DoesNotExist:
-        return HttpResponseNotFound()
-    except Message.DoesNotExist:
-        return HttpResponseNotFound()
-
-@check_allowed_methods(['POST'])
-def put(request, queue_name):
-    # test post with
-    # curl -i http://localhost:8000/q/default/put/ -d message=hello
-    try:
-        q = Queue.objects.get(name=queue_name)
-        msg = Message(message=request.POST['message'], queue=q)
-        msg.save()
-        return HttpResponse("OK", mimetype='text/plain')
-    except Queue.DoesNotExist:
-        return HttpResponseNotFound()
-    
