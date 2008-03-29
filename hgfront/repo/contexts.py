@@ -11,5 +11,5 @@ def repo_stats(request):
     
     return dict([
             ('hgf_num_repos', Repo.objects.all().count()),
-            ('hgf_num_repos_last_24_hours', Repo.objects.filter(pub_date__gt=past24).count()),
+            ('hgf_num_repos_last_24_hours', Repo.objects.filter(local_creation_date__gt=past24).count()),
         ])

@@ -14,79 +14,80 @@ from hgfront.repo import signals as hgsignals
 from hgfront.repo.signals import *
 from hgfront.project.models import Project
 
-REPO_TYPES = (
-    (1, 'New',),
-    (2, 'Clone',),
-)
-
-available_styles = (
-    ('default', 'Default'),
-    ('gitweb', 'Gitweb'),
-)
-
 class Repo(models.Model):
-    """A repo represents a physical repository on the hg system path"""
-    creation_method=models.IntegerField(max_length=1, choices=REPO_TYPES, verbose_name="Is this new or cloned?")
-    repo_created=models.BooleanField(default=False)
-    name_short=models.CharField(max_length=20)
-    name_long=models.CharField(max_length=50)
-    description_short=models.CharField(max_length=255, null=True, blank=True)
-    default_path=models.CharField(max_length=255, null=True, blank=True)
-    repo_contact=models.ForeignKey(User, related_name="contact_repos")
-    parent_project=models.ForeignKey(Project)
-    pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
-    anonymous_pull=models.BooleanField(default=True)
-    anonymous_push=models.BooleanField(default=False)
-    pull_members=models.ManyToManyField(User, related_name="pull_repos", null=True, blank=True)
-    push_members=models.ManyToManyField(User, related_name="push_repos", null=True, blank=True)
-    hgweb_style=models.CharField(max_length=50,choices=available_styles)
-    offer_zip=models.BooleanField(default=True)
-    offer_tar=models.BooleanField(default=True)
-    offer_bz2=models.BooleanField(default=True)
     
-    #active_extensions=models.ManyToManyField(InstalledExtensions)
-
+    REPO_TYPES = [(x, x) for x in ("New", "Clone",)]
+    AVAILABLE_STYLES = [(x, x) for x in ("Default", "Gitweb",)]
+    
+    """A repo represents a physical repository on the hg system path"""
+    # directory_name: The short name of the repository that exists on the file system
+    directory_name=models.CharField(max_length=30)
+    # display_name: The long name of the repo used for displaying on the web interface
+    display_name=models.CharField(max_length=255)
+    # description: The freetext field for the description
+    description=models.TextField(null=True, blank=True)
+    # creation_method: Stores how the repository was origionally created
+    creation_method=models.CharField(max_length=5, choices=REPO_TYPES, verbose_name="new or cloned repository?")
+    # created: Stored wether the repo has been created or not
+    created=models.BooleanField(default=False)
+    # local_manager: The local manager of the repository
+    local_manager=models.ForeignKey(User, related_name="local_managercontact_repos")
+    # local_members: The local members that have pemissions on the repo
+    local_members=models.ManyToManyField(User, related_name="local_members", null=True, blank=True)
+    # default_path: The remote repository location to push/pull from
+    default_path=models.CharField(max_length=255, null=True, blank=True, verbose_name="remote repository location")
+    # hgweb_style: The style to apply to the hgweb application
+    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
+    # allow_anon_pull: Allow anonymous pulls on the repo
+    allow_anon_pull=models.BooleanField(default=True, verbose_name="anonymous repository pull?")
+    # allow_anon_push: Allow anonymous push on the repo
+    allow_anon_push=models.BooleanField(default=False)
+    # local_parent_project: The project the repo belongs to
+    local_parent_project=models.ForeignKey(Project)
+    # local_creation_date: The date the project was created locally
+    local_creation_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created locally on')
+    # archive_types: The archive types to offer, stored as a string "bz2|tar|zip", "tar|zip", etc
+    archive_types=models.CharField(max_length=12, default="bz2|tar|zip", null=True, blank=True)
+    
     def __unicode__(self):
-        return self.name_long
+        return self.display_name
         
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('view-tip', (), {
-            "slug": self.parent_project.name_short,
-            "repo_name": self.name_short
+            "slug": self.local_parent_project.name_short,
+            "repo_name": self.directory_name
             })
     get_absolute_url = permalink(get_absolute_url)
     
     def is_cloned(self):
         """Checks to see if this was a cloned repositories"""
-        return bool(self.creation_method == '2')
+        return bool(self.creation_method == 'Cloned')
     is_cloned.short_description = "Cloned Repository?"
     
     def repo_directory(self):
         try:
-            return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.name_short)
+            return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.directory_name)
         except:
             return False 
 
     def create_hgrc(self):
         """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
         repo = self
-        c = self.repo_contact
+        c = self.local_manager
         hgrc = open(os.path.join(repo.repo_directory(), '.hg/hgrc'), 'w')
         hgrc.write('[paths]\n')
         hgrc.write('default = %s\n\n' % repo.default_path)
         hgrc.write('[web]\n')
         hgrc.write('style = %s\n' % repo.hgweb_style)
-        hgrc.write('description = %s\n' % repo.description_short)
+        hgrc.write('description = %s\n' % repo.description)
         hgrc.write('contact = %s <%s>\n' % (c.username, c.email))
-        a = 'allow_archive = '
-        if repo.offer_zip:
-            a += 'zip '
-        if repo.offer_tar:
-            a += 'gz '
-        if repo.offer_bz2:
-            a += 'bz2'
-        hgrc.write(a + '\n\n')
+        
+        a = repo.archive_types.split
+        o = 'allow_archive = '
+        for x in a:
+            o += (x + ' ')
+        hgrc.write(o + '\n\n')
 #    hgrc.write('[extensions]\n')
 #    for e in repo.active_extensions.all():
 #        hgrc.write('hgext.%s = \n' % e.short_name)
@@ -151,20 +152,20 @@ class Repo(models.Model):
         
     class Admin:
         fields = (
-                  ('Repository Creation', {'fields': ('creation_method', 'name_short', 'name_long', 'default_path', 'description_short', 'parent_project', )}),
-                  ('Repository Access', {'fields': ('anonymous_pull', 'pull_members', 'anonymous_push', 'push_members', 'repo_contact')}),
-                  ('Archive Information', {'fields': ('offer_zip', 'offer_tar', 'offer_bz2', 'hgweb_style')}),
+                  ('Repository Creation', {'fields': ('creation_method', 'created', 'directory_name', 'display_name', 'default_path', 'description', 'local_parent_project', )}),
+                  ('Repository Access', {'fields': ('allow_anon_pull', 'allow_anon_push', 'local_manager', 'local_members',)}),
+                  ('Archive Information', {'fields': ('archive_types', 'hgweb_style')}),
                   #('Active Extentions', {'fields': ('active_extensions',)}),
-                  ('Date information', {'fields': ('pub_date',)}),
+                  ('Date information', {'fields': ('local_creation_date',)}),
         )
-        list_display = ('name_long', 'parent_project', 'is_cloned', 'pub_date',)
-        list_filter = ['pub_date', 'parent_project',]
-        search_fields = ['name_long', 'parent_project']
-        date_hierarchy = 'pub_date'
-        ordering = ('pub_date',)
+        list_display = ('display_name', 'local_parent_project', 'is_cloned', 'created', 'local_creation_date',)
+        list_filter = ['local_creation_date', 'local_parent_project',]
+        search_fields = ['name_long', 'local_parent_project']
+        date_hierarchy = 'local_creation_date'
+        ordering = ('local_creation_date',)
 
     class Meta:
-        unique_together=('parent_project','name_short')
+        unique_together=('local_parent_project','directory_name')
 
     repo_options = RepoOptions()
 

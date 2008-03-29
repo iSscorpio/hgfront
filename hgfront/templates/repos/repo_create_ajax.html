@@ -8,49 +8,6 @@
 
 {% block main_content %}
 	{{fail}}
-	
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$('#repo-create-form').submit(function(event){
-				event.preventDefault();  // stop the form from submitting and refreshing the page
-				var form = this;               // in jQuery, this refers to the current element, which is #article_form
-			
-			    // grab each form value
-				var data = {};
-				data.creation_method = $(form).find('select[@name=creation_method]').val();
-				data.name_short = $(form).find('input[@name=name_short]').val();
-				data.name_long = $(form).find('input[@name=name_long]').val();
-				data.description_short = $(form).find('input[@name=description_short]').val();
-				data.default_path = $(form).find('input[@name=default_path]').val();
-				data.repo_contact = $(form).find('select[@name=repo_contact]').val();
-				data.parent_project = $(form).find('select[@name=parent_project]').val();
-				data.anonymous_pull = $(form).find('checkbox[@name=anonymous_pull]').val();
-				data.anonymous_push = $(form).find('checkbox[@name=anonymous_push]').val();
-				data.hgweb_style = $(form).find('select[@name=hgweb_style]').val();
-				data.offer_zip = $(form).find('checkbox[@name=offer_zip]').val();
-				data.offer_tar = $(form).find('checkbox[@name=offer_tar]').val();
-				data.offer_bz2 = $(form).find('checkbox[@name=offer_bz2]').val();
-				data.pull_members = $(form).find('select[@name=pull_members]').val();
-				data.push_members = $(form).find('select[@name=push_members]').val();
-			
-			    // now send the data to the server via AJAX
-			    $.post($(form).attr('action'), data, function(data){
-			        // do a simple alert for now, alert "Article was saved"
-			        //alert(responseData.success);
-					console.log(data);
-					if (data.success == 'true') {
-						
-						target = $(form).parent().parent();
-						
-						$(target).load(data.url, function(){
-							hgfront.jsactivate();
-						});
-					}
-			    }, "json");
-			});
-		})
-	</script>
-	
 	<div id="create-repo">
 	    <form id="repo-create-form" action="{% url repo-create project.name_short %}" method="post">
 	        <table>{{form}}</table>

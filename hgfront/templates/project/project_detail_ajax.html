@@ -35,9 +35,9 @@
         	{% if repos %}
 				<ul>
 					{% for repo in repos %}
-				 		{% if repo.repo_created %}
+				 		{% if repo.created %}
 							<li>
-								<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.name_long}}</a>
+								<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.display_name}}</a>
 								<div>
 									<dl>
 										<dt>Last Changeset ID</dt>

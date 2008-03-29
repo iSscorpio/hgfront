@@ -9,7 +9,7 @@
 
 	<ul>
 		{% for repo in repos %}
-			<li><a href="{{repo.get_absolute_url}}">{{repo.name_short}}</a></li>
+			<li><a href="{{repo.get_absolute_url}}">{{repo.display_name}}</a></li>
 		{% endfor %}
 	</ul>
 

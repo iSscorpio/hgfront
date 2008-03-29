@@ -39,7 +39,7 @@ def repo_list(request, slug):
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset='tip'):
     project = Project.objects.get(name_short__exact=slug)
-    repo = Repo.objects.get(name_short__exact=repo_name, parent_project__exact = project)
+    repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     
     
     try:
@@ -118,35 +118,36 @@ def repo_create(request, slug):
     if request.method == "POST":
         # Were saving, so lets create our instance
         repo = Repo(
-                    parent_project=project,
-                    repo_created = True,
-                    pub_date=datetime.datetime.now()
+                    local_parent_project=project,
+                    created=True,
+                    local_creation_date=datetime.datetime.now()
                 )
         form = RepoCreateForm(request.POST, instance=repo)
         # Lets check the form is valid
         if form.is_valid():
-            creation_method = int(form.cleaned_data['creation_method'])
-            if creation_method==1:
+            creation_method = str(form.cleaned_data['creation_method'])
+            if creation_method== "New":
                 # We create the repo right away
                 u = ui.ui()
-                print repo.repo_directory()
-                hg.repository(u, repo.repo_directory() + form.cleaned_data['name_short'] , create=True)
-                form.cleaned_data['repo_created'] = True
+                hg.repository(u, project.project_directory() + str(form.cleaned_data['directory_name']), create=True)
+                form.cleaned_data['created'] = True
                 form.save();
             else:
                 # We pass off to a queue event
                 msg_string = {}
                 
-                msg_string['repo_name'] = form.cleaned_data['name_short']
-                msg_string['project_name'] = str(form.cleaned_data['parent_project'].name_short)
+                msg_string['directory_name'] = form.cleaned_data['directory_name']
+                msg_string['local_parent_project'] = str(form.cleaned_data['local_parent_project'].name_short)
                 
                 q = Queue.objects.get(name='repoclone')
                 clone = simplejson.dumps(msg_string)
                 msg = Message(message=clone, queue=q)
                 msg.save()
                 # Save the repo, save the world!
-                form.cleaned_data['repo_created'] = False
+                form.cleaned_data['created'] = False
                 form.save()
+        else:
+            form = RepoCreateForm(request.POST, instance=repo)
         # Return to the project view
         
         if request.is_ajax():
@@ -271,9 +272,9 @@ def pop_queue(request, queue_name):
         u = ui.ui()
         repo = simplejson.loads(msg.message)
         message_id = msg.id
-        project = Project.objects.get(name_short__exact = repo['project_name'])
-        clone = Repo.objects.get(name_short__exact=repo['repo_name'], parent_project__exact=project)
-        clone.repo_created = True
+        project = Project.objects.get(name_short__exact = repo['local_parent_project'])
+        clone = Repo.objects.get(directory_name__exact=repo['directory_name'], local_parent_project__exact=project)
+        clone.created = True
         clone.save()
         hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
         message = Message.objects.get(id=message_id, queue=q.id)

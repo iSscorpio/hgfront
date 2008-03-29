@@ -28,7 +28,7 @@
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}
 		            <dd>
-		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
 		            </dd>
 		        {% endfor %}
 				</dt>
@@ -37,7 +37,7 @@
 		        <dt>Changeset Children</td>
 		        {% for changeset in changeset_children %}
 		            <dd>
-		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.name_short,changeset=changeset %}">{{changeset}}</a>
+		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
 		            </dd>
 		        {% endfor %}
 		        </dt>
@@ -60,7 +60,7 @@
 	</div>
 
 	<div id="repo-branches">
-    	<h3>{{repo.name_long}} Branches</h3>
+    	<h3>{{repo.display_name}} Branches</h3>
 		<ul>
     		{% for branch in changeset_branches %}
         		<li>{{branch}}</li>
@@ -69,7 +69,7 @@
 	</div>
 	
 	<div id="repo-tags">
-	    <h3>{{repo.name_long}} Tags</h3>
+	    <h3>{{repo.display_name}} Tags</h3>
 		<ul>
 	    	{% for tag in changeset_tags %}
 	        	<li>{{tag}}</li>
