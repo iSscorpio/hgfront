@@ -185,29 +185,11 @@ def repo_pull(request, slug, repo_name):
     repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
     u = ui.ui()
     location = hg.repository(u, repo.repo_directory())
-    response = "false"
     if commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True):
-        response = "true"
-    return HttpResponse(response)
-
-
-def repo_update(request, slug, repo_name):
-    repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
-    u = ui.ui()
-    location = hg.repository(u, repo.repo_directory())
-    response = "false"
-    if hg.update(location, 'tip'):
-        response = "true"
-    return HttpResponse(response)
-
-def repo_merge(request, slug, repo_name):
-    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
-    u = ui.ui()
-    location = hg.repository(u, repo.repo_directory())
-    response = "false"
-    if hg.merge(location, 'tip'):
-        response = "true"
-    return HttpResponse(response)
+        request.user.message_set.create(message="Your repository has been updated!")
+    else:
+        request.user.message_set.create(message="The repository has failed to update!")
+    return HttpResponseRedirect(reverse('view-tip', kwargs={'slug': slug, 'repo_name':repo_name}))
     
 # Queue Methods
 @check_allowed_methods(['POST'])
