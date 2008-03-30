@@ -2,6 +2,7 @@
 import datetime, sys, os, shutil
 from mercurial.cmdutil import revrange, show_changeset
 from mercurial.node import nullid
+from mercurial.hgweb import common
 # Django Libraries
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -150,6 +151,14 @@ class Repo(models.Model):
             return r.tags()
         except:
             return []
+        
+    def last_update(self):
+        try:
+            time =  common.get_mtime(self.repo_directory())
+            time = datetime.datetime.fromtimestamp(time)
+        except:
+            time = None
+        return time
         
     class Admin:
         fields = (

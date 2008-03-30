@@ -24,6 +24,8 @@
 		            {{changeset_number}} - {{changeset_id}}
 		        {% endifequal %}
 		    </dd>
+			<dt>Last Update Time</dt>
+			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}}</dd>
 		    {%if changeset_parents %}
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}

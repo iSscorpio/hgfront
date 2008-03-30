@@ -181,6 +181,16 @@ def repo_manage(request, slug, repo_name):
     else:
         return HttpResponse('Failed')
 
+def repo_pull(request, slug, repo_name):
+    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    u = ui.ui()
+    location = hg.repository(u, repo.repo_directory())
+    response = "false"
+    if hg.pull(u, repo.default_path):
+        response = "true"
+    return HttpResponse(response)
+
+
 def repo_update(request, slug, repo_name):
     repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
     u = ui.ui()

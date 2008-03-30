@@ -33,26 +33,32 @@
  
 		{% with project.repo_set.select_related as repos %}
         	{% if repos %}
-				<ul>
+				<table>
+					<thead>
+						<tr>
+							<th>Repository Name</th>
+							<th>Latest Changeset</th>
+							<th>Last Updated</th>
+						</tr>
+					</thead>
 					{% for repo in repos %}
 				 		{% if repo.created %}
-							<li>
-								<a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.display_name}}</a>
-								<div>
-									<dl>
-										<dt>Last Changeset ID</dt>
-										<dd>
-									 		{% ifequal repo.get_changeset_number '[]' %}
-	                                    		No Changesets (please add and commit files).
-    	                           			{% else %}
-	                                  				{{repo.get_changeset_number}} - {{repo.get_changeset}}
-	    	                           		{% endifequal %}
-										</dd>
-								</div>
-							</li>
+							<tr>
+								<td><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.display_name}}</a></td>
+								<td>
+									{% ifequal repo.get_changeset_number '[]' %}
+	                                	No Changesets (please add and commit files).
+    	                           	{% else %}
+	                                	{{repo.get_changeset_number}} - {{repo.get_changeset}}
+	    	                        {% endifequal %}
+								</td>
+								<td>
+									{{repo.last_update|date:"D d M Y, H:i:s"}}
+								</td>
+							</tr>
 						{% endif %}
 	            	{% endfor %}
-				</ul>
+				</table>
         	{% endif %}
     	{% endwith %}
 	</div>
