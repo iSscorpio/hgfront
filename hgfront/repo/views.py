@@ -27,7 +27,7 @@ def repo_list(request, slug):
     List all repoistories linked to a project
     """
     project = get_object_or_404(Project, name_short__exact=slug)
-    repos = Repo.objects.filter(parent_project=project.id)
+    repos = Repo.objects.filter(local_parent_project=project.id)
     return render_to_response('repos/repo_list.html',
         {
             'project': project,
@@ -271,13 +271,12 @@ def pop_queue(request, queue_name):
     if msg:
         u = ui.ui()
         repo = simplejson.loads(msg.message)
-        message_id = msg.id
         project = Project.objects.get(name_short__exact = repo['local_parent_project'])
         clone = Repo.objects.get(directory_name__exact=repo['directory_name'], local_parent_project__exact=project)
         clone.created = True
         clone.save()
         hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
-        message = Message.objects.get(id=message_id, queue=q.id)
+        message = Message.objects.get(id=msg.id, queue=q.id)
         message.delete()
         
     return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')

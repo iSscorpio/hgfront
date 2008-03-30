@@ -42,7 +42,7 @@
 									<dl>
 										<dt>Last Changeset ID</dt>
 										<dd>
-									 		{% ifequal repo.get_changeset_number -1 %}
+									 		{% ifequal repo.get_changeset_number '[]' %}
 	                                    		No Changesets (please add and commit files).
     	                           			{% else %}
 	                                  				{{repo.get_changeset_number}} - {{repo.get_changeset}}

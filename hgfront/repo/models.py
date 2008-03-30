@@ -67,7 +67,7 @@ class Repo(models.Model):
     
     def repo_directory(self):
         try:
-            return os.path.join(Project.project_options.repository_directory, self.parent_project.name_short, self.directory_name)
+            return os.path.join(Project.project_options.repository_directory, self.local_parent_project.name_short, self.directory_name)
         except:
             return False 
 
@@ -101,9 +101,9 @@ class Repo(models.Model):
             b = r.branchtags() # get a repo object for the current directory
             branches = b.keys()
             branches.sort()
-            return branches
         except:
-            return []
+            branches = []
+        return branches
         
     
     def get_changeset_number(self, changeset='tip'):
@@ -111,9 +111,9 @@ class Repo(models.Model):
         try:
             repository = hg.repository(u, self.repo_directory())
             changeset = repository.changectx(changeset).rev()
-            return changeset
         except:
-            return []
+            changeset = []
+        return changeset
         
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
