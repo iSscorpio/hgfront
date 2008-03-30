@@ -50,14 +50,10 @@ hgfront.jsactivate = function(){
 				data.display_name = $(form).find('input[@name=display_name]').val();
 				data.description = $(form).find('textarea[@name=description]').val();
 				data.creation_method = $(form).find('select[@name=creation_method]').val();
-				data.created = $(form).find('input:checkbox[@name=created]').val();
-				data.local_manager = $(form).find('select[@name=local_manager]').val();
 				data.default_path = $(form).find('input[@name=default_path]').val();
-				data.hgweb_style = $(form).find('select[@name=hgweb_style]').val();
 				data.allow_anon_pull = $(form).find('input:checkbox[@name=allow_anon_pull]').val();
 				data.allow_anon_push = $(form).find('input:checkbox[@name=allow_anon_push]').val();
-				data.local_parent_project = $(form).find('select[@name=local_parent_project]').val();
-				data.local_creation_date = $(form).find('input[@name=local_creation_date]').val();
+				data.hgweb_style = $(form).find('select[@name=hgweb_style]').val();
 				data.archive_types = $(form).find('input[@name=archive_types]').val();
 				data.local_members = $(form).find('select[@name=local_members]').val();
 			

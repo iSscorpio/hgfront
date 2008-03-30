@@ -11,6 +11,7 @@ class RepoCreateForm(forms.ModelForm):
     """
     Create a repo
     """
+    
     class Meta:
         model = Repo
-        exclude = ('project','pub_date')
+        exclude = ('created', 'local_parent_project','local_creation_date','local_manager')

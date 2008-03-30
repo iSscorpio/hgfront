@@ -28,26 +28,27 @@ class Repo(models.Model):
     description=models.TextField(null=True, blank=True)
     # creation_method: Stores how the repository was origionally created
     creation_method=models.CharField(max_length=5, choices=REPO_TYPES, verbose_name="new or cloned repository?")
+    # default_path: The remote repository location to push/pull from
+    default_path=models.CharField(max_length=255, null=True, blank=True, verbose_name="remote repository location")
     # created: Stored wether the repo has been created or not
     created=models.BooleanField(default=False)
     # local_manager: The local manager of the repository
     local_manager=models.ForeignKey(User, related_name="local_managercontact_repos")
     # local_members: The local members that have pemissions on the repo
     local_members=models.ManyToManyField(User, related_name="local_members", null=True, blank=True)
-    # default_path: The remote repository location to push/pull from
-    default_path=models.CharField(max_length=255, null=True, blank=True, verbose_name="remote repository location")
-    # hgweb_style: The style to apply to the hgweb application
-    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
     # allow_anon_pull: Allow anonymous pulls on the repo
     allow_anon_pull=models.BooleanField(default=True, verbose_name="anonymous repository pull?")
     # allow_anon_push: Allow anonymous push on the repo
     allow_anon_push=models.BooleanField(default=False)
+    # hgweb_style: The style to apply to the hgweb application
+    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
+    # archive_types: The archive types to offer, stored as a string "bz2|tar|zip", "tar|zip", etc
+    archive_types=models.CharField(max_length=12, default="bz2|tar|zip", null=True, blank=True)
     # local_parent_project: The project the repo belongs to
     local_parent_project=models.ForeignKey(Project)
     # local_creation_date: The date the project was created locally
     local_creation_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created locally on')
-    # archive_types: The archive types to offer, stored as a string "bz2|tar|zip", "tar|zip", etc
-    archive_types=models.CharField(max_length=12, default="bz2|tar|zip", null=True, blank=True)
+
     
     def __unicode__(self):
         return self.display_name

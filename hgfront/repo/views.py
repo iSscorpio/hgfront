@@ -120,7 +120,8 @@ def repo_create(request, slug):
         repo = Repo(
                     local_parent_project=project,
                     created=True,
-                    local_creation_date=datetime.datetime.now()
+                    local_creation_date=datetime.datetime.now(),
+                    local_manager = request.user
                 )
         form = RepoCreateForm(request.POST, instance=repo)
         # Lets check the form is valid
@@ -137,7 +138,7 @@ def repo_create(request, slug):
                 msg_string = {}
                 
                 msg_string['directory_name'] = form.cleaned_data['directory_name']
-                msg_string['local_parent_project'] = str(form.cleaned_data['local_parent_project'].name_short)
+                msg_string['local_parent_project'] = project.name_short
                 
                 q = Queue.objects.get(name='repoclone')
                 clone = simplejson.dumps(msg_string)
