@@ -161,9 +161,7 @@ class Repo(models.Model):
         return last_update
     
     def time_ago(self):
-        time_ago =  common.get_mtime(self.repo_directory())
-        now = time.time()
-        ago = int(now - time_ago)
+        ago = int(time.time() - common.get_mtime(self.repo_directory()))
         
         if (ago > 0) and (ago < 60):
             string = str(ago) + " seconds ago"
