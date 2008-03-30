@@ -1,5 +1,5 @@
 # General Libraries
-import datetime, sys, os, shutil
+import time, datetime, sys, os, shutil
 from mercurial.cmdutil import revrange, show_changeset
 from mercurial.node import nullid
 from mercurial.hgweb import common
@@ -154,11 +154,27 @@ class Repo(models.Model):
         
     def last_update(self):
         try:
-            time =  common.get_mtime(self.repo_directory())
-            time = datetime.datetime.fromtimestamp(time)
+            last_update = common.get_mtime(self.repo_directory())
+            last_update = datetime.datetime.fromtimestamp(last_update)
         except:
-            time = None
-        return time
+            last_update = None
+        return last_update
+    
+    def time_ago(self):
+        time_ago =  common.get_mtime(self.repo_directory())
+        now = time.time()
+        ago = int(now - time_ago)
+        
+        if (ago > 0) and (ago < 60):
+            string = str(ago) + " seconds ago"
+        elif (ago >= 60) and (ago < 3600):
+            string = str(ago/60) + " minutes ago"
+        elif (ago >= 3600) and (ago < 86400 ):
+            string = str(ago/3600) + " hours ago"
+        elif (ago >= 86400):
+            string = str(ago/86400) + " days ago"
+
+        return string
         
     class Admin:
         fields = (

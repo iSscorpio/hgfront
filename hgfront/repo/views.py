@@ -295,9 +295,6 @@ def pop_queue(request, queue_name):
             m.delete()
             HttpResponse('Update Successful')
 
-            
-
-
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):
     # test count with

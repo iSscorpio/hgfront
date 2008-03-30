@@ -25,7 +25,7 @@
 		        {% endifequal %}
 		    </dd>
 			<dt>Last Update Time</dt>
-			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}}</dd>
+			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
 		    {%if changeset_parents %}
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}
@@ -82,9 +82,6 @@
 	<div id="repo-actions">
 		<ul>
 			<li><a href="{% url repo-pull-request %}"><span>Pull & Update</span></a></li>
-			<li><a href="{% url repo-merge %}"><span>Merge</span></a></li>
-			<li><a href="{% url repo-fork %}"><span>Clone</span></a></li>
-			<li><a href="{% url repo-update %}"><span>Fetch & Merge</span></a></li>
 		</ul>
 	</div>
 
