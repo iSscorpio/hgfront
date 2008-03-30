@@ -182,7 +182,7 @@ def repo_manage(request, slug, repo_name):
         return HttpResponse('Failed')
     
 def repo_pull_request(request, slug, repo_name):
-    repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
+    repo = Repo.objects.get(directory_name__exact = repo_name, local_parent_project__name_short = slug)
     # We pass off to a queue event
     msg_string = {}
                 
@@ -291,6 +291,8 @@ def pop_queue(request, queue_name):
                 commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True)
             except:
                 HttpResponse('Update Failed')
+            m = Message.objects.get(id=msg.id, queue=q.id)
+            m.delete()
             HttpResponse('Update Successful')
 
             
