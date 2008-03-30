@@ -1,5 +1,5 @@
 #General Libraries
-from mercurial import hg, ui, hgweb
+from mercurial import hg, ui, hgweb, commands
 import datetime, os
 # Django Libraries
 from django.conf import settings
@@ -182,17 +182,17 @@ def repo_manage(request, slug, repo_name):
         return HttpResponse('Failed')
 
 def repo_pull(request, slug, repo_name):
-    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
     u = ui.ui()
     location = hg.repository(u, repo.repo_directory())
     response = "false"
-    if hg.pull(u, repo.default_path):
+    if commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True):
         response = "true"
     return HttpResponse(response)
 
 
 def repo_update(request, slug, repo_name):
-    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
     u = ui.ui()
     location = hg.repository(u, repo.repo_directory())
     response = "false"
