@@ -180,15 +180,23 @@ def repo_manage(request, slug, repo_name):
         return HttpResponse('Created')
     else:
         return HttpResponse('Failed')
-
-def repo_pull(request, slug, repo_name):
+    
+def repo_pull_request(request, slug, repo_name):
     repo = Repo.objects.get(directory_name = repo_name, local_parent_project__name_short = slug)
-    u = ui.ui()
-    location = hg.repository(u, repo.repo_directory())
-    if commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True):
-        request.user.message_set.create(message="Your repository has been updated!")
-    else:
-        request.user.message_set.create(message="The repository has failed to update!")
+    # We pass off to a queue event
+    msg_string = {}
+                
+    msg_string['directory_name'] = repo.directory_name
+    msg_string['local_parent_project'] = repo.local_parent_project.name_short
+                
+    q = Queue.objects.get(name='repoupdate')
+    update = simplejson.dumps(msg_string)
+    msg = Message(message=update, queue=q)
+    try:
+        msg.save()
+        request.user.message_set.create(message="Your repository update has been queued!")
+    except:
+        request.user.message_set.create(message="The repository queue has failed!")
     return HttpResponseRedirect(reverse('view-tip', kwargs={'slug': slug, 'repo_name':repo_name}))
     
 # Queue Methods
@@ -263,16 +271,30 @@ def pop_queue(request, queue_name):
     msg = q.message_set.pop()
     if msg:
         u = ui.ui()
-        repo = simplejson.loads(msg.message)
-        project = Project.objects.get(name_short__exact = repo['local_parent_project'])
-        clone = Repo.objects.get(directory_name__exact=repo['directory_name'], local_parent_project__exact=project)
-        clone.created = True
-        clone.save()
-        hg.clone(u, str(clone.default_path), str(clone.repo_directory()), True)
-        message = Message.objects.get(id=msg.id, queue=q.id)
-        message.delete()
+        message = simplejson.loads(msg.message)
+        project = Project.objects.get(name_short__exact = message['local_parent_project'])
+        repo = Repo.objects.get(directory_name__exact=message['directory_name'], local_parent_project__exact=project)
         
-    return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
+        if (queue_name == 'repoclone'):
+            try:
+                hg.clone(u, str(repo.default_path), str(repo.repo_directory()), True)
+            except:
+                HttpResponse('Clone Failed')
+            repo.created = True
+            repo.save()
+            m = Message.objects.get(id=msg.id, queue=q.id)
+            m.delete()
+            return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
+        elif (queue_name == 'repoupdate'):
+            location = hg.repository(u, repo.repo_directory())
+            try:
+                commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True)
+            except:
+                HttpResponse('Update Failed')
+            HttpResponse('Update Successful')
+
+            
+
 
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):
