@@ -1,0 +1,20 @@
+{% block tabs %}
+	<div><a href="{% url project-detail slug=project.name_short %}">&laquo; Back to {{project.name_long}}</a></div>
+	<ul class="tabs-navigation flora">
+		<li><a href="#news-all"><span>Project News</span></a></li>
+		<li><a href="#news-add"><span>Add News</span></a></li>
+	</ul>
+{% endblock tabs %}
+
+{% block main_content %}
+	{{fail}}
+	
+	<div id="news-all"></div>
+	
+	<div id="news-add">
+	    <form action="." method="post">
+	            {{form}}
+	        <input type="submit" />
+	    </form>
+	</div>
+{% endblock %}

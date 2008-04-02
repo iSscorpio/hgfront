@@ -154,7 +154,7 @@ def join_project(request, slug):
     else:
         return HttpResponse('You must register or login to join a project')
         
-def add_project_news(request, slug):
+def project_news(request, slug):
     project = get_object_or_404(Project.objects.select_related(), name_short = slug)
     if request.method == 'POST' and request.user.is_authenticated():
         form = ProjectNewsForm(request.POST)
@@ -163,12 +163,18 @@ def add_project_news(request, slug):
             newsitem.save()
             return HttpResponseRedirect(project.get_absolute_url())
         else:
-            return form
+            return form.as_table()
     else:
         form = ProjectNewsForm()
-        return render_to_response('project/project_news_create.html',
+        
+        if request.is_ajax():
+            template ='project/project_news_create_ajax.html'
+        else:
+            template = 'project/project_news_create.html'
+            
+        return render_to_response(template,
             {
-                'form':form
+                'form':form.as_table(),
             }, context_instance=RequestContext(request)
         )
 

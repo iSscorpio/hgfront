@@ -1,16 +1,7 @@
-{% extends "project/project_list.html" %}
+{% extends "base.html" %}
 
 {% block title %}{{block.super}} Create New Project News Item{% endblock %}
 
-{% block content_title %}Create New Project News Item{% endblock %}
-{% block breadcrumbs %}{{block.super}}<li class="project-add">&raquo; <a href="{% url project-create %}">New project news item</a></li>{% endblock %}
-
 {% block main_content %}
-	{{fail}}
-    <form action="{% url project-add-news %}" method="post">
-        <ul>
-            {{form}}
-        </ul>
-        <input type="submit" />
-    </form>
+	{% include "project/project_news_create_ajax.html" %}
 {% endblock %}

@@ -40,9 +40,10 @@ class JoinRequestForm(forms.Form):
     username=forms.CharField(max_length=255)
     action=forms.CharField(max_length=255)
     
-class ProjectNewsForm(ModelForm):
-    class Meta:
-        model = ProjectNews
+class ProjectNewsForm(forms.Form):
+    news_title=forms.CharField(max_length=255)
+    news_body=forms.CharField(widget=forms.widgets.Textarea())
+    frontpage=forms.CheckboxInput()
 
 
 #class ProjectCreateForm(ModelForm):
