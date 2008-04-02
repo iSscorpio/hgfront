@@ -29,7 +29,7 @@
 						<td><a href="{{project.get_absolute_url}}"><span>{{project.name_long}}</span></a></td>
 						<td>{{project.description_short}}</td>
 						<td>{{project.pub_date|date:"D d M Y"}}</td>
-						<td>{{project.last_updated}}</td>
+						<td>{{project.last_updated|date:"D d M Y - H:i"}}</td>
 						<td>{{project.num_repos}}</td>
 					</tr>
 				{% endfor %}
