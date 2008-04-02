@@ -1,0 +1,7 @@
+/* -------------------------------------------------------------------
+// markItUp!
+// By Jay Salvat - http://markitup.jaysalvat.com/
+// ------------------------------------------------------------------*/
+.markItUpHeader .email a {
+	background-image:url(images/email.png);
+}
