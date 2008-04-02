@@ -254,7 +254,7 @@ def list_queues(request):
 # Message methods - all of these will be operating on messages against a queue...
 #
 
-@check_allowed_methods(['GET'])
+#@check_allowed_methods(['GET'])
 def pop_queue(request, queue_name):
     # test count with
     # curl -i http://localhost:8000/q/default/
@@ -278,22 +278,26 @@ def pop_queue(request, queue_name):
         if (queue_name == 'repoclone'):
             try:
                 hg.clone(u, str(repo.default_path), str(repo.repo_directory()), True)
+                repo.created = True
+                repo.save()
+                m = Message.objects.get(id=msg.id, queue=q.id)
+                m.delete()
+                project.last_updated = repo.last_update()
+                project.save()
+                return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
             except:
-                HttpResponse('Clone Failed')
-            repo.created = True
-            repo.save()
-            m = Message.objects.get(id=msg.id, queue=q.id)
-            m.delete()
-            return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
+                return HttpResponse('Clone Failed')
         elif (queue_name == 'repoupdate'):
             location = hg.repository(u, repo.repo_directory())
             try:
                 commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True)
+                m = Message.objects.get(id=msg.id, queue=q.id)
+                m.delete()
+                project.last_updated = repo.last_update()
+                project.save()
+                return HttpResponse('Update Successful')
             except:
-                HttpResponse('Update Failed')
-            m = Message.objects.get(id=msg.id, queue=q.id)
-            m.delete()
-            HttpResponse('Update Successful')
+                return HttpResponse('Update Failed')
 
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):

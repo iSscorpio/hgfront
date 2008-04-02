@@ -94,6 +94,7 @@ class Project(models.Model):
     user_owner=models.ForeignKey(User, related_name='owned_projects', verbose_name='project owner')
     pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     hgweb_style=models.CharField(max_length=50,choices=available_styles)
+    last_updated=models.DateTimeField()
     
     objects = ProjectManager()    
     project_options = ProjectOptions()
