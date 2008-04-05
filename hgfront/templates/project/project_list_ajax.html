@@ -20,7 +20,8 @@
 						<th>Description</th>
 						<th>Active Since</th>
 						<th>Last Update</th>
-						<th>No. Repositories</th>
+						<th>No. of Repos</th>
+						<th>No. of Members</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -28,9 +29,10 @@
 					<tr>
 						<td><a href="{{project.get_absolute_url}}"><span>{{project.name_long}}</span></a></td>
 						<td>{{project.description_short}}</td>
-						<td>{{project.pub_date|date:"D d M Y"}}</td>
-						<td>{{project.last_updated|date:"D d M Y - H:i"}}</td>
-						<td>{{project.num_repos}}</td>
+						<td>{{project.created_date|date:"D d M Y"}}</td>
+						<td>{{project.modified_date|date:"D d M Y - H:i"}}</td>
+						<td>{{project.number_of_repos}}</td>
+						<td>{{project.number_of_members}}</td>
 					</tr>
 				{% endfor %}
 				</tbody>

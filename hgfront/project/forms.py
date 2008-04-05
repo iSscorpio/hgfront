@@ -24,17 +24,12 @@ class NewProjectForm(forms.Form):
         name_short = self.cleaned_data.get('name_short', '')
         num_letters = len(name_short)
         if num_letters < 4:
-            raise forms.ValidationError("A project short name must be at least 4 characters long!")
+            raise forms.ValidationError("A project name must be at least 4 characters long!")
         
-        if Project.objects.all().filter(name_short__exact = name_short):
+        if Project.projects.all().filter(name_short__exact = name_short):
             raise forms.ValidationError("A project with this name already exists!")
         
         return name_short
-    
-class NewProjectStep2(forms.Form):
-    name_short=forms.CharField(max_length=50)
-
-
 
 class JoinRequestForm(forms.Form):
     username=forms.CharField(max_length=255)
@@ -44,12 +39,3 @@ class ProjectNewsForm(forms.Form):
     news_title=forms.CharField(max_length=255)
     news_body=forms.CharField(widget=forms.widgets.Textarea())
     frontpage=forms.CheckboxInput()
-
-
-#class ProjectCreateForm(ModelForm):
-#    """
-#    This form allows a registered user to create a project in the system.
-#    When a project is created, it also creates a directory to store the data in.
-#    """
-#    class Meta:
-#        model = Project

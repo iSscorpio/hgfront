@@ -23,8 +23,8 @@ CACHE_EXPIRES = 5 * 60 # 5 minutes
 # End caching stuff
 
 def get_project_list(request):
-    projects = [project for project in Project.objects.select_related()if project.get_permissions(request.user).view_project]
-    project_news = ProjectNews.objects.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
+    projects = [project for project in Project.projects.select_related()if project.get_permissions(request.user).view_project]
+    project_news = ProjectNews.news_items.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
     #user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
     
     if request.is_ajax():
@@ -41,7 +41,6 @@ def get_project_list(request):
         }, context_instance=RequestContext(request)
     )
 
-@check_project_permissions('view_project')
 def get_project_details(request, slug):
     #cache_key = "hgfrontcache%s" % slug
     #object_list = cache.get(cache_key)
@@ -49,7 +48,7 @@ def get_project_details(request, slug):
     #    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     #    cache.set(cache_key, project, CACHE_EXPIRES)
 
-    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
+    project = get_object_or_404(Project.projects.select_related(), name_short=slug)
     permissions = project.get_permissions(request.user)
     
     backups = ProjectBackup.objects.filter(parent_project__exact=project).order_by('-created')
@@ -72,7 +71,6 @@ def get_project_details(request, slug):
         }, context_instance=RequestContext(request)
     )
 
-@login_required
 def create_project_form(request):
     """
     This form shows in this order:
@@ -95,7 +93,6 @@ def create_project_form(request):
                 description_short = form.cleaned_data['description_short'],
                 description_long = form.cleaned_data['description_long'],
                 user_owner = request.user,
-                pub_date = datetime.datetime.now(),
                 hgweb_style = form.cleaned_data.get('hgweb_style', '')
             )
             project.save()
@@ -123,9 +120,8 @@ def create_project_form(request):
             }, context_instance=RequestContext(request)
         )
  
-@check_project_permissions('add_members')
 def process_join_request(request, slug):
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    project = get_object_or_404(Project.projects.select_related(), name_short = slug)
     if request.method == 'POST':
         form = JoinRequestForm(request.POST)
         if form.is_valid():
@@ -140,9 +136,9 @@ def process_join_request(request, slug):
     return HttpResponse('Must be called with post and must be a valid username')
 
 def join_project(request, slug):
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    project = get_object_or_404(Project.projects.select_related(), name_short = slug)
     if request.user.is_authenticated():
-        permissionset, created = ProjectPermissionSet.objects.get_or_create(is_default=False, user=request.user, project=project)
+        permissionset, created = ProjectPermissionSet.projects.get_or_create(is_default=False, user=request.user, project=project)
         if created:
             permissionset.user_accepted = True
             permissionset.owner_accepted = False
@@ -155,11 +151,11 @@ def join_project(request, slug):
         return HttpResponse('You must register or login to join a project')
         
 def project_news(request, slug):
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    project = get_object_or_404(Project.projects.select_related(), name_short = slug)
     if request.method == 'POST' and request.user.is_authenticated():
         form = ProjectNewsForm(request.POST)
         if form.is_valid():
-            newsitem = ProjectNews.objects.get_or_create(parent_project=project, news_title=form.cleaned_data['news_title'], news_body=form.cleaned_data['news_body'], pub_date=datetime.datetime.now(), published=form.cleaned_data['published'], frontpage=form.cleaned_data['frontpage'], authorised=form.cleaned_data['authorised'])
+            newsitem = ProjectNews.projects.get_or_create(parent_project=project, news_title=form.cleaned_data['news_title'], news_body=form.cleaned_data['news_body'], pub_date=datetime.datetime.now(), published=form.cleaned_data['published'], frontpage=form.cleaned_data['frontpage'], authorised=form.cleaned_data['authorised'])
             newsitem.save()
             return HttpResponseRedirect(project.get_absolute_url())
         else:
@@ -181,7 +177,7 @@ def project_news(request, slug):
 def project_verifyprojectshortname(request):
     name_short = request['name_short']  
     try:
-        check = Project.objects.get(name_short__exact=name_short)
+        check = Project.projects.get(name_short__exact=name_short)
     except Project.DoesNotExist:
         check = False
     

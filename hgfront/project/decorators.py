@@ -28,7 +28,9 @@ def check_project_permissions(*args):
             request = args[0]
             # FIXME: Weird hack, had to add the print statement to stop the ORM failing on line 31
             #print request
-            project_permissions = get_object_or_404(Project, name_short=kwargs['slug']).get_permissions(request.user)
+            #import pdb; pdb.set_trace()
+            project = get_object_or_404(Project, name_short=str(kwargs['slug']))
+            project_permissions = project.get_permissions(request.user)
             for permission in required_permissions:
                 if not getattr(project_permissions, permission):
                     return HttpResponseForbidden(render_to_string('403.html'))

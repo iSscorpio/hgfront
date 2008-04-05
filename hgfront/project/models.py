@@ -92,25 +92,28 @@ class Project(models.Model):
     description_short=models.CharField(max_length=255, blank=True, null=True)
     description_long=models.TextField()
     user_owner=models.ForeignKey(User, related_name='owned_projects', verbose_name='project owner')
-    pub_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     hgweb_style=models.CharField(max_length=50,choices=available_styles)
-    last_updated=models.DateTimeField()
     
-    objects = ProjectManager()    
+    created_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+    
+    projects = ProjectManager()    
     project_options = ProjectOptions()
     
     def __unicode__(self):
         return self.name_long
 
-    def num_repos(self):
+    def number_of_repos(self):
         """Returns the number of repositories linked to this project"""
         return self.repo_set.count()
-    num_repos.short_description = "Number of Repositories"
-    num_repos = property(num_repos)
+    number_of_repos.short_description = "No. Repositories"
+    number_of_repos = property(number_of_repos)
     
     def project_directory(self):
         return os.path.join(Project.project_options.repository_directory, self.name_short)
-
+    project_directory.short_description = "Project Path"
+    project_directory = property(project_directory)
+    
     def user_in_project(self, user):
         return len(self.members.filter(id = user.id)) > 0
     
@@ -214,17 +217,29 @@ class Project(models.Model):
         """Creates a permalink to the project page"""
         return ('project-detail', (), { "slug": self.name_short })
 
+    class Meta:
+        ordering = ['name_long', 'name_short']
+        get_latest_by = 'modified_date'
+        permissions = (
+            ("can_create_project", "Can Create Project"),
+            ("can_read_project", "Can Read Project"),
+            ("can_update_project", "Can Update Project"),
+            ("can_delete_project", "Can Delete Project"),
+        )
+        verbose_name = 'project'
+        verbose_name_plural = 'projects'
+
     class Admin:
         fields = (
                   ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
-                  ('Date information', {'fields': ('pub_date',)}),
+                  ('Date information', {'fields': ('created_date','modified_date')}),
                   ('Publishing Details', {'fields': ('hgweb_style', 'user_owner',)}),
         )
-        list_display = ('name_long', 'name_short', 'num_repos', 'is_private', 'user_owner', 'pub_date',)
-        list_filter = ['pub_date',]
+        list_display = ('name_long', 'name_short', 'number_of_repos', 'is_private', 'user_owner', 'created_date',)
+        list_filter = ['created_date','modified_date']
         search_fields = ['name_long', 'description']
-        date_hierarchy = 'pub_date'
-        ordering = ('pub_date',)
+        date_hierarchy = 'created_date'
+        ordering = ('created_date',)
 
 
 # Dispatchers
@@ -312,7 +327,7 @@ class ProjectPermissionSet(models.Model):
     class Meta:
         unique_together = ('user','project')
         
-        
+
 class ProjectNews(models.Model):
     parent_project=models.ForeignKey(Project)
     news_title=models.CharField(max_length=255)
@@ -321,6 +336,8 @@ class ProjectNews(models.Model):
     frontpage=models.BooleanField(default=False)
     authorised=models.BooleanField(default=False)
     pub_date=models.DateTimeField()
+    
+    news_items = models.Manager()
     
     def __unicode__(self):
         return self.parent_project.name_long + ' / ' + self.news_title

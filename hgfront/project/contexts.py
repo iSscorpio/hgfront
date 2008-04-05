@@ -16,12 +16,12 @@ def project_stats(request):
     """
     This function returns the number of projects
     """
-    num_projects = Project.objects.all().count()
+    num_projects = Project.projects.all().count()
     past24 = datetime.datetime.now() - datetime.timedelta(days=1)
     
     return dict([
             ('hgf_num_projects', num_projects),
-            ('hgf_num_projects_last_24_hours', Project.objects.filter(pub_date__gt=past24).count()),
+            ('hgf_num_projects_last_24_hours', Project.projects.filter(modified_date__gt=past24).count()),
             # Needs fixed as throws error on fresh install
             #('hgf_random_project', [if num_projects: Project.objects.all()[randint(0, num_projects-1)] else: return {'error':'There are currently no projects'}]),
         ])

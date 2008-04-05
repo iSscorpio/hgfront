@@ -272,7 +272,7 @@ def pop_queue(request, queue_name):
     if msg:
         u = ui.ui()
         message = simplejson.loads(msg.message)
-        project = Project.objects.get(name_short__exact = message['local_parent_project'])
+        project = Project.projects.get(name_short__exact = message['local_parent_project'])
         repo = Repo.objects.get(directory_name__exact=message['directory_name'], local_parent_project__exact=project)
         
         if (queue_name == 'repoclone'):
@@ -282,7 +282,6 @@ def pop_queue(request, queue_name):
                 repo.save()
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
-                project.last_updated = repo.last_update()
                 project.save()
                 return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
             except:
@@ -293,7 +292,6 @@ def pop_queue(request, queue_name):
                 commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True)
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
-                project.last_updated = repo.last_update()
                 project.save()
                 return HttpResponse('Update Successful')
             except:
