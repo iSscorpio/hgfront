@@ -35,11 +35,7 @@ hgfront.jsactivate = function(){
 			hgfront.ajaxlink($(this).attr('href'), $(this).parent().parent())
 			return false;
 		});	
-		
-		$('#id_directory_name').blur(function(){
-				$(this).val($(this).val().toLowerCase());
-		});
-		
+				
 		$('#repo-create-form').submit(function(event){
 				event.preventDefault();  // stop the form from submitting and refreshing the page
 				var form = this;               // in jQuery, this refers to the current element, which is #article_form

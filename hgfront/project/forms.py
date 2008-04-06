@@ -18,9 +18,9 @@ class NewProjectForm(forms.Form):
     project_name=forms.CharField(max_length=255, label="Project Name", help_text="The full name of your project (Max 255 Char)")
     short_description=forms.CharField(max_length=255, label="Project Short Description", help_text="A short description of your project (Max 255 Char)")
     full_description=forms.CharField(widget=forms.widgets.Textarea())
-    project_icon=forms.ImageField()
+    project_icon=forms.ImageField(required=False)
     hgweb_style=forms.ChoiceField(choices=available_styles)
-    t_and_c=forms.BooleanField(required=True, label="I Agree to the Terms and Conditions", help_text="You agree to the T's & C's of this site.")
+    t_and_c=forms.BooleanField(required=True, label="Terms and Conditions", help_text="You agree to the T&C's of this site.")
     
     def clean_project_id(self):
         project_id = self.cleaned_data.get('project_id', '')
@@ -31,7 +31,7 @@ class NewProjectForm(forms.Form):
         if Project.projects.all().filter(project_id__exact = project_id):
             raise forms.ValidationError("A project with this name already exists!")
         
-        return name_short
+        return project_id
 
 class JoinRequestForm(forms.Form):
     username=forms.CharField(max_length=255)

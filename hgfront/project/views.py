@@ -5,10 +5,11 @@ from time import strftime
 # Django Libraries
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext as _
 # Project Libraries
 from hgfront.backup.models import ProjectBackup
 from hgfront.core.json_encode import json_encode
@@ -48,13 +49,13 @@ def get_project_details(request, slug):
     #    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
     #    cache.set(cache_key, project, CACHE_EXPIRES)
 
-    project = get_object_or_404(Project.projects.select_related(), name_short=slug)
+    project = get_object_or_404(Project.projects.select_related(), project_id=slug)
     permissions = project.get_permissions(request.user)
     
     backups = ProjectBackup.objects.filter(parent_project__exact=project).order_by('-created')
     
     issue_short_list = project.issue_set.select_related()[:Issue.issue_options.issues_per_page]
-    user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
+    user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.project_manager
     
     if request.is_ajax():
         template = 'project/project_detail_ajax.html'
@@ -73,46 +74,57 @@ def get_project_details(request, slug):
 
 def create_project_form(request):
     """
-    This form shows in this order:
-        1. Show the initial form with just name_short
-        2. Check if the project already exists, if not show the second form
-        3. Check to see if the name_long is in the request.POST keys (this needs a better check)
-        4. Once the data is entered, save the form to the model
-        5. Redirect to the project view
+    Form to create a new project
     """
     
+    # First we check to see the site has been set up, otherwise we throw the user to the config screen
     if not bool(os.path.isdir(Project.project_options.repository_directory)):
+        request.user.message_set.create(message="The site has not been set up yet.  Log in as your admin user and create your settings!")
         return HttpResponseRedirect(reverse('site-config'))
     
+    if request.is_ajax():
+        template ='project/project_create_ajax.html'
+    else:
+        template = 'project/project_create.html'
+    
+    # Lets check if this form is being shown or processed
     if request.method == "POST":
-        form = NewProjectForm(request.POST)
+        # We're processing the form, so lets create the instance
+        form = NewProjectForm(request.POST, auto_id=False)
+        # The form is correct, lets proceeed.
         if form.is_valid():
+            # Lets check the user has conformed to a sites T&C's
             if form.cleaned_data['t_and_c'] == True:
+                # Create the project instance
                 project = Project(
                     project_id = string.lower(form.cleaned_data['project_id']),
                     project_name = form.cleaned_data['project_name'],
                     short_description = form.cleaned_data['short_description'],
                     full_description = form.cleaned_data['full_description'],
                     project_manager = request.user,
-                    hgweb_style = form.cleaned_data.get('hgweb_style', '')
+                    hgweb_style = form.cleaned_data.get('hgweb_style', ''),
+                    project_icon = form.cleaned_data['project_icon'],
                 )
+                # Ok, we're all good, so lets save.
                 project.save()
-                request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
+                # We'll tell the user that there site has been saved
+                request.user.message_set.create(message=_("The project " + form.cleaned_data['project_name'] + " has been created"))
                 if request.is_ajax():
                     return HttpResponse(
-                                        "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
+                                        "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['project_id']}) + "', 'project': " + json_encode(project) + "}"
                                         , mimetype="application/json")
                 else:
                     return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': form.cleaned_data['project_id']}))
+        else:
+            return render_to_response(template,
+                {
+                    'form':form.as_table(),
+                }, context_instance=RequestContext(request)
+            )
         #return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
     else:
         form = NewProjectForm()
         is_auth = request.user.is_authenticated()
-        
-        if request.is_ajax():
-            template ='project/project_create_ajax.html'
-        else:
-            template = 'project/project_create.html'
         
         return render_to_response(template,
             {

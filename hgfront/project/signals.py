@@ -22,10 +22,8 @@ def create_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path already exists, and if not this is a new project so creates path.
     """
-    from hgfront.project.models import Project
-    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
     try:
-        shutil.os.mkdir(directory)
+        shutil.os.mkdir(instance.project_directory)
     except:
         IOError("Failed to create project directory")
 
@@ -33,27 +31,22 @@ def delete_project_dir(sender, instance, signal, *args, **kwargs):
     """
     Checks to see if path still exists for project and if it does, deletes it.
     """
-    from hgfront.project.models import Project
-    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
-    if bool(os.path.isdir(directory)):
-        return bool(shutil.rmtree(directory))
+    if bool(os.path.isdir(instance.project_directory)):
+        return bool(shutil.rmtree(instance.project_directory))
 
 def create_hgwebconfig(sender, instance, signal, *args, **kwargs):
     """
     Creates a hgweb.config file for use with hgwebdir
     """
-    from hgfront.project.models import Project
-    directory = os.path.join(Project.project_options.repository_directory, instance.name_short)
-    
-    if bool(os.path.isdir(directory)):
-        config = open(os.path.join(directory, 'hgweb.config'), 'w')
+    if bool(os.path.isdir(instance.project_directory)):
+        config = open(os.path.join(instance.project_directory, 'hgweb.config'), 'w')
         config.write('[collections]\n')
-        config.write('%s = %s\n\n' % (directory, directory))
+        config.write('%s = %s\n\n' % (instance.project_directory, instance.project_directory))
         config.write('[web]\n')
         config.write('style = %s' % instance.hgweb_style)
         config.close()
-        shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(directory, 'hgwebdir.cgi'))
-        os.chmod(os.path.join(directory, 'hgwebdir.cgi'), 0755)
+        shutil.copy(os.path.join(settings.HGFRONT_TEMPLATES_PATH, 'project/hgwebdir.txt'), os.path.join(instance.project_directory, 'hgwebdir.cgi'))
+        os.chmod(os.path.join(instance.project_directory, 'hgwebdir.cgi'), 0755)
         return True
         
 def create_wikipage(sender, instance, signal, *args, **kwargs):
@@ -67,19 +60,19 @@ def send_email_to_owner(sender, instance, signal, *args, **kwargs):
 	"""Send the project owner a reminder email about their project"""
 	from hgfront.project.models import Project
 	try:
-		owner = instance.user_owner
-		email_intro = "This email is from hgfront to advise you of the project you have created."
+		owner = instance.project_manager
+		email_intro = "This email is from " + Project.project_options.site_name +  " to advise you of the project you have created."
 
 		email_body = render_to_string("project/email/project_created.txt",
 			{
 				'email_intro': email_intro,
-				'project_name': instance.name_long,
-				'project_short_name': instance.name_short,
-				'project_desription': instance.description_short
+				'project_name': instance.project_name,
+				'project_short_name': instance.short_description,
+				'project_desription': instance.full_description,
 	        }
         )
     
-		email = EmailMessage(instance.name_long, email_body, 'noreply@testing.com', [owner.email])
+		email = EmailMessage(instance.project_name + " created", email_body, 'noreply@testing.com', [owner.email])
 		try:
 			email.send()
 		except:

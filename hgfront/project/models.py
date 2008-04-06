@@ -75,7 +75,7 @@ class Project(models.Model):
     # full_description: This is the full freetext description of the project
     full_description=models.TextField()
     # project_icon: This is the icon used to give the project some visual air
-    project_icon = models.ImageField(upload_to='project_icons')
+    project_icon = models.ImageField(upload_to='project_icons', blank=True, null=True)
     # project_manager: This is the person managing the project on this instance of hgmanager
     project_manager=models.ForeignKey(User, related_name='project_manager', verbose_name='project manager')
     # hgweb_style: The style to apply to the hgweb application
@@ -160,7 +160,7 @@ class Project(models.Model):
     number_of_members = property(number_of_members)
     
     def project_directory(self):
-        return os.path.join(Project.project_options.repository_directory, self.name_short)
+        return os.path.join(Project.project_options.repository_directory, self.project_id)
     project_directory.short_description = "Project Path"
     project_directory = property(project_directory)
     
@@ -176,7 +176,7 @@ class Project(models.Model):
         permission set with all the permissions set to False.
         """
         #if the user is the owner of the project, give him all permissions
-        if user.id == self.user_owner.id:
+        if user.id == self.project_manager.id:
             permissions = ProjectPermissionSet.objects.get_owner_permission_set(user, self)
         else:
             try:

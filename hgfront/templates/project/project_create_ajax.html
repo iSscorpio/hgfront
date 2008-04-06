@@ -1,58 +1,15 @@
 {% block main_content %}
-	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			$('#id_description_long').markItUp(mySettings);
-			
-			$('#project-create-form').validate({
-				rules : {
-					name_short : {
-						required: true,
-						minlength: 4,
-						maxlength: 25,
-						remote: '{% url project-verifyprojectshortname %}'
-					}
-				},
-				messages : {
-					name_short : {
-						required: 'A short name for project is required.',
-						minlength: jQuery.format("Enter at least {0} characters"),
-						remote: jQuery.format("{0} is already in use")
-					}
-				}
-			});
-			
-			$('#project-create-form').submit(function(event){
-				event.preventDefault();  // stop the form from submitting and refreshing the page
-				var form = this;               // in jQuery, this refers to the current element, which is #article_form
-			
-			    // grab each form value
-				var data = {};
-				data.name_short = $(form).find('input[@name=name_short]').val();
-				data.name_long = $(form).find('input[@name=name_long]').val();
-				data.description_short = $(form).find('input[@name=description_short]').val();
-				data.description_long = $(form).find('textarea[@name=description_long]').val();
-				data.hgweb_style = $(form).find('select[@name=hgweb_style]').val();
-			
-			    // now send the data to the server via AJAX
-			    $.post($(form).attr('action'), data, function(data){
-			        // do a simple alert for now, alert "Article was saved"
-			        //alert(responseData.success);
-					console.log(data);
-					if (data.success == 'true') {
-						$('#content').load(data.url, function(){
-							hgfront.jsactivate();
-						});
-					}
-			    }, "json");
-			});
-		});
-	</script>
-
-
 	{{fail}}
     <form id="project-create-form" action="{% url project-create %}" method="post">
     	<table>{{form}}</table>
 		<input type="submit" />
     </form>
 {% endblock main_content %}
+
+{% block scripts %}
+	{{block.super}}
+	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		{% include "project/js/project_create.js" %}
+	</script>
+{% endblock scripts %}
