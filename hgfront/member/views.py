@@ -85,7 +85,7 @@ def member_home(request):
         {
          'user': request.user,
          'member': request.user.get_profile(),
-         'user_projects_owns': Project.objects.filter(user_owner__exact = request.user)
+         'user_projects_owns': Project.projects.filter(project_manager__exact = request.user)
         }, context_instance=RequestContext(request)
     )
     
@@ -95,7 +95,7 @@ def member_profile(request, member_name):
         {
          'user': user,
          'member': user.get_profile(),
-         'user_projects_owns': Project.objects.filter(user_owner__exact = user)
+         'user_projects_owns': Project.projects.filter(project_manager__exact = user)
         }, context_instance=RequestContext(request)
     )
 

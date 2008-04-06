@@ -10,40 +10,10 @@ from django.dispatch import dispatcher
 from hgfront.core.configs import ProjectOptions
 from hgfront.project.signals import *
 
-#Experimental Caching
-from django.contrib.sites.models import Site
-from django.core.cache import cache
-
-CACHE_EXPIRES = 5 * 60 # 10 minutes
-# End experimental Caching Settings
-
-available_styles = (
-    ('default', 'Default'),
-    ('gitweb', 'Gitweb'),
-)
-
 class ProjectManager(models.Manager):
     """
     Manager class for Project.
     """
-    # FIXME: Might be causing issues with decorator & backups, removed for now
-#    def get_query_set(self, *args, **kwargs):
-#        """
-#        This custom model manager caches query sets using the arguments passed to get_query_set().
-#        If they are fewer than 10 minutes old, they returned from the cache; otherwise,
-#        they are returned as a fresh query set and added to the cache.
-#        """
-#        print Site.objects.get_current().id
-#        cache_key = 'objectlist%d%s%s' % (
-#            Site.objects.get_current().id, # unique for site
-#            ''.join([str(a) for a in args]), # unique for arguments
-#            ''.join('%s%s' % (str(k), str(v)) for k, v in kwargs.iteritems())
-#        )
-#        object_list = cache.get(cache_key)
-#        if not object_list:
-#            object_list = super(ProjectManager, self).get_query_set(*args, **kwargs)
-#            cache.set(cache_key, object_list, CACHE_EXPIRES)
-#        return object_list
     def projects_for_user(self, user):
         """
         This returns a list of projects that the user `user` is in and has
@@ -81,25 +51,99 @@ class ProjectManager(models.Manager):
 
 class Project(models.Model):
     """
-    A project represents a way to group users, repositories and issues on the system.
+    The Project model is the core model of Mercurial Manager.
+    
+    Project allows repositories to be collected into a single group representing an
+    application, as well as handle all it's members with their permissions and issues
+    
+    The project model will provide a way to hook in other applications around each other.
+    
     Each project has a project owner who has full control over all aspects of the project.  When
     a project is created, it is also given a default set of permissions for non-members, which are
     changeable.
     Members are assigned to projects by giving them permissions on the project.
     """
-    name_short=models.CharField(max_length=50, db_index=True, unique=True)
-    name_long=models.CharField(max_length=255)
-    description_short=models.CharField(max_length=255, blank=True, null=True)
-    description_long=models.TextField()
-    user_owner=models.ForeignKey(User, related_name='owned_projects', verbose_name='project owner')
-    hgweb_style=models.CharField(max_length=50,choices=available_styles)
-    
+    # Define the available styles for hgweb
+    AVAILABLE_STYLES = [(x, x) for x in ("Default", "Gitweb",)]
+
+    # project_id: This is a slugfield with a unique name for the project, there can be no other projects with the same name
+    project_id=models.SlugField(unique=True, editable=False)
+    # project_name: This is the human-readable name of the project
+    project_name=models.CharField(max_length=255)
+    # short_description: This is the short description of a project for RSS feeds, widgets, lists, etc
+    short_description=models.CharField(max_length=255, blank=True, null=True)
+    # full_description: This is the full freetext description of the project
+    full_description=models.TextField()
+    # project_icon: This is the icon used to give the project some visual air
+    project_icon = models.ImageField(upload_to='project_icons')
+    # project_manager: This is the person managing the project on this instance of hgmanager
+    project_manager=models.ForeignKey(User, related_name='project_manager', verbose_name='project manager')
+    # hgweb_style: The style to apply to the hgweb application
+    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
+    # created_date: The date the project instance was created
     created_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    # modified_date: The date the project instance was last modified
     modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+
+    # Model properties
     
+    # Define the object type for the model
     projects = ProjectManager()    
+    # Define the model options
     project_options = ProjectOptions()
-    
+
+    # Define the Meta class
+    class Meta:
+        ordering = ['project_name',]
+        get_latest_by = 'modified_date'
+        permissions = (
+            ("can_create_project", "Can Create Project"),
+            ("can_read_project", "Can Read Project"),
+            ("can_update_project", "Can Update Project"),
+            ("can_delete_project", "Can Delete Project"),
+        )
+        verbose_name = 'project'
+        verbose_name_plural = 'projects'
+
+    # Define the Admin class
+    class Admin:
+        fields = (
+                  ('Project Details', {'fields':
+                                        ('project_id',
+                                         'project_name',
+                                         'short_description',
+                                         'full_description',
+                                         'project_icon',
+                                         )
+                                        }
+                  ),
+                  ('Date information', {'fields':
+                                        ('created_date',
+                                         'modified_date'
+                                         )
+                                        }
+                  ),
+                  ('Publishing Details', {'fields':
+                                          ('hgweb_style',
+                                           'project_manager',
+                                           )
+                                          }
+                  ),
+        )
+        list_display = (
+                        'project_name',
+                        'short_description',
+                        'project_manager',
+                        'number_of_repos',
+                        'created_date',
+                        'modified_date',
+                        )
+        list_filter = ['created_date','modified_date',]
+        search_fields = ['project_name', 'short_description', 'full_description',]
+        date_hierarchy = 'created_date'
+        ordering = ('created_date', 'project_id',)
+
+    # Model Methods        
     def __unicode__(self):
         return self.name_long
 
@@ -108,6 +152,12 @@ class Project(models.Model):
         return self.repo_set.count()
     number_of_repos.short_description = "No. Repositories"
     number_of_repos = property(number_of_repos)
+    
+    def number_of_members(self):
+        """Returns the total number of members including the owner"""
+        return self.user_set.count()
+    number_of_members.short_description = "No. Members"
+    number_of_members = property(number_of_members)
     
     def project_directory(self):
         return os.path.join(Project.project_options.repository_directory, self.name_short)
@@ -216,30 +266,6 @@ class Project(models.Model):
     def get_absolute_url(self):
         """Creates a permalink to the project page"""
         return ('project-detail', (), { "slug": self.name_short })
-
-    class Meta:
-        ordering = ['name_long', 'name_short']
-        get_latest_by = 'modified_date'
-        permissions = (
-            ("can_create_project", "Can Create Project"),
-            ("can_read_project", "Can Read Project"),
-            ("can_update_project", "Can Update Project"),
-            ("can_delete_project", "Can Delete Project"),
-        )
-        verbose_name = 'project'
-        verbose_name_plural = 'projects'
-
-    class Admin:
-        fields = (
-                  ('Project Creation', {'fields': ('name_long', 'name_short', 'description_short', 'description_long')}),
-                  ('Date information', {'fields': ('created_date','modified_date')}),
-                  ('Publishing Details', {'fields': ('hgweb_style', 'user_owner',)}),
-        )
-        list_display = ('name_long', 'name_short', 'number_of_repos', 'is_private', 'user_owner', 'created_date',)
-        list_filter = ['created_date','modified_date']
-        search_fields = ['name_long', 'description']
-        date_hierarchy = 'created_date'
-        ordering = ('created_date',)
 
 
 # Dispatchers

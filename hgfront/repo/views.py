@@ -17,7 +17,8 @@ from hgfront.core.json_encode import json_encode
 # Project Libraries
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
-from hgfront.repo.models import *
+from hgfront.repo.models import Repo
+from hgfront.repo.queue import Queue, Message
 from hgfront.repo.decorators import check_allowed_methods
 from hgfront.project.decorators import check_project_permissions
 

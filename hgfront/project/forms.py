@@ -14,19 +14,21 @@ available_styles = (
 )
 
 class NewProjectForm(forms.Form):
-    name_short = forms.CharField(max_length=50)
-    name_long=forms.CharField(max_length=255)
-    description_short=forms.CharField(max_length=255)
-    description_long=forms.CharField(widget=forms.widgets.Textarea())
+    project_id = forms.CharField(max_length=50, label="Project ID", help_text="A unique short name for your project (Max 50 Char)")
+    project_name=forms.CharField(max_length=255, label="Project Name", help_text="The full name of your project (Max 255 Char)")
+    short_description=forms.CharField(max_length=255, label="Project Short Description", help_text="A short description of your project (Max 255 Char)")
+    full_description=forms.CharField(widget=forms.widgets.Textarea())
+    project_icon=forms.ImageField()
     hgweb_style=forms.ChoiceField(choices=available_styles)
+    t_and_c=forms.BooleanField(required=True, label="I Agree to the Terms and Conditions", help_text="You agree to the T's & C's of this site.")
     
-    def clean_name_short(self):
-        name_short = self.cleaned_data.get('name_short', '')
-        num_letters = len(name_short)
+    def clean_project_id(self):
+        project_id = self.cleaned_data.get('project_id', '')
+        num_letters = len(project_id)
         if num_letters < 4:
             raise forms.ValidationError("A project name must be at least 4 characters long!")
         
-        if Project.projects.all().filter(name_short__exact = name_short):
+        if Project.projects.all().filter(project_id__exact = project_id):
             raise forms.ValidationError("A project with this name already exists!")
         
         return name_short

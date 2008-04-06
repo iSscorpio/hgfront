@@ -48,7 +48,9 @@ class Repo(models.Model):
     # local_parent_project: The project the repo belongs to
     local_parent_project=models.ForeignKey(Project)
     # local_creation_date: The date the project was created locally
-    local_creation_date=models.DateTimeField(default=datetime.datetime.now(), verbose_name='created locally on')
+    local_creation_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    # local_modified_date: The date the repo was last updated
+    local_modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
 
     
     def __unicode__(self):
@@ -66,12 +68,15 @@ class Repo(models.Model):
         """Checks to see if this was a cloned repositories"""
         return bool(self.creation_method == 'Cloned')
     is_cloned.short_description = "Cloned Repository?"
+    is_cloned = property(is_cloned)
     
     def repo_directory(self):
         try:
             return os.path.join(Project.project_options.repository_directory, self.local_parent_project.name_short, self.directory_name)
         except:
-            return False 
+            return False
+    repo_directory.short_description = "Repository Location"
+    repo_directory = property(repo_directory)
 
     def create_hgrc(self):
         """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
@@ -171,8 +176,9 @@ class Repo(models.Model):
             string = str(ago/3600) + " hours ago"
         elif (ago >= 86400):
             string = str(ago/86400) + " days ago"
-
         return string
+    time_ago.short_description = "Time since last update"
+    time_ago = property(time_ago)
         
     class Admin:
         fields = (
@@ -180,7 +186,7 @@ class Repo(models.Model):
                   ('Repository Access', {'fields': ('allow_anon_pull', 'allow_anon_push', 'local_manager', 'local_members',)}),
                   ('Archive Information', {'fields': ('archive_types', 'hgweb_style')}),
                   #('Active Extentions', {'fields': ('active_extensions',)}),
-                  ('Date information', {'fields': ('local_creation_date',)}),
+                  ('Date information', {'fields': ('local_creation_date', 'local_modified_date')}),
         )
         list_display = ('display_name', 'local_parent_project', 'is_cloned', 'created', 'local_creation_date',)
         list_filter = ['local_creation_date', 'local_parent_project',]
@@ -192,8 +198,7 @@ class Repo(models.Model):
         unique_together=('local_parent_project','directory_name')
 
     repo_options = RepoOptions()
-
-
+    
 class Queue(models.Model):
     """
     """

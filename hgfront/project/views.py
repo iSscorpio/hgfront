@@ -87,22 +87,23 @@ def create_project_form(request):
     if request.method == "POST":
         form = NewProjectForm(request.POST)
         if form.is_valid():
-            project = Project(
-                name_short = string.lower(form.cleaned_data['name_short']),
-                name_long = form.cleaned_data['name_long'],
-                description_short = form.cleaned_data['description_short'],
-                description_long = form.cleaned_data['description_long'],
-                user_owner = request.user,
-                hgweb_style = form.cleaned_data.get('hgweb_style', '')
-            )
-            project.save()
-            request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
-            if request.is_ajax():
-                return HttpResponse(
-                                    "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
-                                    , mimetype="application/json")
-            else:
-                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': form.cleaned_data['name_short']}))
+            if form.cleaned_data['t_and_c'] == True:
+                project = Project(
+                    project_id = string.lower(form.cleaned_data['project_id']),
+                    project_name = form.cleaned_data['project_name'],
+                    short_description = form.cleaned_data['short_description'],
+                    full_description = form.cleaned_data['full_description'],
+                    project_manager = request.user,
+                    hgweb_style = form.cleaned_data.get('hgweb_style', '')
+                )
+                project.save()
+                request.user.message_set.create(message="The project has been added! Good luck on the project, man!")
+                if request.is_ajax():
+                    return HttpResponse(
+                                        "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}) + "', 'project': " + json_encode(project) + "}"
+                                        , mimetype="application/json")
+                else:
+                    return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': form.cleaned_data['project_id']}))
         #return HttpResponseRedirect(reverse('project-detail', kwargs={'slug':form.cleaned_data['name_short']}))
     else:
         form = NewProjectForm()
