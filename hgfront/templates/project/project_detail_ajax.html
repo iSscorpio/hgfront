@@ -68,14 +68,14 @@
 	
 	<div id="project-issues">
 		{% if permissions.add_issues %} 
-        	<a href="{% url issue-create project.name_short %}" class="link-create-issue">Create New Issue</a>
+        	<a href="{% url issue-create project.project_id %}" class="link-create-issue">Create New Issue</a>
         {% endif %}		
 		<div class="issues-content">
 		{% if permissions.view_issues %}
         	{% if issues %}
             	<table>
                 	<thead>
-                    	<caption>Recent Issues for {{project.name_long}}</caption>
+                    	<caption>Recent Issues for {{project.project_name}}</caption>
 	                    <tr>
     	                    <th>Title</th>
 	                        <th>Created by</th>

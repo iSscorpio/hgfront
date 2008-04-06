@@ -3,9 +3,9 @@
 from django.conf.urls.defaults import *
 # Project Libraries
 
-urlpatterns = patterns('',
-    url('^$','hgfront.issue.views.issue_list', name='issue-list'),
-    url('^(?P<issue_id>\d+)/$', 'hgfront.issue.views.issue_detail', name='issue-detail'),
-    url('^(?P<issue_id>\d+)/edit/$', 'hgfront.issue.views.issue_edit', name='issue-edit'),
-    url('^create/$','hgfront.issue.views.issue_create', name='issue-create'),
+urlpatterns = patterns('hgfront.issue.views',
+    url(r'^$','issue_list', name='issue-list'),
+    url(r'^(?P<issue_id>\d+)/$', 'issue_detail', name='issue-detail'),
+    url(r'^(?P<issue_id>\d+)/edit/$', 'issue_edit', name='issue-edit'),
+    url(r'^create/$','issue_create', name='issue-create'),
 )

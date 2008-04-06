@@ -9,7 +9,7 @@
 {% block main_content %}
 	<div id="create-issue">
 	    {{fail}}
-        <form id="issue-submit" action="{% url issue-create slug=project.name_short %}" method="post">
+        <form id="issue-submit" action="{% url issue-create slug=project.project_id %}" method="post">
             <table>{{form.as_table}}</table>
             <input type="submit">
         </form>

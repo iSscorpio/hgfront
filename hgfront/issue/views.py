@@ -38,7 +38,7 @@ def issue_list(request, slug):
     except ValueError:
         page = 0
 
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    project = get_object_or_404(Project.projects.select_related(), project_id__exact = slug)
     issues = project.issue_set.select_related()
 
     #check if we're filtering the issues by completed and if we are, filter the selection
@@ -89,7 +89,7 @@ def issue_list(request, slug):
 @check_project_permissions('view_issues')
 def issue_detail(request, slug, issue_id):
     """Returns the details of the issue identified by `issue_id`"""
-    project = get_object_or_404(Project.objects.select_related(), name_short = slug)
+    project = get_object_or_404(Project.projects.select_related(), project_id__exact = slug)
     issue = get_object_or_404(Issue.objects.select_related(), id = issue_id)
     
     if request.is_ajax():
@@ -110,7 +110,7 @@ def issue_create(request, slug):
     """
     This view displays a form based on a new issue
     """
-    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
+    project = get_object_or_404(Project.projects.select_related(), project_id__exact=slug)
     if request.method == "POST":
         form = IssueCreateForm(request.POST)
         if form.is_valid():
@@ -142,7 +142,7 @@ def issue_create(request, slug):
 
 @check_project_permissions('edit_issues')
 def issue_edit(request, slug, issue_id):
-    project = get_object_or_404(Project.objects.select_related(), name_short=slug)
+    project = get_object_or_404(Project.projects.select_related(), project_id__exact=slug)
     issue = get_object_or_404(project.issue_set.select_related(), id=issue_id)
     if request.method == "POST":
         #this view is called by post either when editing an issue or when toggling its completed state

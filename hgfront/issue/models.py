@@ -134,13 +134,18 @@ class Issue(models.Model):
     issue_status = models.ForeignKey(IssueStatus)
     issue_repos = models.ManyToManyField(Repo, blank=True, null=True)
     user_posted = models.ForeignKey(User, blank=True, null=True, related_name='posted_issues', verbose_name='posted by')
-    pub_date = models.DateTimeField(default=datetime.datetime.now(), verbose_name='created on')
     user_assigned_to = models.ForeignKey(User, related_name='assigned_issues', blank=True, null=True, verbose_name='assigned to')
+    # created_date: The date the issue instance was created
+    created_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    # modified_date: The date the issue instance was last modified
+    modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+    # finished_date: The date the issue instance was closed
     finished_date = models.DateTimeField(blank=True, null=True, verbose_name='finished on')
+
 
     @permalink
     def get_absolute_url(self):
-        return ('issue-detail',(),{'slug':self.project.name_short,'issue_id':self.pk})
+        return ('issue-detail',(),{'slug':self.project.project_id,'issue_id':self.pk})
     def __unicode__(self):
         return self.title
 
@@ -150,14 +155,14 @@ class Issue(models.Model):
     issue_options = IssueOptions()
 
     class Admin:
-        list_display = ('title','project','pub_date','user_posted','user_assigned_to', 'issue_type', 'issue_sev', 'issue_status', 'completed')
+        list_display = ('title','project','created_date','user_posted','user_assigned_to', 'issue_type', 'issue_sev', 'issue_status', 'completed')
         search_fields = ['title','body','foreign_key__related_user']
-        list_filter = ['pub_date','project','user_posted', 'issue_type', 'issue_sev', 'issue_status']
-        date_hierarchy = 'pub_date'
+        list_filter = ['created_date','project','user_posted', 'issue_type', 'issue_sev', 'issue_status']
+        date_hierarchy = 'created_date'
 
     class Meta:
         verbose_name = 'issue'
         verbose_name_plural = 'issues'
-        ordering = ['-pub_date']
+        ordering = ['-created_date']
 #Dispatchers
 dispatcher.connect( send_email_to_owner , signal=signals.post_save, sender=Issue )

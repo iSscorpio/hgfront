@@ -15,3 +15,11 @@
 	    </form>
 	</div>
 {% endblock %}
+
+{% block scripts %}
+	{{block.super}}
+	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		{% include "repo/js/repo_create.js" %}
+	</script>
+{% endblock scripts %}

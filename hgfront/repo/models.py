@@ -59,7 +59,7 @@ class Repo(models.Model):
     def get_absolute_url(self):
         """Get the URL of this entry to create a permalink"""
         return ('view-tip', (), {
-            "slug": self.local_parent_project.name_short,
+            "slug": self.local_parent_project.project_id,
             "repo_name": self.directory_name
             })
     get_absolute_url = permalink(get_absolute_url)
@@ -72,7 +72,7 @@ class Repo(models.Model):
     
     def repo_directory(self):
         try:
-            return os.path.join(Project.project_options.repository_directory, self.local_parent_project.name_short, self.directory_name)
+            return str(os.path.join(Project.project_options.repository_directory, self.local_parent_project.project_id, self.directory_name))
         except:
             return False
     repo_directory.short_description = "Repository Location"
@@ -82,7 +82,7 @@ class Repo(models.Model):
         """This function outputs a hgrc file within a repo's .hg directory, for use with hgweb"""
         repo = self
         c = self.local_manager
-        hgrc = open(os.path.join(repo.repo_directory(), '.hg/hgrc'), 'w')
+        hgrc = open(os.path.join(repo.repo_directory, '.hg/hgrc'), 'w')
         hgrc.write('[paths]\n')
         hgrc.write('default = %s\n\n' % repo.default_path)
         hgrc.write('[web]\n')
@@ -104,7 +104,7 @@ class Repo(models.Model):
     def get_branches(self):
         u = ui.ui()  # get a ui object
         try:
-            r = hg.repository(u, self.repo_directory())
+            r = hg.repository(u, self.repo_directory)
             b = r.branchtags() # get a repo object for the current directory
             branches = b.keys()
             branches.sort()
@@ -116,7 +116,7 @@ class Repo(models.Model):
     def get_changeset_number(self, changeset='tip'):
         u = ui.ui()
         try:
-            repository = hg.repository(u, self.repo_directory())
+            repository = hg.repository(u, self.repo_directory)
             changeset = repository.changectx(changeset).rev()
         except:
             changeset = []
@@ -125,7 +125,7 @@ class Repo(models.Model):
     def get_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
         try:
-            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            repository = hg.repository(u, self.repo_directory) # get a repo object for the current directory
             changeset = repository.changectx(changeset) # get a context object for the "tip" revision
             return changeset
         except:
@@ -134,7 +134,7 @@ class Repo(models.Model):
     def get_previous_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
         try:
-            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            repository = hg.repository(u, self.repo_directory) # get a repo object for the current directory
             changesets = repository.changectx(changeset).parents() # get a context object for the "tip" revision
             return [str(changeset) for changeset in changesets if changeset.node() != nullid]
         except:
@@ -143,7 +143,7 @@ class Repo(models.Model):
     def get_next_changeset(self, changeset="tip"):
         u = ui.ui()  # get a ui object
         try:
-            repository = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            repository = hg.repository(u, self.repo_directory) # get a repo object for the current directory
             changesets = repository.changectx(changeset).children() # get a context object for the "tip" revision
             return [str(changeset) for changeset in changesets if changeset.node() != nullid]
         except:
@@ -152,21 +152,21 @@ class Repo(models.Model):
     def get_tags(self):
         u = ui.ui()  # get a ui object
         try:
-            r = hg.repository(u, self.repo_directory()) # get a repo object for the current directory
+            r = hg.repository(u, self.repo_directory) # get a repo object for the current directory
             return r.tags()
         except:
             return []
         
     def last_update(self):
         try:
-            last_update = common.get_mtime(self.repo_directory())
+            last_update = common.get_mtime(self.repo_directory)
             last_update = datetime.datetime.fromtimestamp(last_update)
         except:
             last_update = None
         return last_update
     
     def time_ago(self):
-        ago = int(time.time() - common.get_mtime(self.repo_directory()))
+        ago = int(time.time() - common.get_mtime(self.repo_directory))
         
         if (ago > 0) and (ago < 60):
             string = str(ago) + " seconds ago"

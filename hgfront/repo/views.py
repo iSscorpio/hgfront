@@ -39,7 +39,7 @@ def repo_list(request, slug):
 
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset='tip'):
-    project = Project.objects.get(project_id__exact=slug)
+    project = Project.projects.get(project_id__exact=slug)
     repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     
     
@@ -272,12 +272,12 @@ def pop_queue(request, queue_name):
     if msg:
         u = ui.ui()
         message = simplejson.loads(msg.message)
-        project = Project.projects.get(name_short__exact = message['local_parent_project'])
+        project = Project.projects.get(project_id__exact = message['local_parent_project'])
         repo = Repo.objects.get(directory_name__exact=message['directory_name'], local_parent_project__exact=project)
         
         if (queue_name == 'repoclone'):
             try:
-                hg.clone(u, str(repo.default_path), str(repo.repo_directory()), True)
+                hg.clone(u, repo.default_path, repo.repo_directory, True)
                 repo.created = True
                 repo.save()
                 m = Message.objects.get(id=msg.id, queue=q.id)

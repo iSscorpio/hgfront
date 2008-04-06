@@ -145,7 +145,7 @@ class Project(models.Model):
 
     # Model Methods        
     def __unicode__(self):
-        return self.name_long
+        return self.project_name
 
     def number_of_repos(self):
         """Returns the number of repositories linked to this project"""
