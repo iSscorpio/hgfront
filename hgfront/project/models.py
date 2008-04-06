@@ -265,7 +265,7 @@ class Project(models.Model):
     @permalink
     def get_absolute_url(self):
         """Creates a permalink to the project page"""
-        return ('project-detail', (), { "slug": self.project_name })
+        return ('project-detail', (), { "slug": self.project_id })
 
 
 # Dispatchers

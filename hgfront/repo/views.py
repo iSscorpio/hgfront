@@ -27,7 +27,7 @@ def repo_list(request, slug):
     """
     List all repoistories linked to a project
     """
-    project = get_object_or_404(Project, name_short__exact=slug)
+    project = get_object_or_404(Project, project_id__exact=slug)
     repos = Repo.objects.filter(local_parent_project=project.id)
     return render_to_response('repos/repo_list.html',
         {
@@ -39,7 +39,7 @@ def repo_list(request, slug):
 
 @check_project_permissions('view_repos')
 def view_changeset(request, slug, repo_name, changeset='tip'):
-    project = Project.objects.get(name_short__exact=slug)
+    project = Project.objects.get(project_id__exact=slug)
     repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     
     
@@ -113,7 +113,7 @@ def repo_create(request, slug):
     """
     
     # Get the project from the database that we want to associate with
-    project = get_object_or_404(Project, name_short__exact=slug)
+    project = get_object_or_404(Project, project_id__exact=slug)
     
     # Lets decide if we show the form or create a repo
     if request.method == "POST":
@@ -121,7 +121,6 @@ def repo_create(request, slug):
         repo = Repo(
                     local_parent_project=project,
                     created=True,
-                    local_creation_date=datetime.datetime.now(),
                     local_manager = request.user
                 )
         form = RepoCreateForm(request.POST, instance=repo)
@@ -139,7 +138,7 @@ def repo_create(request, slug):
                 msg_string = {}
                 
                 msg_string['directory_name'] = form.cleaned_data['directory_name']
-                msg_string['local_parent_project'] = project.name_short
+                msg_string['local_parent_project'] = project.project_id
                 
                 q = Queue.objects.get(name='repoclone')
                 clone = simplejson.dumps(msg_string)

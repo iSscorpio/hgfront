@@ -188,9 +188,9 @@ def project_news(request, slug):
         )
 
 def project_verifyprojectshortname(request):
-    name_short = request['name_short']  
+    project_id = request['project_id']  
     try:
-        check = Project.projects.get(name_short__exact=name_short)
+        check = Project.projects.get(project_id__exact=project_id)
     except Project.DoesNotExist:
         check = False
     
