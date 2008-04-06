@@ -27,8 +27,8 @@
 				<tbody>
 				{% for project in projects %}
 					<tr>
-						<td><a href="{{project.get_absolute_url}}"><span>{{project.name_long}}</span></a></td>
-						<td>{{project.description_short}}</td>
+						<td><a href="{{project.get_absolute_url}}"><span>{{project.project_name}}</span></a></td>
+						<td>{{project.short_description}}</td>
 						<td>{{project.created_date|date:"D d M Y"}}</td>
 						<td>{{project.modified_date|date:"D d M Y - H:i"}}</td>
 						<td>{{project.number_of_repos}}</td>

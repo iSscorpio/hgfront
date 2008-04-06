@@ -15,14 +15,17 @@
 {% block main_content %}
 
 	<div id="project-details">
-		<h3>Project: {{project.name_long}}</h3>
+		<h3>Project: {{project.project_name}}</h3>
 	    <dl id="project-details">
 	        <dt><strong>Local</strong> Project Manager</dt>
-	        <dd><a href="{{project.user_owner.get_absolute_url}}">{{project.user_owner}}</a></dd>
+	        <dd><a href="{{project.project_manager.get_absolute_url}}">{{project.project_manager}}</a></dd>
 	        <dt>Project Description</dt>
-	        <dd>{{project.description_long}}</dd>			
+	        <dd>{{project.full_description}}</dd>			
 	        <dt>Project Active Since</dt>
-	        <dd>{{project.pub_date|date:"D d M Y H:i"}}</dd>
+	        <dd>{{project.created_date|date:"D d M Y H:i"}}</dd>
+			<dt>Project Last Updated</dt>
+	        <dd>{{project.modified_date|date:"D d M Y H:i"}}</dd>
+
 	    </dl>	
 	</div>
 	
