@@ -23,7 +23,7 @@ $(document).ready(function(){
 			console.log(data);
 			if (data.success == 'true') {
 				
-				target = $(form).parent().parent();
+				target = $(form).parent().parent().parent();
 				
 				$(target).load(data.url, function(){
 					hgfront.jsactivate();

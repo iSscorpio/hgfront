@@ -1,5 +1,5 @@
 {% block main_content %}
-	{{fail}}
+	{{form.messages.errors}}
     <form id="project-create-form" action="{% url project-create %}" method="post">
     	<table>{{form}}</table>
 		<input type="submit" />

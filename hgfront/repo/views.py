@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from hgfront.core.json_encode import json_encode
+from django.utils.translation import ugettext as _
 # Project Libraries
 from hgfront.project.models import Project
 from hgfront.repo.forms import RepoCreateForm
@@ -135,10 +136,9 @@ def repo_create(request, slug):
             if creation_method== "New":
                 # We create the repo right away
                 u = ui.ui()
-                hg.repository(u, project.project_directory() + str(form.cleaned_data['directory_name']), create=True)
+                hg.repository(u, project.project_directory + str(form.cleaned_data['directory_name']), create=True)
                 form.cleaned_data['created'] = True
                 form.save();
-                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
             else:
                 # We pass off to a queue event
                 msg_string = {}
@@ -153,6 +153,14 @@ def repo_create(request, slug):
                 # Save the repo, save the world!
                 form.cleaned_data['created'] = False
                 form.save()
+            
+            request.user.message_set.create(message=_("The repository " + form.cleaned_data['display_name'] + " has been queued"))
+            if request.is_ajax():
+                return HttpResponse(
+                        "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':slug}) + "', 'project': " + json_encode(project) + "}"
+                        , mimetype="application/json"
+                )
+            else:
                 return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
         else:
             # Return to the project view
