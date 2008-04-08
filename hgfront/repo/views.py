@@ -104,7 +104,6 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
         }, context_instance=RequestContext(request)
     )
 
-@check_project_permissions('add_repos')
 def repo_create(request, slug):
     """
         This function displays a form based on the model of the repo to authorised users
@@ -115,6 +114,11 @@ def repo_create(request, slug):
     # Get the project from the database that we want to associate with
     project = get_object_or_404(Project, project_id__exact=slug)
     
+    if request.is_ajax():
+        template = 'repos/repo_create_ajax.html'
+    else:
+        template = 'repos/repo_create.html'
+    
     # Lets decide if we show the form or create a repo
     if request.method == "POST":
         # Were saving, so lets create our instance
@@ -124,6 +128,7 @@ def repo_create(request, slug):
                     local_manager = request.user
                 )
         form = RepoCreateForm(request.POST, instance=repo)
+        
         # Lets check the form is valid
         if form.is_valid():
             creation_method = str(form.cleaned_data['creation_method'])
@@ -133,6 +138,7 @@ def repo_create(request, slug):
                 hg.repository(u, project.project_directory() + str(form.cleaned_data['directory_name']), create=True)
                 form.cleaned_data['created'] = True
                 form.save();
+                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
             else:
                 # We pass off to a queue event
                 msg_string = {}
@@ -147,24 +153,18 @@ def repo_create(request, slug):
                 # Save the repo, save the world!
                 form.cleaned_data['created'] = False
                 form.save()
+                return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
         else:
-            form = RepoCreateForm(request.POST, instance=repo)
-        # Return to the project view
-        
-        if request.is_ajax():
-            return HttpResponse(
-                                "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':slug}) + "', 'project': " + json_encode(project) + "}"
-                                , mimetype="application/json")
-        else:
-            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
-            
+            # Return to the project view
+            return render_to_response(template,
+                {
+                    'form':form.as_table(),
+                    'project':project,
+                    'permissions':project.get_permissions(request.user)
+                }, context_instance=RequestContext(request)
+            )
     else:
         form = RepoCreateForm()
-        
-    if request.is_ajax():
-        template = 'repos/repo_create_ajax.html'
-    else:
-        template = 'repos/repo_create.html'
     return render_to_response(template,
         {
             'form':form.as_table(),
@@ -277,6 +277,8 @@ def pop_queue(request, queue_name):
         
         if (queue_name == 'repoclone'):
             try:
+                print repo.default_path
+                print repo.repo_directory
                 hg.clone(u, repo.default_path, repo.repo_directory, True)
                 repo.created = True
                 repo.save()

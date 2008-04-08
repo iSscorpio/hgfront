@@ -1,5 +1,5 @@
 {% block tabs %}
-	<div><a href="{% url project-detail slug=project.name_short %}">&laquo; Back to {{project.name_long}}</a></div>
+	<div><a href="{% url project-detail slug=project.project_id %}">&laquo; Back to {{project.project_name}}</a></div>
 
 	<ul class="tabs-navigation flora">
 		<li><a href="#create-repo"><span>Create Repo</span></a></li>
@@ -9,7 +9,7 @@
 {% block main_content %}
 	{{fail}}
 	<div id="create-repo">
-	    <form id="repo-create-form" action="{% url repo-create project.name_short %}" method="post">
+	    <form id="repo-create-form" action="{% url repo-create project.project_id %}" method="post">
 	        <table>{{form}}</table>
 	        <input type="submit">
 	    </form>
@@ -20,6 +20,6 @@
 	{{block.super}}
 	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
 	<script type="text/javascript">
-		{% include "repo/js/repo_create.js" %}
+		{% include "repos/js/repo_create.js" %}
 	</script>
 {% endblock scripts %}
