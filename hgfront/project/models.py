@@ -153,6 +153,14 @@ class Project(models.Model):
     number_of_repos.short_description = "No. Repositories"
     number_of_repos = property(number_of_repos)
     
+    def total_size(self):
+        repos = self.repo_set.filter(local_parent_project__exact=self)
+        filesize = 0
+        for repo in repos:
+            filesize += repo.folder_size
+        return filesize
+    total_size = property(total_size)
+    
     def number_of_members(self):
         """Returns the total number of members including the owner"""
         return self.user_set.count()
