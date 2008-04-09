@@ -12,6 +12,7 @@
 
 
 {% block main_content %}
+	{% load repo_tags %}
 
 	<div id="repo-changeset">
 		<h3>Changeset</h3>
@@ -26,6 +27,8 @@
 		    </dd>
 			<dt>Last Update Time</dt>
 			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
+			<dt>Repo Size</dt>
+			<dd>{{ repo.folder_size|megs|floatformat:2 }} Mb</dd>
 		    {%if changeset_parents %}
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}

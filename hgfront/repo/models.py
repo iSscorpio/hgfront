@@ -51,6 +51,8 @@ class Repo(models.Model):
     local_creation_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
     # local_modified_date: The date the repo was last updated
     local_modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+    # folder_size: The total size of the repo folder
+    folder_size=models.IntegerField()
 
     
     def __unicode__(self):

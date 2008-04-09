@@ -190,12 +190,12 @@ def repo_manage(request, slug, repo_name):
         return HttpResponse('Failed')
     
 def repo_pull_request(request, slug, repo_name):
-    repo = Repo.objects.get(directory_name__exact = repo_name, local_parent_project__name_short = slug)
+    repo = Repo.objects.get(directory_name__exact = repo_name, local_parent_project__project_id__exact = slug)
     # We pass off to a queue event
     msg_string = {}
                 
     msg_string['directory_name'] = repo.directory_name
-    msg_string['local_parent_project'] = repo.local_parent_project.name_short
+    msg_string['local_parent_project'] = repo.local_parent_project.project_id
                 
     q = Queue.objects.get(name='repoupdate')
     update = simplejson.dumps(msg_string)
@@ -287,8 +287,14 @@ def pop_queue(request, queue_name):
             try:
                 print repo.default_path
                 print repo.repo_directory
-                hg.clone(u, repo.default_path, repo.repo_directory, True)
+                hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
+                
+                for (path, dirs, files) in os.walk(repo.repo_directory):
+                    for file in files:
+                        filename = os.path.join(path, file)
+                        repo.folder_size += os.path.getsize(filename)
+                
                 repo.save()
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
@@ -297,9 +303,14 @@ def pop_queue(request, queue_name):
             except:
                 return HttpResponse('Clone Failed')
         elif (queue_name == 'repoupdate'):
-            location = hg.repository(u, repo.repo_directory())
+            location = hg.repository(u, repo.repo_directory)
             try:
-                commands.pull(u, location, repo.default_path, rev=['tip'], force=True, update=True)
+                commands.pull(u, location, str(repo.default_path), rev=['tip'], force=True, update=True)
+                for (path, dirs, files) in os.walk(repo.repo_directory):
+                    for file in files:
+                        filename = os.path.join(path, file)
+                        repo.folder_size += os.path.getsize(filename)
+                repo.save()
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
                 project.save()
