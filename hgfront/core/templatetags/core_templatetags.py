@@ -35,3 +35,8 @@ def filetype(value):
     if value.endswith('css'): file_type = "css"   
     return file_type
 register.filter('filetype', filetype)
+
+@register.filter
+def megs(value):
+    size = (value/(1024*1024.0))
+    return size

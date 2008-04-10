@@ -13,14 +13,16 @@
 {% endblock tabs %}
 
 {% block main_content %}
-
+	{% load core_templatetags %}
 	<div id="project-details">
-		<h3>Project: {{project.project_name}} | {{project.project_size}}</h3>
+		<h3>Project: {{project.project_name}}</h3>
 	    <dl id="project-details">
 	        <dt><strong>Local</strong> Project Manager</dt>
 	        <dd><a href="{{project.project_manager.get_absolute_url}}">{{project.project_manager}}</a></dd>
 	        <dt>Project Description</dt>
-	        <dd>{{project.full_description}}</dd>			
+	        <dd>{{project.full_description}}</dd>
+			<dt>Project Size</dt>
+			<dd>{{project.total_size|megs|floatformat:2}} Mb</dd>	
 	        <dt>Project Active Since</dt>
 	        <dd>{{project.created_date|date:"D d M Y H:i"}}</dd>
 			<dt>Project Last Updated</dt>

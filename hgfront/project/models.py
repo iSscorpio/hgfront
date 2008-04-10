@@ -154,10 +154,9 @@ class Project(models.Model):
     number_of_repos = property(number_of_repos)
     
     def total_size(self):
-        repos = self.repo_set.filter(local_parent_project__exact=self)
         filesize = 0
-        for repo in repos:
-            filesize += repo.folder_size
+        for r in self.repo_set.all():
+            filesize += r.folder_size
         return filesize
     total_size = property(total_size)
     
