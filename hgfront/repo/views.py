@@ -285,8 +285,6 @@ def pop_queue(request, queue_name):
         
         if (queue_name == 'repoclone'):
             try:
-                print repo.default_path
-                print repo.repo_directory
                 hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
                 
@@ -299,9 +297,9 @@ def pop_queue(request, queue_name):
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
                 project.save()
-                return HttpResponse(simplejson.dumps(msg.message), mimetype='application/json')
+                return HttpResponse('success')
             except:
-                return HttpResponse('Clone Failed')
+                return HttpResponse('failed')
         elif (queue_name == 'repoupdate'):
             location = hg.repository(u, repo.repo_directory)
             try:
@@ -314,9 +312,10 @@ def pop_queue(request, queue_name):
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
                 project.save()
-                return HttpResponse('Update Successful')
+                return HttpResponse('success')
             except:
-                return HttpResponse('Update Failed')
+                return HttpResponse('fail')
+    return HttpResponse('void')
 
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):

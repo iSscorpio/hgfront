@@ -11,6 +11,7 @@
 {% endblock tabs %}
 
 {% block main_content %}
+	{% load core_templatetags %}
 	<div id="project-list">
 		{% if projects %}
 			<table id="project-list-table" class="tablesorter">
@@ -20,6 +21,7 @@
 						<th>Description</th>
 						<th>Active Since</th>
 						<th>Last Update</th>
+						<th>Total Size (Mb)</th>
 						<th>No. of Repos</th>
 						<th>No. of Members</th>
 					</tr>
@@ -31,6 +33,7 @@
 						<td>{{project.short_description}}</td>
 						<td>{{project.created_date|date:"D d M Y"}}</td>
 						<td>{{project.modified_date|date:"D d M Y - H:i"}}</td>
+						<td>{{project.total_size|megs|floatformat:2}}</td>
 						<td>{{project.number_of_repos}}</td>
 						<td>{{project.number_of_members}}</td>
 					</tr>

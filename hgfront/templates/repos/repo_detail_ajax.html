@@ -27,8 +27,8 @@
 		    </dd>
 			<dt>Last Update Time</dt>
 			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
-			<dt>Repo Size</dt>
-			<dd>{{ repo.folder_size|megs|floatformat:2 }} Mb</dd>
+			<dt>Repo Size (Mb)</dt>
+			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
 		    {%if changeset_parents %}
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}
@@ -84,7 +84,7 @@
 	
 	<div id="repo-actions">
 		<ul>
-			<li><a href="{% url repo-pull-request %}"><span>Pull & Update</span></a></li>
+			<li><a href="{% url repo-pull-request repo.directory_name %}"><span>Pull & Update</span></a></li>
 		</ul>
 	</div>
 

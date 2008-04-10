@@ -21,8 +21,8 @@
 	        <dd><a href="{{project.project_manager.get_absolute_url}}">{{project.project_manager}}</a></dd>
 	        <dt>Project Description</dt>
 	        <dd>{{project.full_description}}</dd>
-			<dt>Project Size</dt>
-			<dd>{{project.total_size|megs|floatformat:2}} Mb</dd>	
+			<dt>Project Size (Mb)</dt>
+			<dd>{{project.total_size|megs|floatformat:2}}</dd>	
 	        <dt>Project Active Since</dt>
 	        <dd>{{project.created_date|date:"D d M Y H:i"}}</dd>
 			<dt>Project Last Updated</dt>
@@ -41,7 +41,8 @@
 				<table>
 					<thead>
 						<tr>
-							<th>Repository Name</th>
+							<th>Name</th>
+							<th>Size</th>
 							<th>Latest Changeset</th>
 							<th>Last Updated</th>
 						</tr>
@@ -50,6 +51,7 @@
 				 		{% if repo.created %}
 							<tr>
 								<td><a href="{{repo.get_absolute_url}}" class="link-show-repo">{{repo.display_name}}</a></td>
+								<td>{{ repo.folder_size|megs|floatformat:2 }} Mb</td>
 								<td>
 									{% ifequal repo.get_changeset_number '[]' %}
 	                                	No Changesets (please add and commit files).
@@ -57,9 +59,7 @@
 	                                	{{repo.get_changeset_number}} - {{repo.get_changeset}}
 	    	                        {% endifequal %}
 								</td>
-								<td>
-									{{repo.last_update|date:"D d M Y, H:i:s"}}
-								</td>
+								<td>{{repo.last_update|date:"D d M Y, H:i:s"}}</td>
 							</tr>
 						{% endif %}
 	            	{% endfor %}
@@ -161,7 +161,7 @@
     
 	<div id="project-backups">
         {% if permissions.add_repos %} 
-        	<a href="{% url create-backup project.name_short %}" class="link-create-backup">Backup Project</a>
+        	<a href="{% url create-backup project.project_id %}" class="link-create-backup">Backup Project</a>
         {% endif %}
 
 	    {% if backups %}

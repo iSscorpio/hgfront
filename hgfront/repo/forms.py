@@ -14,4 +14,4 @@ class RepoCreateForm(forms.ModelForm):
     
     class Meta:
         model = Repo
-        exclude = ('created', 'local_parent_project','local_creation_date','local_manager')
+        exclude = ('created', 'local_parent_project','local_creation_date','local_manager', 'folder_size')

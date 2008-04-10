@@ -38,5 +38,7 @@ register.filter('filetype', filetype)
 
 @register.filter
 def megs(value):
+    if value == '':
+        value = 0
     size = (value/(1024*1024.0))
     return size
