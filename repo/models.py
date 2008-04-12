@@ -68,7 +68,7 @@ class Repo(models.Model):
     
     def is_cloned(self):
         """Checks to see if this was a cloned repositories"""
-        return bool(self.creation_method == 'Cloned')
+        return bool(self.creation_method == 'Clone')
     is_cloned.short_description = "Cloned Repository?"
     is_cloned = property(is_cloned)
     

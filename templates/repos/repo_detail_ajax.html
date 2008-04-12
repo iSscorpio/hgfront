@@ -15,6 +15,15 @@
 	{% load core_templatetags %}
 
 	<div id="repo-changeset">
+		
+		<h3>Repository Overview</h3>
+		<dl>
+			<dt>Last Update Time</dt>
+			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
+			<dt>Repo Size (Mb)</dt>
+			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
+		</dl>
+		
 		<h3>Changeset</h3>
 		<dl>
 		    <dt>Changeset ID</dt>
@@ -25,15 +34,11 @@
 		            {{changeset_number}} - {{changeset_id}}
 		        {% endifequal %}
 		    </dd>
-			<dt>Last Update Time</dt>
-			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
-			<dt>Repo Size (Mb)</dt>
-			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
 		    {%if changeset_parents %}
 		        <dt>Changeset Parents</dt>
 		        {% for changeset in changeset_parents %}
 		            <dd>
-		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
+		                <a href="{% url view-changeset slug=project.project_id,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
 		            </dd>
 		        {% endfor %}
 				</dt>

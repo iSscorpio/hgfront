@@ -1,10 +1,18 @@
 {% block main_content %}
-	<div id="profile-details">
+	<div id="profile-details" class="vcard">
 		<dl>
 			<dt>Biography</dt>
 			<dd>{{member.member_bio}}</dd>
 			<dt>Homepage</dt>
 			<dd><a href="{{member.member_homepage}}">{{member.member_homepage}}</a></dd>
+			<dt>Members Location</dt>
+			<dd>
+				<div class="map" style="height:150px; width: 100%;"></div>
+				<div class="geo">
+     				<abbr class="latitude" title="{{member.member_lat}}">{{member.member_lat}}</abbr>,
+     				<abbr class="longitude" title="{{member.member_lng}}">{{member.member_lng}}</abbr>
+  				</span>
+			</dd>
 		</dl>
 	</div>
 	
@@ -38,3 +46,22 @@
 		
 	</div>
 {% endblock %}
+
+{% block scripts %}
+	{{block.super}}
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAApCYnM8S-TSRBhQk16Ynr4BSGVe95GGoMBsAFkzQCETZHVe6XWhQAw1YF9JE3YXsLM94Z9icurqqH3g" type="text/javascript"></script>
+	<script type="text/javascript" src="/static/js/jquery.jmaps.js"></script>
+	
+	<script type="text/javascript">
+		var lat = $('.latitude').attr('title');
+		var lng = $('.longitude').attr('title');
+		
+		console.log(lat);
+		console.log(lng);
+		
+		$('.map').jmap({mapCenter: [lat, lng]});
+		$('.map').addMarker({pointLat: lat,	pointLng: lng});
+		
+	</script>
+	
+{% endblock scripts %}

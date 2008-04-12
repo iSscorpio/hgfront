@@ -12,3 +12,9 @@ urlpatterns = patterns('',
     url(r'^s/', include('search.urls'), name='search-root'),
     url(r'^r/', include('repo.urls'), name='repos-root'),
 )
+
+urlpatterns += patterns('',
+    url(r'^openid/$', 'django_openidconsumer.views.begin', name='openid'),
+    url(r'^openid/complete/$', 'django_openidconsumer.views.complete', name='openid-complete'),
+    url(r'^openid/signout/$', 'django_openidconsumer.views.signout', name='openid-signout'),
+)

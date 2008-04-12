@@ -1,5 +1,7 @@
 #General Libraries
-from mercurial import hg, ui, hgweb, commands
+from mercurial import hg, ui, hgweb, commands, util, streamclone
+from mercurial.node import bin, hex
+from mercurial.hgweb import protocol
 import datetime, os
 # Django Libraries
 from django.conf import settings
@@ -43,67 +45,66 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
     project = Project.projects.get(project_id__exact=slug)
     repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     
-    
-    try:
-        changeset_tags = repo.get_tags()
-    except:
-        changeset_tags = []
-        
-    try:
-        changeset_branches = repo.get_branches()
-    except:
-        changeset_branches = []
-    
-    try:
-        changeset_id = repo.get_changeset(changeset)
-    except:
-        changeset_id = []
-        
-    try:
-        changeset_user = repo.get_changeset(changeset).user()
-    except:
-        changeset_user = []
-        
-    try:
-        changeset_notes = repo.get_changeset(changeset).description()
-    except:
-        changeset_notes = []
-        
-    try:
-        changeset_files = repo.get_changeset(changeset).files()
-    except:
-        changeset_files = []
-        
-    try:
-        changeset_number = repo.get_changeset_number(changeset)
-    except:
-        changeset_number = []
-    
-    try:
-        changeset_children = repo.get_next_changeset(changeset)
-    except:
-        changeset_children = []
-        
-    try:
-        changeset_parents = repo.get_previous_changeset(changeset)
-    except:
-        changeset_parents = []
-    
-    return render_to_response('repos/repo_detail.html',
-        {
-            'changeset_tags': changeset_tags,
-            'changeset_branches': changeset_branches,
-            'changeset_id': changeset_id,
-            'changeset_user': changeset_user,
-            'changeset_notes': changeset_notes,
-            'changeset_files': changeset_files,
-            'changeset_number': changeset_number,
-            'changeset_parents': changeset_parents,
-            'changeset_children': changeset_children,
-            'project': project,
-            'repo': repo
-        }, context_instance=RequestContext(request)
-    )
+    cmd = request.GET.get('cmd','')
+    if cmd:
+        if cmd == 'heads':
+            #u = ui.ui()
+            #loc = hg.repository(u, repo.repo_directory)
+            #resp = " ".join(map(hex, loc.heads())) + "\n"
+            #return HttpResponse(resp, mimetype='application/mercurial-0.1')
+            return HttpResponse('Not yet implemented')
+    else:
+        try:
+            changeset_tags = repo.get_tags()
+        except:
+            changeset_tags = []            
+        try:
+            changeset_branches = repo.get_branches()
+        except:
+            changeset_branches = []
+        try:
+            changeset_id = repo.get_changeset(changeset)
+        except:
+            changeset_id = []
+        try:
+            changeset_user = repo.get_changeset(changeset).user()
+        except:
+            changeset_user = []
+        try:
+            changeset_notes = repo.get_changeset(changeset).description()
+        except:
+            changeset_notes = []
+        try:
+            changeset_files = repo.get_changeset(changeset).files()
+        except:
+            changeset_files = []
+        try:
+            changeset_number = repo.get_changeset_number(changeset)
+        except:
+            changeset_number = []
+        try:
+            changeset_children = repo.get_next_changeset(changeset)
+        except:
+            changeset_children = []
+        try:
+            changeset_parents = repo.get_previous_changeset(changeset)
+        except:
+            changeset_parents = []
+        return render_to_response('repos/repo_detail.html',
+            {
+                'changeset_tags': changeset_tags,
+                'changeset_branches': changeset_branches,
+                'changeset_id': changeset_id,
+                'changeset_user': changeset_user,
+                'changeset_notes': changeset_notes,
+                'changeset_files': changeset_files,
+                'changeset_number': changeset_number,
+                'changeset_parents': changeset_parents,
+                'changeset_children': changeset_children,
+                'project': project,
+                'repo': repo
+            }, context_instance=RequestContext(request)
+        )
 
 def repo_create(request, slug):
     """

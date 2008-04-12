@@ -26,7 +26,9 @@ class MenuboxNode(Node):
         return '''<div class="box"><div class="box-outer"><div class="box-inner"><h2>%s</h2>%s</div></div></div>''' % (title, output)
 
 
+@register.filter
 def filetype(value):
+    """Takes a path and extracts the filetype, this is returned to be passed as a class into any element"""
     file_type = "default"
     if value.endswith('py'): file_type = "python"
     if value.endswith('html'): file_type = "html"
@@ -34,10 +36,10 @@ def filetype(value):
     if value.endswith('png'): file_type = "png"
     if value.endswith('css'): file_type = "css"   
     return file_type
-register.filter('filetype', filetype)
 
 @register.filter
 def megs(value):
+    """Takes a value in bytes and returns in megabytes"""
     if value == '':
         value = 0
     size = (value/(1024*1024.0))

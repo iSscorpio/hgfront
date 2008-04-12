@@ -10,12 +10,15 @@ from project.models import Project
 
 class Member(models.Model):
     user = models.ForeignKey(User, unique=True)
+    openid=models.URLField(blank=True,null=True)
     member_displayname = models.CharField(max_length=25)
     member_homepage = models.URLField(blank = True, null = True)
     member_gtalk = models.CharField(max_length = 50, blank = True, null = True)
     member_msn = models.CharField(max_length = 50, blank = True, null = True)
     member_jabber = models.CharField(max_length = 50, blank = True, null = True)
     member_bio = models.TextField()
+    member_lat = models.DecimalField(max_digits=13, decimal_places=10, verbose_name='Latitude')
+    member_lng = models.DecimalField(max_digits=13, decimal_places=10, verbose_name='Longitude')
     
     def __unicode__(self):
         return self.user.username

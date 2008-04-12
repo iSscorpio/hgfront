@@ -15,6 +15,12 @@ urlpatterns = patterns('member.views',
     url(r'^verifyuseremail/$','member_verifyuseremail', name='member-verifyuseremail'),
 )
 
+urlpatterns += patterns('',
+    url(r'^openid/$', 'django_openidconsumer.views.begin', name='openid'),
+    url(r'^openid/complete/$', 'django_openidconsumer.views.complete', name='openid-complete'),
+    url(r'^openid/signout/$', 'django_openidconsumer.views.signout', name='openid-signout'),
+)
+
 # TODO this should be optional
 from hgfront import htpasswdutils
 htpasswdutils.monkeypatch_user_model()
