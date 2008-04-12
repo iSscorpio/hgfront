@@ -3,6 +3,8 @@ settings\.py$
 .*\.pyc$
 \.swp$
 syntax: glob
+*.toc
+*.body
 hgfrontdb.sqlite
 hgfront/project/templatetags/*.swo
 hgfrontdb

@@ -1,0 +1,16 @@
+{% extends "admin_doc/django/index.html" %}
+
+{% load i18n %}
+{% block coltype %}colSM{% endblock %}
+{% block breadcrumbs %}<div class="breadcrumbs"><a href="../../../">Home</a> &rsaquo; <a href="../../">Documentation</a> &rsaquo; <a href="../">Django</a> &rsaquo; {{ doctitle|title }}</div>{% endblock %}
+{% block userlinks %}<a href="../../../password_change/">{% trans 'Change password' %}</a> / <a href="../../../logout/">{% trans 'Log out' %}</a>{% endblock %}
+
+{% block content %}
+<div id="content-related">
+<div class="module">
+<h2>Table of Contents</h2>
+{{ doc.toc }}
+</div>
+</div>
+<div id="content-main">{{ doc.html_body }}</div>
+{% endblock %}
