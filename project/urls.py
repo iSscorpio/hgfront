@@ -21,6 +21,5 @@ urlpatterns = patterns('project.views',
 urlpatterns += patterns('',
     url(r'^(?P<slug>[-\w]+)/i/', include('issue.urls')),
     url(r'^(?P<slug>[-\w]+)/r/', include('repo.urls')),
-    url(r'^(?P<slug>[-\w]+)/w/',include('wiki.urls')),
     url(r'^(?P<slug>[-\w]+)/b/', include('backup.urls')),
 )
