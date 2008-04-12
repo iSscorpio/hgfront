@@ -188,6 +188,15 @@
 	<div id="project-actions">
 		<ul>
 			<li><a href="add_news/">Add News</a></li>
+			<li><a class="delete" href="{% url project-delete project.project_id %}">Delete</a></li>
 		</ul>
 	</div>
 {% endblock %}
+
+{% block scripts %}
+	{{block.super}}
+	<script type="text/javascript" src="/static/js/jquery.confirm.js"></script>
+	<script type="text/javascript">
+		{% include "project/js/project_delete.js" %}
+	</script>
+{% endblock scripts %}

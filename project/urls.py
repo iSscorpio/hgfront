@@ -14,6 +14,7 @@ urlpatterns = patterns('project.views',
     url(r'^(?P<slug>[-\w]+)/process_join_request/$', 'process_join_request', name="project-process-join-request"),
     url(r'^(?P<slug>[-\w]+)/join/$', 'join_project', name="project-join-project"),
     url(r'^(?P<slug>[-\w]+)/news/$', 'project_news', name="project-add-news"),
+    url(r'^(?P<slug>[-\w]+)/delete/$', 'project_delete', name="project-delete"),
 )
 
 

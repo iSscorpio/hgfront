@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 # Project Libraries
+from core.json_response import JsonResponse
 from backup.models import ProjectBackup
 from core.json_encode import json_encode
 from project.forms import *
@@ -132,6 +133,26 @@ def create_project_form(request):
                 'is_auth': is_auth
             }, context_instance=RequestContext(request)
         )
+        
+def project_delete(request, slug):
+    project = get_object_or_404(Project.projects.select_related(), project_id=slug)
+    try:
+        project.delete()
+        request.user.message_set.create(message=_("The project " + project.project_name + " has been deleted"))
+        if request.is_ajax():
+            retval = (
+                {
+                    'success':'true',
+                    'url': reverse('project-detail', kwargs={'slug':slug}),
+                },
+            )
+            return JsonResponse(retval)
+        else:
+            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+    except:
+        request.user.message_set.create(message=_("The repository " + repo.display_name + " failed to be deleted"))
+        return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+        
  
 def process_join_request(request, slug):
     project = get_object_or_404(Project.projects.select_related(), name_short = slug)
