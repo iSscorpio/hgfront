@@ -22,6 +22,27 @@
 			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
 			<dt>Repo Size (Mb)</dt>
 			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
+			<dt>Permissions</dt>
+			<dd>
+				<ul>
+					<li>
+						Anonymous Pull:
+						{% if repo.allow_anon_pull %}
+							<span class="allow"></span>
+						{% else %}
+							<span class="deny"></span>
+						{% endif %}
+					</li>
+					<li>
+						Anonymous Push:
+						{% if repo.allow_anon_push %}
+							<span class="allow"></span>
+						{% else %}
+							<span class="deny"></span>
+						{% endif %}
+					</li>
+				</ul>
+			</dd>
 		</dl>
 		
 		<h3>Changeset</h3>

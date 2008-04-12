@@ -37,7 +37,8 @@ def repo_list(request, slug):
         {
             'project': project,
             'repos': repos,
-            'permissions': project.get_permissions(request.user)
+            'permissions': project.get_permissions(request.user),
+            'json_output': json_encode({'repos' : repos, 'project' : project})
         }, context_instance=RequestContext(request)
     )
 
@@ -103,7 +104,8 @@ def view_changeset(request, slug, repo_name, changeset='tip'):
                 'changeset_parents': changeset_parents,
                 'changeset_children': changeset_children,
                 'project': project,
-                'repo': repo
+                'repo': repo,
+                'json_output': json_encode({'repo' : repo, 'project' : project})
             }, context_instance=RequestContext(request)
         )
 

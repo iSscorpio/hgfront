@@ -211,6 +211,16 @@ label {
 	background: url('images/files/javascript.png') no-repeat left center;
 }
 
+.allow {
+	padding-left: 20px;
+	background: url('images/allow.png') no-repeat left center;
+}
+
+.deny {
+	padding-left: 20px;
+	background: url('images/deny.png') no-repeat left center;
+}
+
 /* tables */
 table.tablesorter {
 	font-family:arial;

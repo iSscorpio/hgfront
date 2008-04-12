@@ -9,9 +9,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 # Project Libraries
-from hgfront.member.forms import MemberRegisterForm, MemberLoginForm, MemberPasswordResetForm
-from hgfront.member.models import Member
-from hgfront.project.models import Project
+from core.json_encode import json_encode
+from member.forms import MemberRegisterForm, MemberLoginForm, MemberPasswordResetForm
+from member.models import Member
+from project.models import Project
 # Create your views here.
 
 
@@ -90,12 +91,15 @@ def member_home(request):
     )
     
 def member_profile(request, member_name):
-    user = User.objects.get(username__exact = member_name)    
+    user = User.objects.get(username__exact = member_name)
+    projects_user_owns = Project.projects.filter(project_manager__exact = user)
+    profile = user.get_profile()
     return render_to_response('member/profile.html',
         {
          'user': user,
-         'member': user.get_profile(),
-         'user_projects_owns': Project.projects.filter(project_manager__exact = user)
+         'member': profile,
+         'projects_user_owns': projects_user_owns,
+         'json_output': json_encode({'user' : profile, 'project_user_owns' : projects_user_owns}),
         }, context_instance=RequestContext(request)
     )
 

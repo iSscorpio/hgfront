@@ -22,6 +22,11 @@
 	<script type="text/javascript" src="/static/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/js/ui.base.js"></script>
 	<script type="text/javascript" src="/static/js/ui.tabs.js"></script>
+	
+	<script type="text/javascript">
+		var hgfront = {% autoescape off %}{{json_output}}{% endautoescape %}
+	</script>
+	
 	<script type="text/javascript" src="/static/js/hgfront.js"></script>
 </head>
 

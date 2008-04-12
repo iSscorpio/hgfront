@@ -27,10 +27,10 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for project in user_projects_owns %}
+				{% for project in projects_user_owns %}
 					<tr>
-						<td><a href="{{project.get_absolute_url}}">{{project.name_long}}</a></td>
-						<td>{{project.num_repos}}</td>
+						<td><a href="{{project.get_absolute_url}}">{{project.project_name}}</a></td>
+						<td>{{project.number_of_repos}}</td>
 						<td>{{project.members.count}}</td>
 					</tr>
 				{% endfor %}
@@ -53,14 +53,8 @@
 	<script type="text/javascript" src="/static/js/jquery.jmaps.js"></script>
 	
 	<script type="text/javascript">
-		var lat = $('.latitude').attr('title');
-		var lng = $('.longitude').attr('title');
-		
-		console.log(lat);
-		console.log(lng);
-		
-		$('.map').jmap({mapCenter: [lat, lng]});
-		$('.map').addMarker({pointLat: lat,	pointLng: lng});
+		$('.map').jmap({mapCenter: [hgfront.user.member_lat, hgfront.user.member_lng]});
+		$('.map').addMarker({pointLat: hgfront.user.member_lat,	pointLng: hgfront.user.member_lng});
 		
 	</script>
 	

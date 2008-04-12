@@ -18,6 +18,7 @@ from project.forms import *
 from project.models import Project, ProjectPermissionSet, ProjectNews
 from project.decorators import check_project_permissions
 from issue.models import Issue
+from member.models import Member
 
 # Experimental Caching stuff
 from django.core.cache import cache
@@ -25,6 +26,7 @@ CACHE_EXPIRES = 5 * 60 # 5 minutes
 # End caching stuff
 
 def get_project_list(request):
+    member = Member.objects.get(user__exact = request.user)
     projects = [project for project in Project.projects.select_related()if project.get_permissions(request.user).view_project]
     project_news = ProjectNews.news_items.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
     #user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
@@ -39,6 +41,7 @@ def get_project_list(request):
             'view_title': "All Projects",
             'projects': projects,
             'project_news': project_news,
+            'json_output': json_encode({'projects' : projects, 'user' : member}),
             #'user_can_request_to_join':user_can_request_to_join
         }, context_instance=RequestContext(request)
     )
@@ -69,7 +72,8 @@ def get_project_details(request, slug):
             'permissions':permissions,
             'issues':issue_short_list,
             'backups': backups,
-            'user_can_request_to_join':user_can_request_to_join
+            'user_can_request_to_join':user_can_request_to_join,
+            'json_output': json_encode({'project' : project, 'issues': issue_short_list}),
         }, context_instance=RequestContext(request)
     )
 
