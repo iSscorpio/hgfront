@@ -18,6 +18,7 @@ from django.utils import simplejson
 from core.json_encode import json_encode
 from django.utils.translation import ugettext as _
 # Project Libraries
+from core.json_response import JsonResponse
 from project.models import Project
 from repo.forms import RepoCreateForm
 from repo.models import Repo
@@ -157,10 +158,10 @@ def repo_create(request, slug):
             
             request.user.message_set.create(message=_("The repository " + form.cleaned_data['display_name'] + " has been queued"))
             if request.is_ajax():
-                return HttpResponse(
-                        "{'success': 'true', 'url': '" + reverse('project-detail', kwargs={'slug':slug}) + "', 'project': " + json_encode(project) + "}"
-                        , mimetype="application/json"
+                retval = (
+                    {'success':'true', 'url':reverse('project-detail', kwargs={'slug':slug}),},
                 )
+                return JsonResponse(retval)
             else:
                 return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
         else:
@@ -181,10 +182,30 @@ def repo_create(request, slug):
             'permissions':project.get_permissions(request.user)
         }, context_instance=RequestContext(request)
     )
+    
+def repo_delete(request, slug, repo_name):
+    project = get_object_or_404(Project, project_id__exact=slug)
+    repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
+    try:
+        repo.delete()
+        request.user.message_set.create(message=_("The repository " + repo.display_name + " has been deleted"))
+        if request.is_ajax():
+            retval = (
+                {
+                    'success':'true',
+                    'url': reverse('project-detail', kwargs={'slug':slug}),
+                },
+            )
+            return JsonResponse(retval)
+        else:
+            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+    except:
+        request.user.message_set.create(message=_("The repository " + repo.display_name + " failed to be deleted"))
+        return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
 
 @check_project_permissions('add_repos')
 def repo_manage(request, slug, repo_name):
-    repo = Repo.objects.get(name_short = repo_name, parent_project__name_short = slug)
+    repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     if repo.create_hgrc():
         return HttpResponse('Created')
     else:

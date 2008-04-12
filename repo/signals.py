@@ -34,5 +34,5 @@ def move_repo():
     
 def delete_repo(sender, instance, signal, *args, **kwargs):
     """Destroy the mercurial repo"""
-    if bool(os.path.isdir(instance.repo_directory())):
-        return bool(shutil.rmtree(instance.repo_directory()))
+    if bool(os.path.isdir(instance.repo_directory)):
+        return bool(shutil.rmtree(instance.repo_directory))

@@ -47,7 +47,7 @@
 		        <dt>Changeset Children</td>
 		        {% for changeset in changeset_children %}
 		            <dd>
-		                <a href="{% url view-changeset slug=project.name_short,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
+		                <a href="{% url view-changeset slug=project.project_id,repo_name=repo.directory_name,changeset=changeset %}">{{changeset}}</a>
 		            </dd>
 		        {% endfor %}
 		        </dt>
@@ -89,8 +89,17 @@
 	
 	<div id="repo-actions">
 		<ul>
-			<li><a href="{% url repo-pull-request repo.directory_name %}"><span>Pull & Update</span></a></li>
+			<li><a class="pull-update" href="{% url repo-pull-request slug=project.project_id,repo_name=repo.directory_name %}"><span>Pull & Update</span></a></li>
+			<li><a class="delete" href="{% url repo-delete slug=project.project_id,repo_name=repo.directory_name %}"><span>Delete</span></a></li>
 		</ul>
 	</div>
 
 {% endblock %}
+
+{% block scripts %}
+	{{block.super}}
+	<script type="text/javascript" src="/static/js/jquery.confirm.js"></script>
+	<script type="text/javascript">
+		{% include "repos/js/repo_delete.js" %}
+	</script>
+{% endblock scripts %}

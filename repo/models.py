@@ -201,6 +201,8 @@ class Repo(models.Model):
 
     repo_options = RepoOptions()
     
+dispatcher.connect( delete_repo, signal=signals.post_delete, sender=Repo )
+    
 class Queue(models.Model):
     """
     """

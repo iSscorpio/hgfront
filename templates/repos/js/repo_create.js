@@ -20,12 +20,9 @@ $(document).ready(function(){
 	    $.post($(form).attr('action'), data, function(data){
 	        // do a simple alert for now, alert "Article was saved"
 	        //alert(responseData.success);
-			console.log(data);
-			if (data.success == 'true') {
-				
+			if (data[0].success == 'true') {
 				target = $(form).parent().parent().parent();
-				
-				$(target).load(data.url, function(){
+				$(target).load(data[0].url, function(){
 					hgfront.jsactivate();
 				});
 			}
