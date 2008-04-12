@@ -1,8 +1,8 @@
 import sys
 
-from config.models import Setting
-from config.values import Value
-from config.loading import register_setting
+from core.config.models import Setting
+from core.config.values import Value
+from core.config.loading import register_setting
 
 __all__ = ['Group']
 

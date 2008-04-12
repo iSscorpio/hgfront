@@ -4,7 +4,7 @@ from django.utils.datastructures import SortedDict
 from django.db import transaction
 from django.core.cache import cache
 
-from config.models import Setting
+from core.config.models import Setting
 
 __all__ = ['get_all_settings', 'get_setting', 'get_setting_storage',
     'register_setting', 'set_setting_value']

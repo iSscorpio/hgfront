@@ -3,7 +3,7 @@ def set_defaults(app, *defaults):
     from django.core.exceptions import ImproperlyConfigured
     from django.dispatch import dispatcher
     from django.db.models import signals
-    from config.loading import get_setting_storage, set_setting_value
+    from core.config.loading import get_setting_storage, set_setting_value
 
     if not defaults:
         raise ImproperlyConfigured("No defaults were supplied to set_defaults.")

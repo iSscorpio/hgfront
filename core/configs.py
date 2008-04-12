@@ -1,6 +1,6 @@
 # Project Libraries
-from config.group import Group
-from config.values import *
+from core.config.group import Group
+from core.config.values import *
 
 class ProjectOptions(Group):
     """

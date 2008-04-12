@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.contrib.admin.views.decorators import staff_member_required
 from django.utils.text import capfirst
 
-from config import loading, forms
+from core.config import loading, forms
 
 def app_settings(request, app_label, template='dbsettings/app_settings.html'):
     # Determine what set of settings this editor is used for

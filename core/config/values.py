@@ -2,7 +2,7 @@ import datetime
 
 from django import newforms as forms
 
-from config.loading import get_setting_storage
+from core.config.loading import get_setting_storage
 
 try:
     from decimal import Decimal

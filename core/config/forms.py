@@ -4,7 +4,7 @@ from django.db.models import get_model
 from django import newforms as forms
 from django.utils.datastructures import SortedDict
 from django.utils.text import capfirst
-from config.loading import get_setting_storage
+from core.config.loading import get_setting_storage
 
 re_field_name = re.compile(r'^(.+)__(.*)__(.+)$')
 

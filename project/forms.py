@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 import django.newforms as forms
 from django.newforms import ModelForm
 # Project Libraries
-import config
+import core.config
 from project.models import Project, ProjectNews
 
 available_styles = (
