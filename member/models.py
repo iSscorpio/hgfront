@@ -6,27 +6,7 @@ from django.dispatch import dispatcher
 
 from project.models import Project
 
-# Create your models here.
-
-class MemberManager(models.Manager):
-    def get_query_set(self):
-        all = super(MemberManager, self).get_query_set()
-        for member in all:
-            member.user.password = None
-        return all
-    
-    def filter(self, query):
-        all = super(MemberManager, self).filter(query)
-        for member in all:
-            member.user.password = None
-        return all
-    
-    def get(self, query):
-        all = super(MemberManager, self).get(query)
-        for member in all:
-            member.user.password = None
-        return all
-        
+# Create your models here.        
 
 class Member(models.Model):
     user = models.ForeignKey(User, unique=True)
@@ -43,7 +23,7 @@ class Member(models.Model):
     def __unicode__(self):
         return self.user.username
     
-    objects = MemberManager()
+    members = models.Manager()
     
     @permalink
     def get_absolute_url(self):

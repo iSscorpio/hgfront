@@ -312,6 +312,7 @@ def pop_queue(request, queue_name):
                 hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
                 
+                repo.folder_size = 0
                 for (path, dirs, files) in os.walk(repo.repo_directory):
                     for file in files:
                         filename = os.path.join(path, file)
@@ -328,6 +329,7 @@ def pop_queue(request, queue_name):
             location = hg.repository(u, repo.repo_directory)
             try:
                 commands.pull(u, location, str(repo.default_path), rev=['tip'], force=True, update=True)
+                repo.folder_size = 0
                 for (path, dirs, files) in os.walk(repo.repo_directory):
                     for file in files:
                         filename = os.path.join(path, file)
