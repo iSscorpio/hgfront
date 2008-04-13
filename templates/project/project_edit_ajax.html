@@ -1,0 +1,15 @@
+{% block main_content %}
+	{{form.messages.errors}}
+    <form id="project-edit-form" action="{% url project-edit project.project_id %}" method="post">
+    	<table>{{form}}</table>
+		<input type="submit" />
+    </form>
+{% endblock main_content %}
+
+{% block scripts %}
+	{{block.super}}
+	<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		{% include "project/js/project_edit.js" %}
+	</script>
+{% endblock scripts %}

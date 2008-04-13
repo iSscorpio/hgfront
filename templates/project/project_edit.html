@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{block.super}} Edit Project{% endblock %}
+
+{% block tabs %}
+	<ul class="tabs-navigation flora">
+		<li><a href="#project-edit"><span>Edit Project</span></a></li>
+	</ul>
+{% endblock tabs %}
+
+{% block main_content %}
+	{% include "project/project_edit_ajax.html" %}
+{% endblock %}

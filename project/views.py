@@ -26,7 +26,6 @@ CACHE_EXPIRES = 5 * 60 # 5 minutes
 # End caching stuff
 
 def get_project_list(request):
-    member = Member.members.get(user__exact = request.user)
     projects = [project for project in Project.projects.all() if project.get_permissions(request.user).view_project]
     project_news = ProjectNews.news_items.filter(frontpage=True, authorised=True).order_by('-pub_date')[:2]
     #user_can_request_to_join = ProjectPermissionSet.objects.filter(project=project, user__id=request.user.id).count()<1 and request.user.is_authenticated() and request.user != project.user_owner
@@ -41,7 +40,7 @@ def get_project_list(request):
             'view_title': "All Projects",
             'projects': projects,
             'project_news': project_news,
-            'json_output': json_encode({'projects' : projects, 'user' : member}),
+            'json_output': json_encode({'projects' : projects,}),
             #'user_can_request_to_join':user_can_request_to_join
         }, context_instance=RequestContext(request)
     )
