@@ -231,48 +231,6 @@ def repo_pull_request(request, slug, repo_name):
         request.user.message_set.create(message="The repository queue has failed!")
     return HttpResponseRedirect(reverse('view-tip', kwargs={'slug': slug, 'repo_name':repo_name}))
     
-# Queue Methods
-@check_allowed_methods(['POST'])
-def create_queue(request):
-    # test post with
-    # curl -i http://localhost:8000/createqueue/ -d name=default
-    requested_name = request.POST.get('name', None)
-    if requested_name is None:
-        return HttpResponseForbidden()
-    q = Queue(name=requested_name)
-    q.save()
-    return HttpResponse("", mimetype='text/plain')
-
-@check_allowed_methods(['POST', 'DELETE'])
-def delete_queue(request):
-    # test post with
-    # curl -i http://localhost:8000/deletequeue/ -d name=default
-    requested_name = request.POST.get('name', None)
-    if requested_name is None:
-        return HttpResponseForbidden()
-    try:
-        q = Queue.objects.get(name=requested_name)
-        if q.message_set.count() > 0:
-            return HttpResponseNotAllowed()
-        q.delete()
-        return HttpResponse("", mimetype='text/plain')
-    except Queue.DoesNotExist:
-        return HttpResponseNotFound()
-
-@check_allowed_methods(['POST'])
-def purge_queue(request):
-    # test post with
-    # curl -i http://localhost:8000/purgequeue/ -d name=default
-    requested_name = request.POST.get('name', None)
-    if requested_name is None:
-        return HttpResponseForbidden()
-    try:
-        q = Queue.objects.get(name=requested_name)
-        q.message_set.all().delete()
-        return HttpResponse("", mimetype='text/plain')
-    except Queue.DoesNotExist:
-        return HttpResponseNotFound()
-
 @check_allowed_methods(['GET'])
 def list_queues(request):
     # test post with
