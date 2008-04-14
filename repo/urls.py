@@ -15,12 +15,8 @@ urlpatterns = patterns('repo.views',
 )
 
 urlpatterns += patterns('repo.views',
-    url(r'^q/createqueue/$', 'create_queue'), #post 'name' of queue
-    url(r'^q/deletequeue/$', 'delete_queue'), #post 'name' of queue
-    url(r'^q/purgequeue/$', 'purge_queue'),   #post 'name' of queue
     url(r'^q/listqueues/$', 'list_queues'),
     url(r'^q/(?P<queue_name>\w+)/clearexpire/$', 'clear_expirations'),
-    url(r'^q/(?P<queue_name>\w+)/count/json/$', 'count', {"response_type":"json"}),
     url(r'^q/(?P<queue_name>\w+)/count/$', 'count', {"response_type":"text"}),
     url(r'^q/(?P<queue_name>\w+)/$', 'pop_queue'),
 

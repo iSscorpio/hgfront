@@ -2,7 +2,7 @@
 from mercurial import hg, ui, hgweb, commands, util, streamclone
 from mercurial.node import bin, hex
 from mercurial.hgweb import protocol
-import datetime, os
+import datetime, os, sys
 # Django Libraries
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseNotAllowed
 from django.http import HttpResponseNotFound
+from django.http import HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
@@ -259,6 +260,7 @@ def pop_queue(request, queue_name):
         return HttpResponseNotFound()
     #
     msg = q.message_set.pop()
+    response_message='void'
     if msg:
         u = ui.ui()
         message = simplejson.loads(msg.message)
@@ -269,7 +271,9 @@ def pop_queue(request, queue_name):
             try:
                 hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
-                
+            except:
+                response_message = 'failed'
+            try:
                 repo.folder_size = 0
                 for (path, dirs, files) in os.walk(repo.repo_directory):
                     for file in files:
@@ -277,12 +281,15 @@ def pop_queue(request, queue_name):
                         repo.folder_size += os.path.getsize(filename)
                 
                 repo.save()
+            except:
+                response_message = 'failed'
+            try:
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
                 project.save()
-                return HttpResponse('success')
+                response_message = 'success'
             except:
-                return HttpResponse('failed')
+                response_message = 'failed'
         elif (queue_name == 'repoupdate'):
             location = hg.repository(u, repo.repo_directory)
             try:
@@ -296,10 +303,13 @@ def pop_queue(request, queue_name):
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
                 project.save()
-                return HttpResponse('success')
+                response_message = 'success'
             except:
-                return HttpResponse('fail')
-    return HttpResponse('void')
+                response_message = 'failed'
+    if (response_message == 'failed'):
+        return HttpResponseServerError()
+    else:
+        return HttpResponse(response_message)
 
 #@check_allowed_methods(['POST'])
 def clear_expirations(request, queue_name):
