@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
+from django.utils.translation import gettext_lazy as _
 # Project Libraries
 from core.configs import ProjectOptions
 from project.signals import *
@@ -67,23 +68,23 @@ class Project(models.Model):
     AVAILABLE_STYLES = [(x, x) for x in ("Default", "Gitweb",)]
 
     # project_id: This is a slugfield with a unique name for the project, there can be no other projects with the same name
-    project_id=models.SlugField(unique=True, editable=False)
+    project_id=models.SlugField(_('project id'),unique=True, editable=False, db_index=True, help_text=_('this is the unique project id which also becomes the project slug'))
     # project_name: This is the human-readable name of the project
-    project_name=models.CharField(max_length=255)
+    project_name=models.CharField(_('project name'), max_length=255, help_text=_('a human readable name for the project'))
     # short_description: This is the short description of a project for RSS feeds, widgets, lists, etc
-    short_description=models.CharField(max_length=255, blank=True, null=True)
+    short_description=models.CharField(_('short description'), max_length=255, blank=True, null=True, help_text=_('a useful short description of the project (for lists, feeds, etc)'))
     # full_description: This is the full freetext description of the project
-    full_description=models.TextField()
+    full_description=models.TextField(_('full description'), help_text=_('the full description of the project'))
     # project_icon: This is the icon used to give the project some visual air
-    project_icon = models.ImageField(upload_to='project_icons', blank=True, null=True)
+    project_icon = models.ImageField(_('project icon'), upload_to='project_icons', blank=True, null=True, help_text=_('an image to show as the project icon'))
     # project_manager: This is the person managing the project on this instance of hgmanager
-    project_manager=models.ForeignKey(User, related_name='project_manager', verbose_name='project manager')
+    project_manager=models.ForeignKey(User, related_name='project_manager', verbose_name=_('project manager'), help_text=_('the member who owns this local project'))
     # hgweb_style: The style to apply to the hgweb application
-    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
+    hgweb_style=models.CharField(_('hgweb style'),max_length=50,choices=AVAILABLE_STYLES, help_text=_('the style to show in the project/repo hgweb'))
     # created_date: The date the project instance was created
-    created_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    created_date=models.DateTimeField(_('created on'), auto_now_add=True, editable=False, help_text=_('the date this project was started'))
     # modified_date: The date the project instance was last modified
-    modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+    modified_date=models.DateTimeField(_('modified on'), auto_now=True, editable=False, help_text=_('the date the project was last updated'))
 
     # Model properties
     
@@ -97,33 +98,26 @@ class Project(models.Model):
         ordering = ['project_name',]
         get_latest_by = 'modified_date'
         permissions = (
-            ("can_create_project", "Can Create Project"),
-            ("can_read_project", "Can Read Project"),
-            ("can_update_project", "Can Update Project"),
-            ("can_delete_project", "Can Delete Project"),
+            ("can_create_project", _('Can Create Project')),
+            ("can_read_project", _('Can Read Project')),
+            ("can_update_project", _('Can Update Project')),
+            ("can_delete_project", _('Can Delete Project')),
         )
-        verbose_name = 'project'
-        verbose_name_plural = 'projects'
+        verbose_name = _('project')
+        verbose_name_plural = _('projects')
 
     # Define the Admin class
     class Admin:
         fields = (
-                  ('Project Details', {'fields':
-                                        ('project_id',
-                                         'project_name',
+                  (_('Project Details'), {'fields':
+                                        ('project_name',
                                          'short_description',
                                          'full_description',
                                          'project_icon',
                                          )
                                         }
                   ),
-                  ('Date information', {'fields':
-                                        ('created_date',
-                                         'modified_date'
-                                         )
-                                        }
-                  ),
-                  ('Publishing Details', {'fields':
+                  (_('Publishing Details'), {'fields':
                                           ('hgweb_style',
                                            'project_manager',
                                            )
@@ -150,7 +144,7 @@ class Project(models.Model):
     def number_of_repos(self):
         """Returns the number of repositories linked to this project"""
         return self.repo_set.count()
-    number_of_repos.short_description = "No. Repositories"
+    number_of_repos.short_description = _("No. Repositories")
     number_of_repos = property(number_of_repos)
     
     def total_size(self):
@@ -163,12 +157,12 @@ class Project(models.Model):
     def number_of_members(self):
         """Returns the total number of members including the owner"""
         return self.user_set.count()
-    number_of_members.short_description = "No. Members"
+    number_of_members.short_description = _("No. Members")
     number_of_members = property(number_of_members)
     
     def project_directory(self):
         return os.path.join(Project.project_options.repository_directory, self.project_id)
-    project_directory.short_description = "Project Path"
+    project_directory.short_description = _("Project Path")
     project_directory = property(project_directory)
     
     def user_in_project(self, user):
@@ -379,7 +373,7 @@ class ProjectNews(models.Model):
         pass
         
     class Meta:
-        verbose_name = 'project news item'
-        verbose_name_plural = 'project news items'
+        verbose_name = _('project news item')
+        verbose_name_plural = _('project news items')
         ordering = ['pub_date', 'parent_project']
 

@@ -9,6 +9,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import permalink, signals
 from django.dispatch import dispatcher
+from django.utils.translation import gettext_lazy as _
 # Project Libraries
 from core.configs import RepoOptions
 from repo import signals as hgsignals
@@ -17,42 +18,42 @@ from project.models import Project
 
 class Repo(models.Model):
     
-    REPO_TYPES = [(x, x) for x in ("New", "Clone",)]
+    REPO_TYPES = [(x, x) for x in (_("New"), _("Clone"),)]
     AVAILABLE_STYLES = [(x, x) for x in ("Default", "Gitweb",)]
     
     """A repo represents a physical repository on the hg system path"""
     # directory_name: The short name of the repository that exists on the file system
-    directory_name=models.CharField(max_length=30)
+    directory_name=models.CharField(_('repository directory name'), max_length=30, db_index=True, help_text=_('the name for the repository'))
     # display_name: The long name of the repo used for displaying on the web interface
-    display_name=models.CharField(max_length=255)
+    display_name=models.CharField(_('repository name'), max_length=255, help_text=_('the human readable name of the repository'))
     # description: The freetext field for the description
-    description=models.TextField(null=True, blank=True)
+    description=models.TextField(_('repository description'), null=True, blank=True, help_text=_('a description of the repository'))
     # creation_method: Stores how the repository was origionally created
-    creation_method=models.CharField(max_length=5, choices=REPO_TYPES, verbose_name="new or cloned repository?")
+    creation_method=models.CharField(_('creation method'), max_length=5, choices=REPO_TYPES, help_text=_('this determines wether this is a new or cloned repository'))
     # default_path: The remote repository location to push/pull from
-    default_path=models.CharField(max_length=255, null=True, blank=True, verbose_name="remote repository location")
+    default_path=models.CharField(_('default path'),max_length=255, null=True, blank=True, help_text=_('this is the local or remote repository that is cloned, pushed or pulled from'))
     # created: Stored wether the repo has been created or not
-    created=models.BooleanField(default=False)
+    created=models.BooleanField(_('created'), default=False, help_text=_('this indicates if the repository has been created or is still queued to be created'))
     # local_manager: The local manager of the repository
-    local_manager=models.ForeignKey(User, related_name="local_managercontact_repos")
+    local_manager=models.ForeignKey(User, related_name="local_managercontact_repos", verbose_name=_('local repository manager'), help_text=_('this is the person who locally manages the repository will full access to read/write'))
     # local_members: The local members that have pemissions on the repo
-    local_members=models.ManyToManyField(User, related_name="local_members", null=True, blank=True)
+    local_members=models.ManyToManyField(User, related_name="local_members", null=True, blank=True, verbose_name=_('local repository member'), help_text=_('this is a list of all users who have permissions associated with this repo'))
     # allow_anon_pull: Allow anonymous pulls on the repo
-    allow_anon_pull=models.BooleanField(default=True, verbose_name="anonymous repository pull?")
+    allow_anon_pull=models.BooleanField(_('allow anonymous pull'), default=True, help_text=_('this sets the repository so anyone can clone or pull from it'))
     # allow_anon_push: Allow anonymous push on the repo
-    allow_anon_push=models.BooleanField(default=False)
+    allow_anon_push=models.BooleanField(_('allow anonymous push'), default=False, help_text=_('this sets the repository so anyone can push and commit to it'))
     # hgweb_style: The style to apply to the hgweb application
-    hgweb_style=models.CharField(max_length=50,choices=AVAILABLE_STYLES)
+    hgweb_style=models.CharField(_('hgweb style'),max_length=50,choices=AVAILABLE_STYLES, help_text=_('the style to show in the project/repo hgweb'))
     # archive_types: The archive types to offer, stored as a string "bz2|tar|zip", "tar|zip", etc
-    archive_types=models.CharField(max_length=12, default="bz2|tar|zip", null=True, blank=True)
+    archive_types=models.CharField(_('archive types'), max_length=12, default="bz2|tar|zip", null=True, blank=True, help_text=_('this sets the type of archives that will be available for download from the repository'))
     # local_parent_project: The project the repo belongs to
-    local_parent_project=models.ForeignKey(Project)
+    local_parent_project=models.ForeignKey(Project, verbose_name=_('local parent project'), help_text=_('this is the local project this repository lives under'))
     # local_creation_date: The date the project was created locally
-    local_creation_date=models.DateTimeField(auto_now_add=True, editable=False, verbose_name='created on')
+    local_creation_date=models.DateTimeField(_('local creation date'), auto_now_add=True, editable=False, help_text=_('the date this repository was locally created'))
     # local_modified_date: The date the repo was last updated
-    local_modified_date=models.DateTimeField(auto_now=True, editable=False, verbose_name='last updated')
+    local_modified_date=models.DateTimeField(_('local modification date'), auto_now=True, editable=False, help_text=_('the date this repository was last locally updated'))
     # folder_size: The total size of the repo folder
-    folder_size=models.IntegerField(default=0)
+    folder_size=models.IntegerField(_('folder size'), default=0, help_text=_('this is the local size of the repository on the file system'))
 
     
     def __unicode__(self):
@@ -68,8 +69,8 @@ class Repo(models.Model):
     
     def is_cloned(self):
         """Checks to see if this was a cloned repositories"""
-        return bool(self.creation_method == 'Clone')
-    is_cloned.short_description = "Cloned Repository?"
+        return bool(self.creation_method == _('Clone'))
+    is_cloned.short_description = _("Cloned Repository?")
     is_cloned = property(is_cloned)
     
     def repo_directory(self):
@@ -77,7 +78,7 @@ class Repo(models.Model):
             return str(os.path.join(Project.project_options.repository_directory, self.local_parent_project.project_id, self.directory_name))
         except:
             return False
-    repo_directory.short_description = "Repository Location"
+    repo_directory.short_description = _("Repository Location")
     repo_directory = property(repo_directory)
 
     def create_hgrc(self):
@@ -171,15 +172,15 @@ class Repo(models.Model):
         ago = int(time.time() - common.get_mtime(self.repo_directory))
         
         if (ago > 0) and (ago < 60):
-            string = str(ago) + " seconds ago"
+            string = str(ago) + _(" seconds ago")
         elif (ago >= 60) and (ago < 3600):
-            string = str(ago/60) + " minutes ago"
+            string = str(ago/60) + _(" minutes ago")
         elif (ago >= 3600) and (ago < 86400 ):
-            string = str(ago/3600) + " hours ago"
+            string = str(ago/3600) + _(" hours ago")
         elif (ago >= 86400):
-            string = str(ago/86400) + " days ago"
+            string = str(ago/86400) + _(" days ago")
         return string
-    time_ago.short_description = "Time since last update"
+    time_ago.short_description = _("Time since last update")
     time_ago = property(time_ago)
         
     class Admin:
@@ -198,6 +199,8 @@ class Repo(models.Model):
 
     class Meta:
         unique_together=('local_parent_project','directory_name')
+        verbose_name=_('repository')
+        verbose_name_plural=_('repositories')
 
     repo_options = RepoOptions()
     
