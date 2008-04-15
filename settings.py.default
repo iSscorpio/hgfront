@@ -60,9 +60,10 @@ TEMPLATE_LOADERS = (
 
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.auth',
-    'hgfront.project.contexts.site_options',
-    'hgfront.project.contexts.project_stats',
-    'hgfront.repo.contexts.repo_stats',
+    'core.contexts.json_output',
+    'core.contexts.site_options',
+    'core.contexts.project_stats',
+    'core.contexts.repo_stats',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -70,7 +71,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'hgfront.SQLLogMiddleware.SQLLogMiddleware',
+    'core.middleware.SQLLogMiddleware.SQLLogMiddleware',
+    'core.middleware.UrlMiddleware.UrlMiddleware',
+    'core.openidconsumer.middleware.OpenIDMiddleware',
+    'core.middleware.RemoveSelfLinks.RemoveSelfLinks',
 )
 
 ROOT_URLCONF = 'urls'
@@ -83,6 +87,7 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
+    'core.django_docs',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -90,13 +95,14 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.sessions',
     'django.contrib.sites',
-    'hgfront.config',
-    'hgfront.backup',
-    'hgfront.issue',
-    'hgfront.project',
-    'hgfront.repo',
-    'hgfront.wiki',
-    'registration',
+    'core',
+    'core.config',
+    'core.openidconsumer',
+    'backup',
+    'issue',
+    'member',
+    'project',
+    'repo',
 )
 
 ACCOUNT_ACTIVATION_DAYS = 7

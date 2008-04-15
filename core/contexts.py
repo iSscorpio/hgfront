@@ -2,7 +2,7 @@ import datetime
 from random import randint
 
 from django.template import Context
-from core.json_encode import json_encode
+from core.libs.json_libs import json_encode
 
 from project.models import Project
 from repo.models import Repo

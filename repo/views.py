@@ -11,15 +11,14 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
-from core.json_encode import json_encode
 from django.utils.translation import gettext_lazy as _
 # Project Libraries
-from core.json_response import JsonResponse
+from core.libs.json_libs import json_encode, JsonResponse
+from project.decorators import check_project_permissions
 from project.models import Project
 from repo.forms import RepoCreateForm
 from repo.models import Repo, Queue, Message
 from repo.decorators import check_allowed_methods
-from project.decorators import check_project_permissions
 
 @check_project_permissions('view_repos')
 def repo_list(request, slug):
@@ -264,7 +263,7 @@ def pop_queue(request, queue_name):
     response_message='void'
     if msg:
         u = ui.ui()
-        message = simplejson.loads(msg.message)
+        message = json_encode(msg.message)
         project = Project.projects.get(project_id__exact = message['local_parent_project'])
         repo = Repo.objects.get(directory_name__exact=message['directory_name'], local_parent_project__exact=project)
         

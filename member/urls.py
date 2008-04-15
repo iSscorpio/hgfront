@@ -22,5 +22,5 @@ urlpatterns += patterns('core.openidconsumer.views',
 )
 
 # TODO this should be optional
-from core import htpasswdutils
-htpasswdutils.monkeypatch_user_model()
+from core.libs.htpasswdutils import monkeypatch_user_model
+monkeypatch_user_model()

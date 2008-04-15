@@ -11,9 +11,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 # Project Libraries
-from core.json_response import JsonResponse
 from backup.models import ProjectBackup
-from core.json_encode import json_encode
+from core.libs.json_libs import json_encode, JsonResponse
 from project.forms import *
 from project.models import Project, ProjectPermissionSet, ProjectNews
 from project.decorators import check_project_permissions

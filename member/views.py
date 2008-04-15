@@ -9,7 +9,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 # Project Libraries
-from core.json_encode import json_encode
+from core.libs.json_libs import json_encode
 from member.forms import MemberRegisterForm, MemberLoginForm, MemberPasswordResetForm
 from member.models import Member
 from project.models import Project

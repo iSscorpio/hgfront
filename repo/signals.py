@@ -4,7 +4,7 @@ from mercurial import hg, ui
 # Django Libraries
 from django.template import Context, loader
 from django.conf import settings
-from core.json_encode import json_encode
+from core.libs.json_libs import json_encode
 # Project Libraries
 
 def create_repo(sender, instance, signal, *args, **kwargs):
