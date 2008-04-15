@@ -20,8 +20,8 @@
 		<dl>
 			<dt>Last Update Time</dt>
 			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.last_update|timesince}} ago)</dd>
-			<dt>Repo Size (Mb)</dt>
-			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
+			<dt>Repo Size</dt>
+			<dd>{{ repo.folder_size|filesizeformat }}</dd>
 			<dt>Permissions</dt>
 			<dd>
 				<ul>

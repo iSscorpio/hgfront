@@ -153,7 +153,7 @@ def repo_create(request, slug):
                 form.cleaned_data['created'] = False
                 form.save()
             
-            request.user.message_set.create(message=_("The repository " + form.cleaned_data['display_name'] + " has been queued"))
+            request.user.message_set.create(message=_("The repository %(display_name)s has been queued") % {'display_name':form.cleaned_data['display_name'] })
             if request.is_ajax():
                 retval = (
                     {'success':'true', 'url':reverse('project-detail', kwargs={'slug':slug}),},
@@ -185,20 +185,27 @@ def repo_delete(request, slug, repo_name):
     repo = Repo.objects.get(directory_name__exact=repo_name, local_parent_project__exact = project)
     try:
         repo.delete()
-        request.user.message_set.create(message=_("The repository " + repo.display_name + " has been deleted"))
+        return_message=_("The repository %(repo)s has deleted") % {'repo':repo.display_name }
         if request.is_ajax():
             retval = (
                 {
                     'success':'true',
-                    'url': reverse('project-detail', kwargs={'slug':slug}),
+                    'url': reverse('project-detail', kwargs={'slug':project.project_id,}),
                 },
             )
-            return JsonResponse(retval)
+            
         else:
-            return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+            retval = reverse('project-detail',
+                        kwargs={'slug': project.project_id,})
     except:
-        request.user.message_set.create(message=_("The repository " + repo.display_name + " failed to be deleted"))
-        return HttpResponseRedirect(reverse('project-detail', kwargs={'slug': slug}))
+        return_message=_("The repository %(repo)s failed to be deleted") % {'repo':repo.display_name }
+    
+    if request.is_ajax():
+        request.user.message_set.create(message=return_message)
+        return JsonResponse(retval)
+    else:
+        request.user.message_set.create(message=return_message)
+        return HttpResponseRedirect(retval)
 
 @check_project_permissions('add_repos')
 def repo_manage(request, slug, repo_name):
@@ -266,26 +273,14 @@ def pop_queue(request, queue_name):
                 hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
             except:
-                print "Clone failed"
-                response_message = 'failed'
-            try:
-                repo.folder_size = 0
-                for (path, dirs, files) in os.walk(repo.repo_directory):
-                    for file in files:
-                        filename = os.path.join(path, file)
-                        repo.folder_size += os.path.getsize(filename)
-                
-                repo.save()
-            except:
-                print "Get repo size failed"
                 response_message = 'failed'
             try:
                 m = Message.objects.get(id=msg.id, queue=q.id)
                 m.delete()
+                repo.save()
                 project.save()
                 response_message = 'success'
             except:
-                print "Delete message failed"
                 response_message = 'failed'
         elif (queue_name == 'repoupdate'):
             location = hg.repository(u, repo.repo_directory)

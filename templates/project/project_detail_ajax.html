@@ -21,8 +21,8 @@
 	        <dd><a href="{{project.project_manager.get_absolute_url}}">{{project.project_manager}}</a></dd>
 	        <dt>Project Description</dt>
 	        <dd>{{project.full_description}}</dd>
-			<dt>Project Size (Mb)</dt>
-			<dd>{{project.total_size|megs|floatformat:2}}</dd>	
+			<dt>Project Size</dt>
+			<dd>{{project.total_size|filesizeformat}}</dd>	
 	        <dt>Project Active Since</dt>
 	        <dd>{{project.created_date|date:"D d M Y H:i"}}</dd>
 			<dt>Project Last Updated</dt>

@@ -166,7 +166,7 @@ class Repo(models.Model):
             last_update = datetime.datetime.fromtimestamp(last_update)
         except:
             last_update = None
-        return last_update
+        return last_update        
         
     class Admin:
         fields = (
@@ -188,7 +188,8 @@ class Repo(models.Model):
         verbose_name_plural=_('repositories')
 
     repo_options = RepoOptions()
-    
+
+dispatcher.connect( get_repo_size, signal=signals.pre_save, sender=Repo )    
 dispatcher.connect( delete_repo, signal=signals.post_delete, sender=Repo )
     
 class Queue(models.Model):
