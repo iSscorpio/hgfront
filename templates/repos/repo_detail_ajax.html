@@ -19,7 +19,7 @@
 		<h3>Repository Overview</h3>
 		<dl>
 			<dt>Last Update Time</dt>
-			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.time_ago}})</dd>
+			<dd>{{repo.last_update|date:"D d M Y, H:i:s"}} ({{repo.last_update|timesince}} ago)</dd>
 			<dt>Repo Size (Mb)</dt>
 			<dd>{{ repo.folder_size|megs|floatformat:2 }}</dd>
 			<dt>Permissions</dt>

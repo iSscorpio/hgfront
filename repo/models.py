@@ -167,21 +167,6 @@ class Repo(models.Model):
         except:
             last_update = None
         return last_update
-    
-    def time_ago(self):
-        ago = int(time.time() - common.get_mtime(self.repo_directory))
-        
-        if (ago > 0) and (ago < 60):
-            string = str(ago) + _(" seconds ago")
-        elif (ago >= 60) and (ago < 3600):
-            string = str(ago/60) + _(" minutes ago")
-        elif (ago >= 3600) and (ago < 86400 ):
-            string = str(ago/3600) + _(" hours ago")
-        elif (ago >= 86400):
-            string = str(ago/86400) + _(" days ago")
-        return string
-    time_ago.short_description = _("Time since last update")
-    time_ago = property(time_ago)
         
     class Admin:
         fields = (

@@ -7,23 +7,17 @@ import datetime, os, sys
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
-from django.http import HttpResponse
-from django.http import HttpResponseForbidden
-from django.http import HttpResponseNotAllowed
-from django.http import HttpResponseNotFound
-from django.http import HttpResponseServerError
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseServerError
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.utils import simplejson
 from core.json_encode import json_encode
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 # Project Libraries
 from core.json_response import JsonResponse
 from project.models import Project
 from repo.forms import RepoCreateForm
-from repo.models import Repo
-from repo.queue import Queue, Message
+from repo.models import Repo, Queue, Message
 from repo.decorators import check_allowed_methods
 from project.decorators import check_project_permissions
 
@@ -272,6 +266,7 @@ def pop_queue(request, queue_name):
                 hg.clone(u, str(repo.default_path), repo.repo_directory, True)
                 repo.created = True
             except:
+                print "Clone failed"
                 response_message = 'failed'
             try:
                 repo.folder_size = 0
@@ -282,6 +277,7 @@ def pop_queue(request, queue_name):
                 
                 repo.save()
             except:
+                print "Get repo size failed"
                 response_message = 'failed'
             try:
                 m = Message.objects.get(id=msg.id, queue=q.id)
@@ -289,6 +285,7 @@ def pop_queue(request, queue_name):
                 project.save()
                 response_message = 'success'
             except:
+                print "Delete message failed"
                 response_message = 'failed'
         elif (queue_name == 'repoupdate'):
             location = hg.repository(u, repo.repo_directory)
