@@ -15,11 +15,11 @@ urlpatterns = patterns('member.views',
     url(r'^verifyuseremail/$','member_verifyuseremail', name='member-verifyuseremail'),
 )
 
-urlpatterns += patterns('core.openidconsumer.views',
-    url(r'^openid/$', 'begin', name='user-openid'),
-    url(r'^openid/complete/$', 'complete', name='user-openid-complete'),
-    url(r'^openid/signout/$', 'signout', name='user-openid-signout'),
-)
+#urlpatterns += patterns('core.openidconsumer.views',
+#    url(r'^openid/$', 'begin', name='user-openid'),
+#    url(r'^openid/complete/$', 'complete', name='user-openid-complete'),
+#    url(r'^openid/signout/$', 'signout', name='user-openid-signout'),
+#)
 
 # TODO this should be optional
 from core.libs.htpasswdutils import monkeypatch_user_model

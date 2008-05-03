@@ -31,7 +31,7 @@
 	    </dl>	
 	</div>
 	
-	<div id="project-repositories">
+	<div id="project-repositories" class="panel">
 		{% if permissions.add_repos %} 
         	<p><a href="{% url repo-create project.project_id %}" class="link-create-repo">Create New Repo</a></p>
         {% endif %}

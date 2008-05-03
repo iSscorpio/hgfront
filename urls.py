@@ -13,8 +13,8 @@ urlpatterns = patterns('',
     url(r'^r/', include('repo.urls'), name='repos-root'),
 )
 
-urlpatterns += patterns('core.openidconsumer.views',
-    url(r'^openid/$', 'begin', name='openid'),
-    url(r'^openid/complete/$', 'complete', name='openid-complete'),
-    url(r'^openid/signout/$', 'signout', name='openid-signout'),
-)
+#urlpatterns += patterns('core.openidconsumer.views',
+#    url(r'^openid/$', 'begin', name='openid'),
+#    url(r'^openid/complete/$', 'complete', name='openid-complete'),
+#    url(r'^openid/signout/$', 'signout', name='openid-signout'),
+#)
