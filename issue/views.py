@@ -114,11 +114,13 @@ def issue_create(request, slug):
     if request.method == "POST":
         form = IssueCreateForm(request.POST)
         if form.is_valid():
+            default_status = IssueStatus.objects.order_by('id')[0]
             issue = form.save(commit=False)
             # Let's set the values that we don't get explicitly from the form
             issue.project = project
             issue.pub_date = datetime.datetime.now()
             issue.user_posted = request.user
+            issue.issue_status = default_status
             issue.save()
             # Let's send a message of success to the user if the user isn't anonymous
             if request.user.is_authenticated():
