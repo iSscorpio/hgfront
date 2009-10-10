@@ -20,6 +20,7 @@ class IssueType(models.Model):
     slug=models.SlugField()
     order=models.IntegerField(max_length=3)
     is_active=models.BooleanField(default=1)
+    force_insert=False;
 
     def __unicode__(self):
         return self.title
