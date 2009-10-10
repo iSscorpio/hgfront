@@ -24,7 +24,7 @@ def json_encode(data):
     def _any(data):
         ret = None
         # Opps, we used to check if it is of type list, but that fails 
-        # i.e. in the case of django.newforms.utils.ErrorList, which extends
+        # i.e. in the case of django.forms.utils.ErrorList, which extends
         # the type "list". Oh man, that was a dumb mistake!
         if isinstance(data, list):
             ret = _list(data)
@@ -111,7 +111,7 @@ class JSONField(models.TextField):
     
     def contribute_to_class(self, cls, name):
         super(JSONField, self).contribute_to_class(cls, name)
-        dispatcher.connect(self.post_init, signal=signals.post_init, sender=cls)
+        signals.post_init.connect(self.post_init, sender=cls)
         
         def get_json(model_instance):
             return dumps(getattr(model_instance, self.attname, None))

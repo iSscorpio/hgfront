@@ -11,4 +11,4 @@ def create_queues(app, created_models, verbosity, **kwargs):
         Queue.objects.get_or_create(name='repoupdate')
         
 # Dispatchers       
-dispatcher.connect(create_queues, signal=signals.post_syncdb)
+signals.post_syncdb.connect(create_queues)

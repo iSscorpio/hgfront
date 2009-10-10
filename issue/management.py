@@ -38,6 +38,6 @@ def init_issues_status(app, created_models, verbosity, **kwargs):
         IssueStatus.objects.get_or_create(title='Works For Me', defaults={'title':'Works For Me','order': '4', 'is_active': '1'})
 
 # Dispatchers       
-dispatcher.connect(init_issues_types, signal=signals.post_syncdb)
-dispatcher.connect(init_issues_sevs, signal=signals.post_syncdb)
-dispatcher.connect(init_issues_status, signal=signals.post_syncdb)
+signals.post_syncdb.connect(init_issues_types)
+signals.post_syncdb.connect(init_issues_sevs)
+signals.post_syncdb.connect(init_issues_status)

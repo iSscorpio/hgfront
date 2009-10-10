@@ -270,11 +270,11 @@ class Project(models.Model):
 
 
 # Dispatchers
-dispatcher.connect( create_default_permission_set, signal=signals.post_save, sender=Project )
-dispatcher.connect( create_project_dir, signal=signals.post_save, sender=Project )
-dispatcher.connect( create_hgwebconfig, signal=signals.post_save, sender=Project )
-dispatcher.connect( send_email_to_owner, signal=signals.post_save, sender=Project )
-dispatcher.connect( delete_project_dir, signal=signals.post_delete, sender=Project )
+signals.post_save.connect( create_default_permission_set, sender=Project )
+signals.post_save.connect( create_project_dir, sender=Project )
+signals.post_save.connect( create_hgwebconfig, sender=Project )
+signals.post_save.connect( send_email_to_owner, sender=Project )
+signals.post_delete.connect( delete_project_dir, sender=Project )
 
 class ProjectPermissionSetManager(models.Manager):
     """

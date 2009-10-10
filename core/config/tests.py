@@ -156,7 +156,7 @@ class SettingsTestCase(test.TestCase):
         # Only the Unpopulated settings should show up
         self.assertEqual(len(response.context[0]['form'].fields), 3)
 
-        # Erroneous submissions should be caught by newforms
+        # Erroneous submissions should be caught by forms
         data = {
             'dbsettings.tests__Editable__integer': '3.5',
             'dbsettings.tests__Editable__string': '',

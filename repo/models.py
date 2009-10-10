@@ -189,8 +189,8 @@ class Repo(models.Model):
 
     repo_options = RepoOptions()
 
-dispatcher.connect( get_repo_size, signal=signals.pre_save, sender=Repo )    
-dispatcher.connect( delete_repo, signal=signals.post_delete, sender=Repo )
+signals.pre_save.dispatcher.connect( get_repo_size, sender=Repo )    
+signals.post_delete.connect( delete_repo, sender=Repo )
     
 class Queue(models.Model):
     """

@@ -165,4 +165,4 @@ class Issue(models.Model):
         verbose_name_plural = 'issues'
         ordering = ['-created_date']
 #Dispatchers
-dispatcher.connect( send_email_to_owner , signal=signals.post_save, sender=Issue )
+signals.post_save.connect( send_email_to_owner , sender=Issue )

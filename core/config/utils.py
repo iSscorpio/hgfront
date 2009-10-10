@@ -23,4 +23,4 @@ def set_defaults(app, *defaults):
                 except:
                     raise ImproperlyConfigured("%s requires dbsettings." % app_label)
 
-    dispatcher.connect(install_settings, sender=app, signal=signals.post_syncdb, weak=False)
+    signals.post_syncdb.connect(install_settings, sender=app, weak=False)

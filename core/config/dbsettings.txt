@@ -121,7 +121,7 @@ lower-case, as it will be capitalized as necessary, automatically.
 
 In addition, settings may be supplied with a list of available options, through
 the use of of the ``choices`` argument. This works exactly like the ``choices``
-argument for model fields, and that of the newforms ``ChoiceField``.
+argument for model fields, and that of the forms ``ChoiceField``.
 
 A full list of value types is available later in this document, but the process
 and arguments are the same for each.
