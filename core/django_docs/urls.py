@@ -4,6 +4,6 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('core.django_docs.views',
-    ('^doc/django/$', 'index'),
-    ('^doc/django/([^/]*)/$', 'doc_reader'),
+    ('^django/$', 'index'),
+    ('^django/([^/]*)/$', 'doc_reader'),
 )

@@ -76,7 +76,7 @@ class Project(models.Model):
     # full_description: This is the full freetext description of the project
     full_description=models.TextField(_('full description'), help_text=_('the full description of the project'))
     # project_icon: This is the icon used to give the project some visual air
-    project_icon = models.ImageField(_('project icon'), upload_to='project_icons', blank=True, null=True, help_text=_('an image to show as the project icon'))
+    #project_icon = models.ImageField(_('project icon'), upload_to='project_icons', blank=True, null=True, help_text=_('an image to show as the project icon'))
     # project_manager: This is the person managing the project on this instance of hgmanager
     project_manager=models.ForeignKey(User, related_name='project_manager', verbose_name=_('project manager'), help_text=_('the member who owns this local project'))
     # hgweb_style: The style to apply to the hgweb application

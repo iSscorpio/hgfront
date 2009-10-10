@@ -4,7 +4,7 @@ import datetime
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render_to_response
-from django.core.paginator import ObjectPaginator, InvalidPage
+from django.core.paginator import Paginator as ObjectPaginator, InvalidPage
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 # Project Libraries

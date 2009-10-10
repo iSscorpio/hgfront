@@ -189,7 +189,7 @@ class Repo(models.Model):
 
     repo_options = RepoOptions()
 
-signals.pre_save.dispatcher.connect( get_repo_size, sender=Repo )    
+signals.pre_save.connect( get_repo_size, sender=Repo )    
 signals.post_delete.connect( delete_repo, sender=Repo )
     
 class Queue(models.Model):
@@ -258,7 +258,6 @@ class Message(models.Model):
                 help_text="After this time has elapsed, the visibility of the message \
                            is changed back from False to True (when clear_expirations is executed).")
     timestamp = models.DateTimeField(null=True, blank=True, db_index=True, default=datetime.datetime.now)
-    queue = models.ForeignKey(Queue, raw_id_admin=True)
     objects = MessageManager()
     
     def save(self):
@@ -269,5 +268,6 @@ class Message(models.Model):
     def __str__(self):
         return "QM<%s> : %s" % (self.id, self.message)
             
-    class Admin:
-        pass
+#class MessageAdmin(admin.ModelAdmin):
+#    model = Message
+#    raw_id_fields = ('queue',)
