@@ -1,6 +1,10 @@
 # General Libraries
 # Django Libraries
 from django.conf.urls.defaults import *
+from django.contrib import admin
+
+admin.autodiscover()
+
 # Project Libraries
 
 urlpatterns = patterns('issue.views',

@@ -1,7 +1,7 @@
 # General Libraries
 # Django Libraries
-from django.newforms import ModelForm
-import django.newforms as forms
+from django.forms import ModelForm
+from django import forms
 # Project Libraries
 from issue.models import Issue
 

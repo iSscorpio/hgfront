@@ -1,9 +1,12 @@
 # General Libraries
 # Django Libraries
 from django.conf.urls.defaults import *
+from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic.simple import direct_to_template
 # Project Libraries
+
+admin.autodiscover()
 
 # Generic Patterns
 urlpatterns = patterns('project.views',

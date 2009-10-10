@@ -2,8 +2,8 @@
 import datetime
 # Django Libraries
 from django.contrib.auth.models import User
-import django.newforms as forms
-from django.newforms import ModelForm
+from django import forms
+from django.forms import ModelForm
 # Project Libraries
 import core.config
 from project.models import Project, ProjectNews

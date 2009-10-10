@@ -2,7 +2,7 @@
 import datetime
 # Django Libraries
 from django.contrib.auth.models import User
-import django.newforms as forms
+from django import forms
 # Project Libraries
 
 class MemberRegisterForm(forms.Form):
